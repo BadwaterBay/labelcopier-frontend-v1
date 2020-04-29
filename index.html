@@ -1,0 +1,187 @@
+<!--
+  This file is part of github-label-manager.
+
+  github-label-manager is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  github-label-manager is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with github-label-manager.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Github Label Manager</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="legend">
+  <meta name="author" content="github.com/destan">
+
+  <!-- Le styles -->
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/bootstrap-responsive.css" rel="stylesheet">
+  <link href="css/colorpicker.css" rel="stylesheet" />
+  <link href="css/app.css" rel="stylesheet" />
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <![endif]-->
+
+    </head>
+
+    <body>
+      <a href="https://github.com/destan/github-label-manager"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1031;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+      <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <a class="brand" href="#">&nbsp;Github Label Manager</a>
+          <ul class="nav">
+            <li class="active"><a href="#">Manage your labels</a></li>
+            <li><a href="#whatForModal" data-toggle="modal">What this thing does anyway?</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="content" class="container">
+
+        <div class="row-fluid">
+          <div class="span4">
+
+            <legend>Manage your Github labels</legend>
+            <form autocomplete="on">
+              <input id="targetUrl" type="url" class="input-block" placeholder="owner:repo" onchange="copyToBelow(this)">
+              <script type="text/javascript">
+                function copyToBelow(element) {
+                  document.getElementById('targetUsername').value = element.value.split(':')[0];
+                }
+              </script>
+              <input id="targetUsername" type="url" class="input-block" placeholder="username">
+              <input id="githubPassword" type="password" class="input-block" placeholder="Password">
+              <button id="listLabelsButton" type="button" class="btn btn-block" data-loading-text="Loading...">List labels in this repo</button>
+            </form>
+
+            <div id="optionalCopyContainer" class="well">
+              <button type="button" class="btn btn-block" data-toggle="collapse" data-target="#optionalCopyStuff">Copy an existing repo's labels (Optional)</button>
+              <span class="help-block">You can apply any repository's labels and then change them to meet your needs then apply to your own repository.</span>
+              <div id="optionalCopyStuff" class="collapse">
+                <form class="form-inline">
+                  <input id="copyUrl" type="url" class="input-block" placeholder="username:repo">
+                  <button id="copyFromRepoButton" type="button" class="btn btn-info"  data-loading-text="Copying...">Copy</button>
+                  <span class="help-block">Can be any repo, no password required for copying.</span>
+                </form>
+              </div>
+            </div>
+
+            <button id="commitButton" type="button" class="btn btn-success btn-block btn-large" disabled data-loading-text="Commiting...">Commit changes</button>
+
+            <br>
+
+            <div class="well">
+              <legend>Which repo is in use</legend>
+              <pre><span id="targetIndicator">Not using any yet!</span></pre>
+            </div>
+          </div>
+
+          <div class="span4">
+            <legend>Labels</legend>
+            <form id="labelsForm" class="form-inline"></form>
+            <button id="addNewLabelEntryButton" type="button" class="btn btn-success btn-block">Add new label</button>
+            <button id="resetButton" type="button" class="btn btn-danger btn-block" data-loading-text="Resetting...">Reset labels</button>
+          </div>
+
+          <div class="span4">
+            <legend>Help</legend>
+            <h4>Preface</h4>
+            <p>First of all, this website works by making cross-site requests to Github's api <code>api.github.com</code>
+and there is no other call is made to anywhere else.</p>
+            <code>You can download this website, it also works offline.</code>
+            <br><br><br>
+            <!-- Accordion stuff -->
+            <div class="accordion" id="accordionGroup">
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionGroup" href="#collapse0">
+                    Validation and errors
+                  </a>
+                </div>
+                <div id="collapse0" class="accordion-body collapse in">
+                  <div class="accordion-inner">
+                    There is not much validation and error prevention so you should check your changes before commiting.<br>
+                    <code>Unprocessable Entity</code> usually means that you tried to commit a duplicate label name or leave something empty.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionGroup" href="#collapse1">
+                    Is my password safe?
+                  </a>
+                </div>
+                <div id="collapse1" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    This website authenticates to Github api via <code>HTTP Basic Authentication</code> but all api calls are done over <code>SSL</code> so your password is safe. More on <a href="http://en.wikipedia.org/wiki/Basic_access_authentication" target="_blank">Wikipedia</a>.
+                    <br>
+                    Note that your password is only sent to Github and and sent encrypted.
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <!-- Accordion stuff ends -->
+          </div>
+        </div>
+        <br>
+        <br>
+      </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/colorpicker.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/app.js"></script>
+
+    <div id="loadingModal" class="modal hide fade">
+      <div class="modal-header">
+        <h3>Please wait...</h3>
+      </div>
+      <div class="modal-body">
+        <p>Commiting…</p>
+      </div>
+    </div>
+
+    <div id="whatForModal" class="modal hide fade">
+      <div class="modal-header">
+        <h3>What this thing does anyway?</h3>
+      </div>
+      <div class="modal-body">
+        <strong>Short:</strong>
+        <p>Helps you to copy labels in any Github repository into one of yours.</p>
+
+        <strong>Long:</strong>
+        <p>This is helpful when you create a new repo on Github. When you create your labels in one of your repos you probably get used to them and would want them in your brand new repo as well. Ths website avoids the burden of manualy creating labels on Github.</p>
+
+        <p>You don't have to copy labels from some repo, you can just add/remove/edit your repo's labels via here, and commit all the changes at once.</p>
+
+        <strong>Usage</strong>
+        <ul>
+          <li>List your repo's current label</li>
+          <li>Copy (append) some other repos' labels into your current labels (optional)</li>
+          <li>Edit the labels list as you wish</li>
+          <li>Commit your changes</li>
+        </ul>
+        <p>Yes, not really much different from Github itself. But
+                    the thing is you can do those as bunches here. The main thing is that you can also copy another repos's labels into yours with or without some modifications.</p>
+      </div>
+    </div>
+  </body>
+  </html>
