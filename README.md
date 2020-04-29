@@ -1,7 +1,7 @@
 github-label-manager
 ====================
 
-This project was adopted from https://github.com/destan/github-label-manager, but since that project hasn't been updated since 2016. We'd like to take this project into our own hands and continue its development and maintenance. We will keep developing this open-source project for the community.
+This project was adopted from https://github.com/destan/github-label-manager, but since that project hasn't been updated since 2016. We'd like to take this project into our own hands and continue developing and maintaining this open-source project for the community.
 
 License
 =======
