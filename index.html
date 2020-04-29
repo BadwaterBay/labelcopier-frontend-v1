@@ -63,7 +63,7 @@
                 }
               </script>
               <input id="targetUsername" type="url" class="input-block" placeholder="username">
-              <input id="githubPassword" type="password" class="input-block" placeholder="Password">
+              <input id="githubPassword" type="password" class="input-block" placeholder="token/password">
               <button id="listLabelsButton" type="button" class="btn btn-block" data-loading-text="Loading...">List labels in this repo</button>
             </form>
 
@@ -74,7 +74,7 @@
                 <form class="form-inline">
                   <input id="copyUrl" type="url" class="input-block" placeholder="username:repo">
                   <button id="copyFromRepoButton" type="button" class="btn btn-info"  data-loading-text="Copying...">Copy</button>
-                  <span class="help-block">Can be any repo, no password required for copying.</span>
+                  <span class="help-block">Can be any repo, no password or token required for copying.</span>
                 </form>
               </div>
             </div>
@@ -125,11 +125,28 @@ and there is no other call is made to anywhere else.</p>
                     Is my password safe?
                   </a>
                 </div>
+
                 <div id="collapse1" class="accordion-body collapse">
                   <div class="accordion-inner">
                     This website authenticates to Github api via <code>HTTP Basic Authentication</code> but all api calls are done over <code>SSL</code> so your password is safe. More on <a href="http://en.wikipedia.org/wiki/Basic_access_authentication" target="_blank">Wikipedia</a>.
                     <br>
-                    Note that your password is only sent to Github and and sent encrypted.
+                    Note that your password is only sent to Github and and sent encrypted. It is encouraged to use a token instead of your password.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionGroup" href="#collapse2">
+                    Is my token safe?
+                  </a>
+                </div>
+                
+                <div id="collapse2" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    This website authenticates to Github api via <code>HTTP Basic Authentication</code> but all api calls are done over <code>SSL</code> so your password is safe. More on <a href="http://en.wikipedia.org/wiki/Basic_access_authentication" target="_blank">Wikipedia</a>.
+                    <br>
+                    It is preferred to use a token instead of your password. For help with creating a token: <a href="https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line">Click here</a>
                   </div>
                 </div>
               </div>

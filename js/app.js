@@ -397,8 +397,8 @@ $('#commitButton').click(function(e) {
   });
 
   $('#githubPassword').popover({
-    title: "My password for what?",
-    content: "Password is only required for committing. It won't be required until you try to commit something.",
+    title: "My token/password for what?",
+    content: "Token/Password is only required for committing. It won't be required until you try to commit something. It is encouraged to use a token instead of your password.",
     trigger: "hover",
     html: true
   });
