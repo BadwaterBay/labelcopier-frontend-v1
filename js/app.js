@@ -16,14 +16,14 @@
 "use strict";
 
 $(document).ready(function () {
-  var username;
-  var password;
-  var targetUsername;
-  var targetRepo;
-  var targetOwner;
-  var isLoadingShown = false;
-  var loadingSemaphore = (function() {
-    var count = 0;
+  let username;
+  let password;
+  let targetUsername;
+  let targetRepo;
+  let targetOwner;
+  let isLoadingShown = false;
+  let loadingSemaphore = (function() {
+    let count = 0;
 
     return {
       acquire : function() {
@@ -58,7 +58,7 @@ $(document).ready(function () {
       }
     },
     beforeSend: function(xhr) {
-      var password = $('#githubPassword').val().trim();
+      let password = $('#githubPassword').val().trim();
       loadingSemaphore.acquire();
       // only add authorization if a password is provided. Adding empty authorization header
       //fails loading for public repos
@@ -85,9 +85,9 @@ $(document).ready(function () {
         console.log(response);
 
         if(response ){
-          var labels = response;
-          for (var i = labels.length - 1; i >= 0; i--) {
-            var label = labels[i];
+          let labels = response;
+          for (let i = labels.length - 1; i >= 0; i--) {
+            let label = labels[i];
             console.log(label);
 
             label.color = label.color.toUpperCase();
@@ -136,7 +136,7 @@ $(document).ready(function () {
   }
 
   function apiCallUpdateLabel(labelObject, callback) {
-    var originalName = labelObject.originalName;
+    let originalName = labelObject.originalName;
     delete labelObject.originalName;
 
     $.ajax({
@@ -181,8 +181,8 @@ $(document).ready(function () {
 
   function createNewLabelEntry(label, mode) {
 
-    var action = ' action="none" ';
-    var uncommitedSignClass = "";
+    let action = ' action="none" ';
+    let uncommitedSignClass = "";
 
     if(mode === 'copy' || mode === 'new'){
       action = ' action="create" new="true" ';
@@ -196,10 +196,10 @@ $(document).ready(function () {
       };
     }
 
-    var origNameVal = ' orig-val="' + label.name + '"';
-    var origColorVal = ' orig-val="' + label.color + '"';
+    let origNameVal = ' orig-val="' + label.name + '"';
+    let origColorVal = ' orig-val="' + label.color + '"';
 
-    var newElementEntry = $('\
+    let newElementEntry = $('\
       <div class="label-entry ' + uncommitedSignClass + '" ' + action + '>\
       <input name="name" type="text" class="input-small" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
       <span class="sharp-sign">#</span>\
@@ -244,7 +244,7 @@ $(document).ready(function () {
         }
 
         //add recover button
-        var recoverButton = $('<a class="btn" href="#"><i class="icon-refresh"></i></a>');
+        let recoverButton = $('<a class="btn" href="#"><i class="icon-refresh"></i></a>');
         recoverButton.click(function() {
           debugger;
           //recover label-element's deleted state
@@ -323,7 +323,7 @@ function clearAllLabels(){
 
 $('#listLabelsButton').click(function(e) {
   $(this).button('loading');
-    var theButton = $(this);// dealing with closure
+    let theButton = $(this);// dealing with closure
     targetOwner = $('#targetUrl').val().split(':')[0];
     targetRepo = $('#targetUrl').val().split(':')[1];
     targetUsername = $('#targetUsername').val();
@@ -343,7 +343,7 @@ $('#listLabelsButton').click(function(e) {
 
 $('#resetButton').click(function(e) {
   $(this).button('loading');
-    var theButton = $(this);// dealing with closure
+    let theButton = $(this);// dealing with closure
     clearAllLabels();
     apiCallListLabels(targetOwner, targetRepo, 'list', function(response) {
       theButton.button('reset');
@@ -352,9 +352,9 @@ $('#resetButton').click(function(e) {
 
 $('#copyFromRepoButton').click(function(e) {
   $(this).button('loading');
-    var theButton = $(this);// dealing with closure
-    var username = $('#copyUrl').val().split(':')[0];
-    var repo = $('#copyUrl').val().split(':')[1];
+    let theButton = $(this);// dealing with closure
+    let username = $('#copyUrl').val().split(':')[0];
+    let repo = $('#copyUrl').val().split(':')[1];
 
     if(username && repo){
       apiCallListLabels(username, repo, 'copy', function(response) {
@@ -369,8 +369,8 @@ $('#copyFromRepoButton').click(function(e) {
 
 $('#commitButton').click(function(e) {
   $(this).button('loading');
-    var theButton = $(this);// dealing with closure
-    var password = $('#githubPassword').val();
+    let theButton = $(this);// dealing with closure
+    let password = $('#githubPassword').val();
 
     if(password.trim() == ''){
       alert('You need to enter your password for repo: ' + targetRepo + ' in order to commit labels.');
@@ -418,7 +418,7 @@ $('#commitButton').click(function(e) {
   * returns true if any change has been made and activates or disactivates commit button accordingly
   */
   function checkIfAnyActionNeeded() {
-    var isNeeded = $('.label-entry:not([action="none"])').length > 0;
+    let isNeeded = $('.label-entry:not([action="none"])').length > 0;
 
     if(isNeeded){
       $('#commitButton').removeAttr('disabled');
@@ -442,19 +442,19 @@ $('#commitButton').click(function(e) {
 
     //To be deleted
     $('.label-entry[action="delete"]').each(function(index) {
-      var labelObject = serializeLabel($(this));
+      let labelObject = serializeLabel($(this));
       apiCallDeleteLabel(labelObject);
     });
 
     //To be updated
     $('.label-entry[action="update"]').each(function(index) {
-      var labelObject = serializeLabel($(this));
+      let labelObject = serializeLabel($(this));
       apiCallUpdateLabel(labelObject);
     });
 
     //To be created
     $('.label-entry[action="create"]').each(function(index) {
-      var labelObject = serializeLabel($(this));
+      let labelObject = serializeLabel($(this));
       apiCallCreateLabel(labelObject);
     });
   }
@@ -481,16 +481,16 @@ $('#commitButton').click(function(e) {
   });
 
   /* ========== The rest is BASE64 STUFF ========== */
-  var Base64 = {
+  let Base64 = {
     // http://stackoverflow.com/a/246813
     // private property
     _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
 
     // public method for encoding
     encode: function (input) {
-      var output = "";
-      var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-      var i = 0;
+      let output = "";
+      let chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+      let i = 0;
 
       input = Base64._utf8_encode(input);
 
@@ -520,10 +520,10 @@ $('#commitButton').click(function(e) {
 
     // public method for decoding
     decode: function (input) {
-      var output = "";
-      var chr1, chr2, chr3;
-      var enc1, enc2, enc3, enc4;
-      var i = 0;
+      let output = "";
+      let chr1, chr2, chr3;
+      let enc1, enc2, enc3, enc4;
+      let i = 0;
 
       input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
 
@@ -558,11 +558,11 @@ $('#commitButton').click(function(e) {
     // private method for UTF-8 encoding
     _utf8_encode: function (string) {
       string = string.replace(/\r\n/g, "\n");
-      var utftext = "";
+      let utftext = "";
 
-      for (var n = 0; n < string.length; n++) {
+      for (let n = 0; n < string.length; n++) {
 
-        var c = string.charCodeAt(n);
+        let c = string.charCodeAt(n);
 
         if (c < 128) {
           utftext += String.fromCharCode(c);
@@ -582,9 +582,9 @@ $('#commitButton').click(function(e) {
 
     // private method for UTF-8 decoding
     _utf8_decode: function (utftext) {
-      var string = "";
-      var i = 0;
-      var c = c1 = c2 = 0;
+      let string = "";
+      let i = 0;
+      let c = c1 = c2 = 0;
 
       while (i < utftext.length) {
 
