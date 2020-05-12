@@ -101,32 +101,35 @@
             <h4>Preface</h4>
             <p>First of all, this website works by making cross-site requests to Github's api <code>api.github.com</code>
 and there is no other call is made to anywhere else.</p>
-            <code>You can download this website, it also works offline.</code>
-            <br><br><br>
+            <p class="mb-4">You can download this website, it also works offline.</p>
+
             <!-- Accordion stuff -->
-            <div class="accordion" id="accordionGroup">
+            <div id="accordion">
               <div class="card">
-                <div class="card-header">
-                  <a class="btn btn-link" data-toggle="collapse" data-parent="#accordionGroup" href="#collapse0">
-                    Validation and errors
-                  </a>
+                <div class="card-header" id="headingOne">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      Validation and errors
+                    </button>
+                  </h5>
                 </div>
-                <div id="collapse0" class="btn btn-link collapse show">
+            
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                   <div class="card-body">
                     There is not much validation and error prevention so you should check your changes before commiting.<br>
                     <code>Unprocessable Entity</code> usually means that you tried to commit a duplicate label name or leave something empty.
                   </div>
                 </div>
               </div>
-
               <div class="card">
-                <div class="card-header">
-                  <a class="btn btn-link" data-toggle="collapse" data-parent="#accordionGroup" href="#collapse1">
-                    Is my password safe?
-                  </a>
+                <div class="card-header" id="headingTwo">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      Is my password safe?
+                    </button>
+                  </h5>
                 </div>
-
-                <div id="collapse1" class="btn btn-link collapse">
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
                   <div class="card-body">
                     This website authenticates to Github api via <code>HTTP Basic Authentication</code> but all api calls are done over <code>SSL</code> so your password is safe. More on <a href="http://en.wikipedia.org/wiki/Basic_access_authentication" target="_blank">Wikipedia</a>.
                     <br>
@@ -134,15 +137,15 @@ and there is no other call is made to anywhere else.</p>
                   </div>
                 </div>
               </div>
-
               <div class="card">
-                <div class="card-header">
-                  <a class="btn btn-link" data-toggle="collapse" data-parent="#accordionGroup" href="#collapse2">
-                    Is my token safe?
-                  </a>
+                <div class="card-header" id="headingThree">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      Is my token safe?
+                    </button>
+                  </h5>
                 </div>
-                
-                <div id="collapse2" class="btn btn-link collapse">
+                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
                   <div class="card-body">
                     This website authenticates to Github api via <code>HTTP Basic Authentication</code> but all api calls are done over <code>SSL</code> so your password is safe. More on <a href="http://en.wikipedia.org/wiki/Basic_access_authentication" target="_blank">Wikipedia</a>.
                     <br>
@@ -150,7 +153,6 @@ and there is no other call is made to anywhere else.</p>
                   </div>
                 </div>
               </div>
-
             </div>
             <!-- Accordion stuff ends -->
           </div>
