@@ -27,12 +27,12 @@ $(document).ready(function () {
 
     return {
       acquire : function() {
-        console.log("acq " + count);
+        // console.log("acq " + count);
         ++count;
         return null;
       },
       release : function() {
-        console.log("rel " + count);
+        // console.log("rel " + count);
         if(count <= 0){
           throw "Semaphore inconsistency";
         }
@@ -54,7 +54,7 @@ $(document).ready(function () {
         writeLog("All operations are done.");
 
         //add close button
-        $('#loadingModal').append('<div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Close');
+        $('#loadingModal .modal-content').append('<div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button></div>');
       }
     },
     beforeSend: function(xhr) {
@@ -81,14 +81,13 @@ $(document).ready(function () {
       type: 'GET',
       url: 'https://api.github.com/repos/' + username + '/' + repo + '/labels',
       success: function (response) {
-        console.log("success: ");
-        console.log(response);
+        // console.log("success: ");
+        // console.log(response);
 
-        if(response ){
+        if(response){
           let labels = response;
           for (let i = labels.length - 1; i >= 0; i--) {
             let label = labels[i];
-            console.log(label);
 
             label.color = label.color.toUpperCase();
             createNewLabelEntry(label, mode);
@@ -122,8 +121,8 @@ $(document).ready(function () {
       url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/labels',
       data: JSON.stringify(labelObject),
       success: function (response) {
-        console.log("success: ");
-        console.log(response);
+        // console.log("success: ");
+        // console.log(response);
         if(typeof callback == 'function'){
           callback(response);
         }
@@ -144,8 +143,8 @@ $(document).ready(function () {
       url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/labels/' + originalName,
       data: JSON.stringify(labelObject),
       success: function (response) {
-        console.log("success: ");
-        console.log(response);
+        // console.log("success: ");
+        // console.log(response);
         if(typeof callback == 'function'){
           callback(response);
         }
@@ -162,8 +161,8 @@ $(document).ready(function () {
       type: "DELETE",
       url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/labels/' + labelObject.name,
       success: function (response) {
-        console.log("success: ");
-        console.log(response);
+        // console.log("success: ");
+        // console.log(response);
         if(typeof callback == 'function'){
           callback(response);
         }
@@ -439,7 +438,7 @@ $('#commitButton').click(function(e) {
       keyboard: false,
       backdrop:'static'
     });
-
+    isLoadingShown = true;
     //To be deleted
     $('.label-entry[action="delete"]').each(function(index) {
       let labelObject = serializeLabel($(this));
@@ -460,24 +459,20 @@ $('#commitButton').click(function(e) {
   }
 
   function writeLog(string) {
-    $('#loadingModal > .modal-body').append(string + '<br>');
+    $('#loadingModal .modal-body').append(string + '<br>');
   }
 
-  $('#loadingModal').on('hide', function () {
+  $('#loadingModal').on('hidden.bs.modal', function () {
     isLoadingShown = false;
 
     //reset modal
-    $('#loadingModal > .modal-body').text('');
-    $('#loadingModal > .modal-body').append('<p>Commiting...');
-    $('#loadingModal > .modal-footer').remove();
+    $('#loadingModal .modal-body').text('');
+    $('#loadingModal .modal-body').append('<p>Commiting...');
+    $('#loadingModal .modal-footer').remove();
 
     //reload labels after changes
     clearAllLabels();
     apiCallListLabels(targetOwner, targetRepo, 'list');
-  });
-
-  $('#loadingModal').on('show', function () {
-    isLoadingShown = true;
   });
 
   /* ========== The rest is BASE64 STUFF ========== */
