@@ -1,0 +1,19 @@
+# onComment:
+#   set:
+#     - help wanted
+
+onApproved:
+  remove:
+    - help wanted
+    - PR: review needed
+  set:
+    - PR: review accepted
+
+onChangesRequested:
+  remove:
+    - bug
+    - invalid
+    - duplicate
+    - help wanted
+  set:
+    - PR: revision needed
