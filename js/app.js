@@ -200,9 +200,9 @@ $(document).ready(function () {
 
     let newElementEntry = $('\
       <div class="label-entry ' + uncommitedSignClass + '" ' + action + '>\
-      <input name="name" type="text" class="input-small" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
+      <input name="name" type="text" class="form-control input-sm label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
       <span class="sharp-sign">#</span>\
-      <input name="color" type="text" class="input-small color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
+      <input name="color" type="text" class="form-control input-sm color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
       <button type="button" class="btn btn-danger delete-button">Delete</button>\
       </div>\
       ');

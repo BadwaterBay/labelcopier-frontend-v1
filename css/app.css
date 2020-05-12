@@ -32,3 +32,13 @@ body{
 #content{
     margin-top: 60px;
 }
+
+.label-fitting {
+    max-width: 50%;
+    min-width: 7rem;
+}
+
+.color-fitting {
+    max-width: 20%;
+    min-width: 5rem;
+}
