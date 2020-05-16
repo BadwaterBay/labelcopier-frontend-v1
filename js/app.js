@@ -77,41 +77,46 @@ $(document).ready(function () {
   * callback: as the name suggests...
   */
   function apiCallListLabels(username, repo, mode, callback){
-    $.ajax({
-      type: 'GET',
-      url: 'https://api.github.com/repos/' + username + '/' + repo + '/labels',
-      success: function (response) {
-        // console.log("success: ");
-        // console.log(response);
+    let pageNum = 1;
+    getLabels(username, repo, mode, callback, pageNum);
 
-        if(response){
-          let labels = response;
-          for (let i = labels.length - 1; i >= 0; i--) {
-            let label = labels[i];
+    function getLabels(username, repo, mode, callback, pageNum) {
+      $.ajax({
+        type: 'GET',
+        url: 'https://api.github.com/repos/' + username + '/' + repo + '/labels' + '?page=' + pageNum,
+        success: function (response) {
+          if(response){
+            response.forEach(label => {
+              label.color = label.color.toUpperCase();
+              createNewLabelEntry(label, mode);
+              //sets target indicator text
+              $('#targetIndicator').html('Using <strong>' + targetOwner + "</strong>'s <strong>" + targetRepo + '</strong> as <strong>' + targetUsername + '</strong>');
+            });
+          }//if
 
-            label.color = label.color.toUpperCase();
-            createNewLabelEntry(label, mode);
+          if (response.length >= 28) {
+            ++pageNum;
+            getLabels(username, repo, mode, callback, pageNum);
+          }
+          else {
+            return;
+          }
 
-            //sets target indicator text
-            $('#targetIndicator').html('Using <strong>' + targetOwner + "</strong>'s <strong>" + targetRepo + '</strong> as <strong>' + targetUsername + '</strong>');
-
-          }//for
-        }//if
-
-        if(typeof callback == 'function'){
-          callback(response);
+          if(typeof callback == 'function'){
+            callback(response);
+          }
+        },
+        error: function(response) {
+          if(response.status == 404) {
+            alert('Not found! If this is a private repo make sure you provide a password.');
+          }
+          
+          if(typeof callback == 'function'){
+            callback(response);
+          }
         }
-      },
-      error: function(response) {
-        if(response.status == 404) {
-          alert('Not found! If this is a private repo make sure you provide a password.');
-        }
-        
-        if(typeof callback == 'function'){
-          callback(response);
-        }
-      }
-    });
+      });
+    }
   }
 
   function apiCallCreateLabel(labelObject, callback) {
