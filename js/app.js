@@ -83,7 +83,6 @@ $(document).ready(function () {
     function getLabels(username, repo, mode, callback, pageNum) {
       $.ajax({
         type: 'GET',
-        async: false,
         url: 'https://api.github.com/repos/' + username + '/' + repo + '/labels' + '?page=' + pageNum,
         success: function (response) {
           if(response){
