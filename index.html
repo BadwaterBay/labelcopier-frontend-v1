@@ -27,6 +27,7 @@
   <link href="css/bootstrap.css" rel="stylesheet">
   <link href="css/colorpicker.css" rel="stylesheet" />
   <link href="css/app.css" rel="stylesheet" />
+<<<<<<< HEAD
 </head>
 
 <body>
@@ -72,12 +73,51 @@
               <span class="form-text text-muted">Can be any repo, no password or token required for copying.</span>
             </form>
           </div>
+=======
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <![endif]-->
+
+    </head>
+
+    <body>
+      <a href="https://github.com/Badwater-Apps/github-label-manager-2" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1031;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+      <div class="navbar sticky-top navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand" href="#">&nbsp;Github Label Manager</a>
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active"><a class="nav-link" href="#">Manage your labels</a></li>
+            <li class="nav-item"><a class="nav-link" href="#whatForModal" data-toggle="modal">How this works</a></li>
+          </ul>
+>>>>>>> Implement couple UI changes to space elements out, improve page contrast, and make instructions more intuitive
         </div>
 
+<<<<<<< HEAD
         <button id="commitButton" type="button" class="btn btn-success btn-block btn-lg" disabled
           data-loading-text="Commiting...">
           Commit changes
         </button>
+=======
+      <div id="content" class="container">
+
+        <div class="row">
+          <div class="col-12 col-md-4">
+
+            <legend>Manage your Github labels</legend>
+            <form autocomplete="on">
+              <input id="targetUrl" type="url" class="input-block form-control" placeholder="owner:repo" onchange="copyToBelow(this)">
+              <script type="text/javascript">
+                function copyToBelow(element) {
+                  document.getElementById('targetUsername').value = element.value.split(':')[0];
+                }
+              </script>
+              <input id="targetUsername" type="url" class="input-block form-control" placeholder="username">
+              <input id="githubPassword" type="password" class="input-block form-control" placeholder="token/password">
+              <button id="listLabelsButton" type="button" class="btn btn-block btn-secondary mb-2" data-loading-text="Loading...">List labels in this repo</button>
+            </form>
+>>>>>>> Implement couple UI changes to space elements out, improve page contrast, and make instructions more intuitive
 
         <br>
 
