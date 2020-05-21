@@ -84,13 +84,8 @@ $(document).ready(function () {
             });
           }//if
 
-          if (response.length >= 28) {
-            ++pageNum;
-            getLabels(username, repo, mode, callback, pageNum);
-          }
-          else {
-            return;
-          }
+          if (response.length === 0) return;
+          else getLabels(username, repo, mode, callback, ++pageNum);
 
           if (typeof callback === 'function') {
             callback(response);
@@ -373,35 +368,6 @@ $(document).ready(function () {
       theButton.button('reset');
     }
   });
-
-  $('#cloneFromRepoButton').click(function() {
-    let username = $('#copyUrl').val().split(':')[0];
-    let repo = $('#copyUrl').val().split(':')[1];
-
-    if (username && repo) {
-      $("#labelsForm").children().each(function() {
-        if ($(this).attr('new') === 'true') {
-          $(this).remove();
-        }
-        else {
-          $(this).prepend('<hr class="deleted">');
-          $(this).children().attr('disabled', 'true');
-          $(this).children(".delete-button").attr('disabled', 'true');
-          $(this).attr('action', 'delete');
-        }
-      });
-  
-      apiCallListLabels(username, repo, 'copy', function () {
-        $(this).button('reset');
-      });//set addUncommited to true because those are coming from another repo
-    }
-    else {
-      alert("Please follow the format: \n\nusername:repo");
-      $(this).button('reset');
-    }
-
-    checkIfAnyActionNeeded();
-  })
 
   $('#commitButton').click(function () {
     let theButton = $(this);// dealing with closure
