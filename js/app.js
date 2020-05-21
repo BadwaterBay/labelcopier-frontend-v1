@@ -59,21 +59,13 @@ $(document).ready(function () {
       let password = $('#githubPassword').val().trim();
       loadingSemaphore.acquire();
       // only add authorization if a password is provided. Adding empty authorization header
-      //fails loading for public repos
+      // fails loading for public repos
       if (password) {
         xhr.setRequestHeader('Authorization', makeBasicAuth(targetUsername, password));
       }
     }
   });
 
-  /**
-  * username: github username <required>
-  * password: github password (cleartext) <required>
-  * mode:
-  *       'list':
-  *       'copy':
-  * callback: as the name suggests...
-  */
   function apiCallListLabels(username, repo, mode, callback) {
     let pageNum = 1;
     getLabels(username, repo, mode, callback, pageNum);
@@ -88,11 +80,11 @@ $(document).ready(function () {
               label.color = label.color.toUpperCase();
               createNewLabelEntry(label, mode);
               //sets target indicator text
-              $('#targetIndicator').html('Using <strong>' + targetOwner + "</strong>'s <strong>" + targetRepo + '</strong> as <strong>' + targetUsername + '</strong>');
+              $('#targetIndicator').html('<strong>Repo owner:</strong> ' + targetOwner + "<br /><strong>Repo:</strong> " + targetRepo +  '<br /><strong>Username:</strong> ' + targetUsername);
             });
           }//if
 
-          if (response.length >= 28) {
+          if (response.length === 28) {
             ++pageNum;
             getLabels(username, repo, mode, callback, pageNum);
           }
@@ -324,16 +316,15 @@ $(document).ready(function () {
   }
 
   $('#listLabelsButton').click(function () {
-    $(this).button('loading');
     let theButton = $(this);// dealing with closure
-    targetOwner = $('#targetUrl').val().split(':')[0];
-    targetRepo = $('#targetUrl').val().split(':')[1];
+    targetOwner = $('#targetOwnerRepo').val().split(':')[0];
+    targetRepo = $('#targetOwnerRepo').val().split(':')[1];
     targetUsername = $('#targetUsername').val();
 
     if (targetOwner && targetRepo) {
       clearAllLabels();
 
-      apiCallListLabels(targetOwner, targetRepo, 'list', function () {
+      apiCallListLabels(targetOwner, targetRepo, 'list', () => {
         theButton.button('reset');
       });
     }
@@ -343,10 +334,10 @@ $(document).ready(function () {
     }
   });
 
-  $('#resetButton').click(function () {
+  $('#revert-button').click(function () {
     let theButton = $(this);// dealing with closure
     clearAllLabels();
-    apiCallListLabels(targetOwner, targetRepo, 'list', function () {
+    apiCallListLabels(targetOwner, targetRepo, 'list', () => {
       theButton.button('reset');
     });
   });
@@ -384,7 +375,6 @@ $(document).ready(function () {
   });
 
   $('#commitButton').click(function () {
-    $(this).button('loading');
     let theButton = $(this);// dealing with closure
     let password = $('#githubPassword').val();
 
@@ -397,27 +387,27 @@ $(document).ready(function () {
     commit();
   });
 
-  //Enable popovers
-  $('#targetUrl').popover({
-    title: 'Example',
-    content: '<code>github.com/destan/cevirgec</code> Then use <code>destan:cevirgec</code><br><em>Note that owner can also be an organization name.</em>',
-    trigger: 'hover',
-    html: true
-  });
+  // //Enable popovers
+  // $('#targetRepo').popover({
+  //   title: 'Example',
+  //   content: '<code>github.com/Badwater-Apps/template-label-milestone-1</code> Then use <code>Badwater-Apps:template-label-milestone-1</code><br><em>Note that owner can also be an organization name.</em>',
+  //   trigger: 'hover',
+  //   html: true
+  // });
 
-  $('#targetUsername').popover({
-    title: "Why 'username' again?",
-    content: "To let you modify a repo which belongs to another user or an organization. For example the repo maybe <code>my-organization:the-app</code> but username is <code>cylon</code>",
-    trigger: "hover",
-    html: true
-  });
+  // $('#targetUsername').popover({
+  //   title: "Why 'username' again?",
+  //   content: "To let you modify a repo which belongs to another user or an organization. For example the repo maybe <code>my-organization:the-app</code> but username is <code>cylon</code>",
+  //   trigger: "hover",
+  //   html: true
+  // });
 
-  $('#githubPassword').popover({
-    title: "My token/password for what?",
-    content: "Token/Password is only required for committing. It won't be required until you try to commit something. It is encouraged to use a token instead of your password.",
-    trigger: "hover",
-    html: true
-  });
+  // $('#githubPassword').popover({
+  //   title: "My token/password for what?",
+  //   content: "Token/Password is only required for committing. It won't be required until you try to commit something. It is encouraged to use a token instead of your password.",
+  //   trigger: "hover",
+  //   html: true
+  // });
 
   /**
   * Makes a label entry out of a div having the class .label-entry
