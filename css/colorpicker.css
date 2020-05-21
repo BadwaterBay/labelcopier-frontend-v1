@@ -1,8 +1,3 @@
-.colorpicker input{
-	width: auto;
-	outline-color: none;
-}
-
 .colorpicker input:focus{
 	outline: 0;
 }
@@ -79,6 +74,8 @@
 	background: #f00;
 }
 .colorpicker input {
+	width: auto;
+	outline-color: none;
 	background-color: transparent;
 	border: 1px solid transparent;
 	position: absolute;
