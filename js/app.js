@@ -100,16 +100,16 @@ $(document).ready(function () {
             return;
           }
 
-          if (typeof callback == 'function') {
+          if (typeof callback === 'function') {
             callback(response);
           }
         },
         error: function (response) {
-          if (response.status == 404) {
+          if (response.status === 404) {
             alert('Not found! If this is a private repo make sure you provide a password.');
           }
 
-          if (typeof callback == 'function') {
+          if (typeof callback === 'function') {
             callback(response);
           }
         }
@@ -127,7 +127,7 @@ $(document).ready(function () {
       success: function (response) {
         // console.log("success: ");
         // console.log(response);
-        if (typeof callback == 'function') {
+        if (typeof callback === 'function') {
           callback(response);
         }
         writeLog('Created label: ' + labelObject.name);
@@ -149,7 +149,7 @@ $(document).ready(function () {
       success: function (response) {
         // console.log("success: ");
         // console.log(response);
-        if (typeof callback == 'function') {
+        if (typeof callback === 'function') {
           callback(response);
         }
         writeLog('Updated label: ' + originalName + ' => ' + labelObject.name);
@@ -167,7 +167,7 @@ $(document).ready(function () {
       success: function (response) {
         // console.log("success: ");
         // console.log(response);
-        if (typeof callback == 'function') {
+        if (typeof callback === 'function') {
           callback(response);
         }
         writeLog('Deleted label: ' + labelObject.name);
@@ -215,12 +215,12 @@ $(document).ready(function () {
 
     newElementEntry.children().filter(':input[orig-val]').change(function () {
 
-      if ($(this).val() == $(this).attr('orig-val')) {//unchanged
+      if ($(this).val() === $(this).attr('orig-val')) {//unchanged
         $(this).parent().attr('action', 'none');
         $(this).parent().removeClass('uncommited');
       }
       else {//changed
-        if ($(this).parent().attr('new') == 'true') {
+        if ($(this).parent().attr('new') === 'true') {
           $(this).parent().attr('action', 'create');
         }
         else {
@@ -236,7 +236,7 @@ $(document).ready(function () {
     //Delete button
     newElementEntry.children().filter('.delete-button').click(function () {
       if (confirm('Really want to delete this?\n\nNote that this action only removes the label from this list not from Github.')) {
-        if ($(this).parent().attr('new') == 'true') {
+        if ($(this).parent().attr('new') === 'true') {
           $(this).parent().remove();
         }
         else {
@@ -252,8 +252,8 @@ $(document).ready(function () {
           //recover label-element's deleted state
           $(this).siblings().filter('hr').remove();
           $(this).siblings().removeAttr('disabled');
-          if ($(this).siblings().filter('[name="name"]').attr('orig-val') == $(this).siblings().filter('[name="name"]').val() &&
-            $(this).siblings().filter('[name="color"]').attr('orig-val') == $(this).siblings().filter('[name="color"]').val()) {
+          if ($(this).siblings().filter('[name="name"]').attr('orig-val') === $(this).siblings().filter('[name="name"]').val() &&
+            $(this).siblings().filter('[name="color"]').attr('orig-val') === $(this).siblings().filter('[name="color"]').val()) {
 
             $(this).parent().attr('action', 'none');
           }
@@ -284,12 +284,12 @@ $(document).ready(function () {
         //well here goes the copy-paste because normal binding to 'change' doesn't work
         // on newElementEntry.children().filter(':input[orig-val]').change(function...
         // since it is triggered programmatically
-        if ($(el).val() == $(el).attr('orig-val')) {
+        if ($(el).val() === $(el).attr('orig-val')) {
           $(el).parent().attr('action', 'none');
           $(el).parent().removeClass('uncommited');
         }
         else {
-          if ($(el).parent().attr('new') == 'true') {
+          if ($(el).parent().attr('new') === 'true') {
             $(el).parent().attr('action', 'create');
           }
           else {
@@ -388,7 +388,7 @@ $(document).ready(function () {
     let theButton = $(this);// dealing with closure
     let password = $('#githubPassword').val();
 
-    if (password.trim() == '') {
+    if (password.trim() === '') {
       alert('You need to enter your password for repo: ' + targetRepo + ' in order to commit labels.');
       theButton.button('reset');
       return;
@@ -448,7 +448,6 @@ $(document).ready(function () {
   }
 
   function commit() {
-    //TODO same name check
 
     //freeze the world
     $('#loadingModal').modal({
