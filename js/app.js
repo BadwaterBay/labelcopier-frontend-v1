@@ -84,7 +84,7 @@ $(document).ready(function () {
             });
           }//if
 
-          if (response.length === 28) {
+          if (response.length >= 28) {
             ++pageNum;
             getLabels(username, repo, mode, callback, pageNum);
           }

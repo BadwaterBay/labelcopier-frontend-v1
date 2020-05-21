@@ -27,18 +27,17 @@
   <link href="css/bootstrap.css" rel="stylesheet">
   <link href="css/colorpicker.css" rel="stylesheet" />
   <link href="css/app.css" rel="stylesheet" />
-<<<<<<< HEAD
 </head>
 
 <body>
   <a href="https://github.com/Badwater-Apps/github-label-manager-2" target="_blank"><img
       style="position: absolute; top: 0; right: 0; border: 0; z-index: 1031;"
       src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
-  <div class="navbar sticky-top navbar-expand-md navbar-light bg-light">
+  <div class="navbar sticky-top navbar-expand-md navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="#">&nbsp;Github Label Manager</a>
-      <ul class="navbar-nav">
-        <li><a href="#whatForModal" data-toggle="modal">What does this web app do?</a></li>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item"><a class="nav-link" href="#whatForModal" data-toggle="modal">How this works</a></li>
       </ul>
     </div>
   </div>
@@ -50,93 +49,44 @@
 
         <legend>Manage your Github labels</legend>
         <form autocomplete="on">
-          <input id="targetOwnerRepo" type="url" class="input-block form-control" placeholder="Owner:Repo" onchange="copyToBelow(this)">
+          <input id="targetOwnerRepo" type="url" class="input-block form-control" placeholder="Owner:Repo"
+            onchange="copyToBelow(this)">
           <script type="text/javascript">
             function copyToBelow(element) {
               document.getElementById('targetUsername').value = element.value.split(':')[0];
             }
           </script>
-          <input id="targetUsername" type="url" class="input-block form-control" placeholder="Username for authentication">
-          <input id="githubPassword" type="password" class="input-block form-control" placeholder="Personal access token">
-          <button id="listLabelsButton" type="button" class="btn btn-block btn-secondary" data-loading-text="Loading...">List labels in this repo</button>
+          <input id="targetUsername" type="url" class="input-block form-control"
+            placeholder="Username for authentication">
+          <input id="githubPassword" type="password" class="input-block form-control"
+            placeholder="Personal access token">
+          <button id="listLabelsButton" type="button" class="btn btn-block btn-secondary mb-2"
+            data-loading-text="Loading...">List labels in this repo</button>
         </form>
 
         <div id="optionalCopyContainer" class="card bg-light card-body mb-3">
           <button type="button" class="btn btn-block btn-secondary" data-toggle="collapse"
             data-target="#optionalCopyStuff">Copy an existing repo's labels (Optional)</button>
-          <span class="form-text text-muted">You can copy any repo's labels and then modify them before committing to your repo.</span>
+          <span class="form-text text-muted">You can copy any repo's labels and then modify them before committing to
+            your repo.</span>
           <div id="optionalCopyStuff" class="collapse">
             <form class="form-inline">
-              <input id="copyUrl" type="url" class="input-block form-control" placeholder="Owner:Repo">
-              <button id="copyFromRepoButton" type="button" class="btn btn-info"
-                data-loading-text="Copying...">Copy</button>
+              <input id="copyUrl" type="url" class="input-block form-control mt-2" placeholder="Owner:Repo">
+              <button id="copyFromRepoButton" type="button" class="btn btn-info btn-block"
+                data-loading-text="Adding...">Add</button>
+              <button id="cloneFromRepoButton" type="button" class="btn btn-info btn-block" data-loading-text="Cloning...">Delete
+                all existing labels and add</button>
               <span class="form-text text-muted">Can be any repo, no password or token required for copying.</span>
             </form>
           </div>
-=======
-
-  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-      <![endif]-->
-
-    </head>
-
-    <body>
-      <a href="https://github.com/Badwater-Apps/github-label-manager-2" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1031;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
-      <div class="navbar sticky-top navbar-expand-md navbar-dark bg-dark">
-        <div class="container">
-          <a class="navbar-brand" href="#">&nbsp;Github Label Manager</a>
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active"><a class="nav-link" href="#">Manage your labels</a></li>
-            <li class="nav-item"><a class="nav-link" href="#whatForModal" data-toggle="modal">How this works</a></li>
-          </ul>
->>>>>>> Implement couple UI changes to space elements out, improve page contrast, and make instructions more intuitive
         </div>
 
-<<<<<<< HEAD
         <button id="commitButton" type="button" class="btn btn-success btn-block btn-lg" disabled
           data-loading-text="Commiting...">
           Commit changes
         </button>
-=======
-      <div id="content" class="container">
 
-        <div class="row">
-          <div class="col-12 col-md-4">
-
-            <legend>Manage your Github labels</legend>
-            <form autocomplete="on">
-              <input id="targetUrl" type="url" class="input-block form-control" placeholder="owner:repo" onchange="copyToBelow(this)">
-              <script type="text/javascript">
-                function copyToBelow(element) {
-                  document.getElementById('targetUsername').value = element.value.split(':')[0];
-                }
-              </script>
-              <input id="targetUsername" type="url" class="input-block form-control" placeholder="username">
-              <input id="githubPassword" type="password" class="input-block form-control" placeholder="token/password">
-              <button id="listLabelsButton" type="button" class="btn btn-block btn-secondary mb-2" data-loading-text="Loading...">List labels in this repo</button>
-            </form>
->>>>>>> Implement couple UI changes to space elements out, improve page contrast, and make instructions more intuitive
-
-<<<<<<< HEAD
         <br>
-=======
-            <div id="optionalCopyContainer" class="card bg-light card-body mb-3">
-              <button type="button" class="btn btn-block btn-secondary" data-toggle="collapse" data-target="#optionalCopyStuff">Copy an existing repo's labels (Optional)</button>
-              <span class="form-text text-muted">You can apply any repository's labels and then change them to meet your needs then apply to your own repository.</span>
-              <div id="optionalCopyStuff" class="collapse">
-                <form class="form-inline">
-                  <input id="copyUrl" type="url" class="input-block form-control mt-2" placeholder="username:repo">
-                  <button id="copyFromRepoButton" type="button" class="btn btn-info btn-block"  data-loading-text="Adding...">Add</button>
-                  <button id="cloneFromRepoButton" type="button" class="btn btn-info btn-block" data-loading-text="Cloning...">Clone</button>
-                  <span class="form-text text-muted">Can be any repo, no password or token required for copying.</span>
-                </form>
-              </div>
-            </div>
-
-            <button id="commitButton" type="button" class="btn btn-success btn-block btn-lg" disabled data-loading-text="Commiting...">Commit changes</button>
->>>>>>> - Add new 'Clone' button to remove all existing labels and clone from other repo.
 
         <div class="card bg-light card-body mb-3">
           <legend>Which repo is in use</legend>
@@ -148,7 +98,8 @@
         <legend>Labels</legend>
         <form id="labelsForm" class="form-inline"></form>
         <button id="addNewLabelEntryButton" type="button" class="btn btn-success btn-block">Add a new label</button>
-        <button id="revert-button" type="button" class="btn btn-warning btn-block" data-loading-text="Resetting...">Revert
+        <button id="revert-button" type="button" class="btn btn-warning btn-block"
+          data-loading-text="Resetting...">Revert
           to original</button>
         <button id="deleteAllButton" type="button" class="btn btn-danger btn-block"
           data-loading-text="Deleting...">Delete all labels</button>
@@ -272,7 +223,8 @@
             <li>Commit your changes</li>
           </ul>
           <p>Yes, not really much different from Github itself. But
-            the thing is you can do those as bunches here. The main thing is that you can also copy another repo's labels into yours with or without some modifications.
+            the thing is you can do those as bunches here. The main thing is that you can also copy another repo's
+            labels into yours with or without some modifications.
           </p>
         </div>
       </div>
