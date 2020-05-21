@@ -16,8 +16,6 @@
 "use strict";
 
 $(document).ready(function () {
-  let username;
-  let password;
   let targetUsername;
   let targetRepo;
   let targetOwner;
@@ -48,7 +46,7 @@ $(document).ready(function () {
 
   $.ajaxSetup({
     cache: false,
-    complete: function (jqXHR, textStatus) {
+    complete: function () {
       loadingSemaphore.release();
       if (isLoadingShown && loadingSemaphore.isLocked() === false) {
         writeLog("All operations are done.");
@@ -215,7 +213,7 @@ $(document).ready(function () {
 
     newElementEntry.children().filter('.color-box').css('background-color', '#' + label.color);
 
-    newElementEntry.children().filter(':input[orig-val]').change(function (e) {
+    newElementEntry.children().filter(':input[orig-val]').change(function () {
 
       if ($(this).val() == $(this).attr('orig-val')) {//unchanged
         $(this).parent().attr('action', 'none');
@@ -251,7 +249,6 @@ $(document).ready(function () {
         //add recover button
         let recoverButton = $('<a class="btn" href="#"><i class="icon-refresh"></i></a>');
         recoverButton.click(function () {
-          debugger;
           //recover label-element's deleted state
           $(this).siblings().filter('hr').remove();
           $(this).siblings().removeAttr('disabled');
@@ -316,7 +313,7 @@ $(document).ready(function () {
     $('#labelsForm').append(newElementEntry);
   }
 
-  $('#addNewLabelEntryButton').click(function (e) {
+  $('#addNewLabelEntryButton').click(function () {
     createNewLabelEntry(null, 'new');
   });
 
@@ -326,7 +323,7 @@ $(document).ready(function () {
     $('#commitButton').attr('disabled', 'disabled');
   }
 
-  $('#listLabelsButton').click(function (e) {
+  $('#listLabelsButton').click(function () {
     $(this).button('loading');
     let theButton = $(this);// dealing with closure
     targetOwner = $('#targetUrl').val().split(':')[0];
@@ -336,7 +333,7 @@ $(document).ready(function () {
     if (targetOwner && targetRepo) {
       clearAllLabels();
 
-      apiCallListLabels(targetOwner, targetRepo, 'list', function (response) {
+      apiCallListLabels(targetOwner, targetRepo, 'list', function () {
         theButton.button('reset');
       });
     }
@@ -349,7 +346,7 @@ $(document).ready(function () {
   $('#resetButton').click(function () {
     let theButton = $(this);// dealing with closure
     clearAllLabels();
-    apiCallListLabels(targetOwner, targetRepo, 'list', function (response) {
+    apiCallListLabels(targetOwner, targetRepo, 'list', function () {
       theButton.button('reset');
     });
   });
@@ -376,7 +373,7 @@ $(document).ready(function () {
     let repo = $('#copyUrl').val().split(':')[1];
 
     if (username && repo) {
-      apiCallListLabels(username, repo, 'copy', function (response) {
+      apiCallListLabels(username, repo, 'copy', function () {
         theButton.button('reset');
       });//set addUncommited to true because those are coming from another repo
     }
@@ -386,7 +383,7 @@ $(document).ready(function () {
     }
   });
 
-  $('#commitButton').click(function (e) {
+  $('#commitButton').click(function () {
     $(this).button('loading');
     let theButton = $(this);// dealing with closure
     let password = $('#githubPassword').val();
@@ -460,19 +457,19 @@ $(document).ready(function () {
     });
     isLoadingShown = true;
     //To be deleted
-    $('.label-entry[action="delete"]').each(function (index) {
+    $('.label-entry[action="delete"]').each(function () {
       let labelObject = serializeLabel($(this));
       apiCallDeleteLabel(labelObject);
     });
 
     //To be updated
-    $('.label-entry[action="update"]').each(function (index) {
+    $('.label-entry[action="update"]').each(function () {
       let labelObject = serializeLabel($(this));
       apiCallUpdateLabel(labelObject);
     });
 
     //To be created
-    $('.label-entry[action="create"]').each(function (index) {
+    $('.label-entry[action="create"]').each(function () {
       let labelObject = serializeLabel($(this));
       apiCallCreateLabel(labelObject);
     });
@@ -540,7 +537,7 @@ $(document).ready(function () {
       let enc1, enc2, enc3, enc4;
       let i = 0;
 
-      input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+      input = input.replace(/[^A-Za-z0-9+/=]/g, "");
 
       while (i < input.length) {
 
