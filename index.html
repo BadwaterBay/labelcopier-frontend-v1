@@ -119,7 +119,24 @@
             </form>
 >>>>>>> Implement couple UI changes to space elements out, improve page contrast, and make instructions more intuitive
 
+<<<<<<< HEAD
         <br>
+=======
+            <div id="optionalCopyContainer" class="card bg-light card-body mb-3">
+              <button type="button" class="btn btn-block btn-secondary" data-toggle="collapse" data-target="#optionalCopyStuff">Copy an existing repo's labels (Optional)</button>
+              <span class="form-text text-muted">You can apply any repository's labels and then change them to meet your needs then apply to your own repository.</span>
+              <div id="optionalCopyStuff" class="collapse">
+                <form class="form-inline">
+                  <input id="copyUrl" type="url" class="input-block form-control mt-2" placeholder="username:repo">
+                  <button id="copyFromRepoButton" type="button" class="btn btn-info btn-block"  data-loading-text="Adding...">Add</button>
+                  <button id="cloneFromRepoButton" type="button" class="btn btn-info btn-block" data-loading-text="Cloning...">Clone</button>
+                  <span class="form-text text-muted">Can be any repo, no password or token required for copying.</span>
+                </form>
+              </div>
+            </div>
+
+            <button id="commitButton" type="button" class="btn btn-success btn-block btn-lg" disabled data-loading-text="Commiting...">Commit changes</button>
+>>>>>>> - Add new 'Clone' button to remove all existing labels and clone from other repo.
 
         <div class="card bg-light card-body mb-3">
           <legend>Which repo is in use</legend>
