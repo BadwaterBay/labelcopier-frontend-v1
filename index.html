@@ -67,8 +67,7 @@
         <div id="optionalCopyContainer" class="card bg-light card-body mb-3">
           <button type="button" class="btn btn-block btn-secondary" data-toggle="collapse"
             data-target="#optionalCopyStuff">Copy an existing repo's labels (Optional)</button>
-          <span class="form-text text-muted">You can copy any repo's labels and then modify them before committing to
-            your repo.</span>
+          <span class="form-text text-muted">You can copy any repo's labels and then modify them before committing to your repo.</span>
           <div id="optionalCopyStuff" class="collapse">
             <form class="form-inline">
               <input id="copyUrl" type="url" class="input-block form-control mt-2" placeholder="Owner:Repo">
@@ -95,7 +94,7 @@
         </div>
 
         <div>
-          <h4>Help</h4>
+          <h3>Help</h3>
           <p>This web app works by making cross-site requests to Github's API.</p>
           <p>This web app does not cache at all. It does not store your usernames or personal access tokens.</p>
           <p class="mb-4">You can download this website and use it on your localhost.</p>
@@ -162,12 +161,12 @@
 
       <div class="col-12 col-md-6">
         <h3>Labels</h3>
-        <button id="revert-button" type="button" class="btn btn-warning btn-block"
+        <button id="revert-button" type="button" class="btn btn-warning btn-block mb-2"
           data-loading-text="Resetting...">Revert to original</button>
-        <button id="deleteAllButton" type="button" class="btn btn-danger btn-block"
+        <button id="deleteAllButton" type="button" class="btn btn-danger btn-block mb-2"
           data-loading-text="Deleting...">Delete all labels</button>
         <form id="labelsForm" class="form-inline"></form>
-        <button id="addNewLabelEntryButton" type="button" class="btn btn-success btn-block">Add a new label</button>
+        <button id="addNewLabelEntryButton" type="button" class="btn btn-success btn-block mb-3">Add a new label</button>
       </div>
     </div>
   </div>
