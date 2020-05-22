@@ -250,7 +250,30 @@ $(document).ready(function () {
         checkIfAnyActionNeeded();
       });//end recover button's click
 
+<<<<<<< HEAD
       $(this).parent().append(recoverButton);
+=======
+        //add recover button
+        let recoverButton = $('<a class="btn btn-light" href="#"><i class="fas fa-sync-alt"></i></a>');
+        recoverButton.click(function () {
+          //recover label-element's deleted state
+          $(this).siblings().filter('hr').remove();
+          $(this).siblings().removeAttr('disabled');
+          $(this).siblings('.delete-button').show();
+          if ($(this).siblings().filter('[name="name"]').attr('orig-val') === $(this).siblings().filter('[name="name"]').val() &&
+            $(this).siblings().filter('[name="color"]').attr('orig-val') === $(this).siblings().filter('[name="color"]').val()) {
+
+            $(this).parent().attr('action', 'none');
+          }
+          else {
+            $(this).parent().attr('action', 'update');
+          }
+          $(this).remove();
+          checkIfAnyActionNeeded();
+        });//end recover button's click
+        $(this).hide();
+        $(this).parent().append(recoverButton);
+>>>>>>> Commit changes before rebase
 
       checkIfAnyActionNeeded();
       return;
