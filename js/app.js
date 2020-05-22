@@ -106,7 +106,6 @@ $(document).ready(function () {
   }
 
   function apiCallCreateLabel(labelObject, callback) {
-
     $.ajax({
       type: "POST",
       url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/labels',
@@ -118,6 +117,7 @@ $(document).ready(function () {
           callback(response);
         }
         writeLog('Created label: ' + labelObject.name);
+        console.log(labelObject);
       },
       error: function (jqXHR, textStatus, errorThrown) {
         writeLog('Creation of label failed for: ' + labelObject.name + ' Error: ' + errorThrown);
@@ -172,22 +172,24 @@ $(document).ready(function () {
   function createNewLabelEntry(label, mode) {
 
     let action = ' action="none" ';
-    let uncommitedSignClass = "";
+    let uncommittedSignClass = '';
 
     if (mode === 'copy' || mode === 'new') {
       action = ' action="create" new="true" ';
-      uncommitedSignClass = ' uncommited ';
+      uncommittedSignClass = ' uncommitted ';
     }
 
     if (label === undefined || label === null) {
       label = {
-        name: "",
-        color: ""
+        name: '',
+        color: '',
+        description: ''
       };
     }
 
     let origNameVal = ' orig-val="' + label.name + '"';
     let origColorVal = ' orig-val="' + label.color + '"';
+    let origDescriptionVal = ' orig-val="' + label.description + '"';
 
     let newElementEntry = $('\
       <div class="label-entry ' + uncommitedSignClass + '" ' + action + '>\
@@ -196,8 +198,9 @@ $(document).ready(function () {
       <input name="color" type="text" class="form-control input-sm color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
       <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
       <button type="button" class="btn btn-light hidden recover-button"><i class="fas fa-sync-alt"></i></button>\
+      <input name="descrption" type="text" class="form-control input-sm label-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
       </div>\
-      ');
+    ');
 
     newElementEntry.children('.color-box').css('background-color', '#' + label.color);
 
@@ -205,7 +208,7 @@ $(document).ready(function () {
 
       if ($(this).val() === $(this).attr('orig-val')) {//unchanged
         $(this).parent().attr('action', 'none');
-        $(this).parent().removeClass('uncommited');
+        $(this).parent().removeClass('uncommitted');
       }
       else {//changed
         if ($(this).parent().attr('new') === 'true') {
@@ -214,7 +217,7 @@ $(document).ready(function () {
         else {
           $(this).parent().attr('action', 'update');
         }
-        $(this).parent().addClass('uncommited');
+        $(this).parent().addClass('uncommitted');
       }
 
       checkIfAnyActionNeeded();
@@ -273,7 +276,7 @@ $(document).ready(function () {
         // since it is triggered programmatically
         if ($(el).val() === $(el).attr('orig-val')) {
           $(el).parent().attr('action', 'none');
-          $(el).parent().removeClass('uncommited');
+          $(el).parent().removeClass('uncommitted');
         }
         else {
           if ($(el).parent().attr('new') === 'true') {
@@ -282,7 +285,7 @@ $(document).ready(function () {
           else {
             $(el).parent().attr('action', 'update');
           }
-          $(el).parent().addClass('uncommited');
+          $(el).parent().addClass('uncommitted');
         }
         checkIfAnyActionNeeded();
         return;
@@ -310,7 +313,7 @@ $(document).ready(function () {
     $('#commitButton').attr('disabled', 'disabled');
   }
 
-  $('#listLabelsButton').click(function () {
+  $('#button-list-labels').click(function () {
     let theButton = $(this);// dealing with closure
     targetOwner = $('#targetOwnerRepo').val().split(':')[0];
     targetRepo = $('#targetOwnerRepo').val().split(':')[1];
@@ -324,7 +327,7 @@ $(document).ready(function () {
       });
     }
     else {
-      alert("Please follow the format: \n\nusername:repo");
+      alert("Please follow the format: \n\nOwner:Repo");
       theButton.button('reset');
     }
   });
@@ -364,7 +367,7 @@ $(document).ready(function () {
     if (username && repo) {
       apiCallListLabels(username, repo, 'copy', function () {
         theButton.button('reset');
-      });//set addUncommited to true because those are coming from another repo
+      });//set adduncommitted to true because those are coming from another repo
     }
     else {
       alert("Please follow the format: \n\nusername:repo");
@@ -394,7 +397,7 @@ $(document).ready(function () {
 
       apiCallListLabels(username, repo, 'copy', function () {
         $(this).button('reset');
-      });//set addUncommited to true because those are coming from another repo
+      });//set adduncommitted to true because those are coming from another repo
     }
     else {
       alert("Please follow the format: \n\nusername:repo");
