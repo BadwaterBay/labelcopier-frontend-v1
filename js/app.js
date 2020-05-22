@@ -191,6 +191,7 @@ $(document).ready(function () {
 
     let newElementEntry = $('\
       <div class="label-entry ' + uncommitedSignClass + '" ' + action + '>\
+      <hr class="hidden deleted">\
       <input name="name" type="text" class="form-control input-sm label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
       <span class="sharp-sign">#</span>\
       <input name="color" type="text" class="form-control input-sm color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
@@ -227,7 +228,7 @@ $(document).ready(function () {
         $(this).parent().remove();
       }
       else {
-        $(this).parent().prepend('<hr class="deleted">');
+        $(this).siblings('.deleted').removeClass('hidden');
         $(this).siblings().attr('disabled');
         $(this).siblings('.recover-button').removeAttr('disabled');
         $(this).addClass('hidden');
@@ -242,7 +243,7 @@ $(document).ready(function () {
     });
 
     newElementEntry.children('.recover-button').click(function () {
-      $(this).siblings('hr').remove();
+      $(this).siblings('hr').addClass('hidden');
       $(this).siblings().removeAttr('disabled');
       $(this).siblings('.delete-button').removeClass('hidden');
       $(this).addClass('hidden');
@@ -343,7 +344,7 @@ $(document).ready(function () {
         $(this).remove();
       }
       else {
-        $(this).prepend('<hr class="deleted">');
+        $(this).children('.deleted').removeClass('hidden');
         $(this).children().attr('disabled');
         $(this).children(".recover-button").removeAttr('disabled');
         $(this).children('.delete-button').addClass('hidden');
@@ -382,7 +383,7 @@ $(document).ready(function () {
           $(this).remove();
         }
         else {
-          $(this).prepend('<hr class="deleted">');
+          $(this).children('.deleted').removeClass('hidden');
           $(this).children().attr('disabled');
           $(this).children(".recover-button").removeAttr('disabled');
           $(this).children('.delete-button').addClass('hidden');
