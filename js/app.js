@@ -84,7 +84,12 @@ $(document).ready(function () {
             });
           }//if
 
-          if (response.length === 0) return;
+          if (response.length === 0) {
+            if (pageNum === 1) {
+              alert('No labels exist within this repo!');
+            }
+            return;
+          }
           else getLabels(username, repo, mode, callback, ++pageNum);
 
           if (typeof callback === 'function') {
