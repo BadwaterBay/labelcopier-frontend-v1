@@ -84,13 +84,8 @@ $(document).ready(function () {
             });
           }//if
 
-          if (response.length >= 28) {
-            ++pageNum;
-            getLabels(username, repo, mode, callback, pageNum);
-          }
-          else {
-            return;
-          }
+          if (response.length === 0) return;
+          else getLabels(username, repo, mode, callback, ++pageNum);
 
           if (typeof callback === 'function') {
             callback(response);
