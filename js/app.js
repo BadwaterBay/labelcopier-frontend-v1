@@ -233,7 +233,7 @@ $(document).ready(function () {
       }
 
       //add recover button
-      let recoverButton = $('<a class="btn btn-light" href="#"><i class="fas fa-sync-alt"></i></a>');
+      let recoverButton = $('<button class="btn btn-light"><i class="fas fa-sync-alt"></i></button>');
       recoverButton.click(clickRecover);//end recover button's click
       $(this).hide();
       $(this).parent().append(recoverButton);
@@ -350,7 +350,7 @@ $(document).ready(function () {
       }
 
       //add recover button
-      let recoverButton = $('<a class="btn btn-light" href="#"><i class="fas fa-sync-alt"></i></a>');
+      let recoverButton = $('<button class="btn btn-light"><i class="fas fa-sync-alt"></i></button>');
       recoverButton.click(clickRecover);
       $(this).children('.delete-button').hide();
       $(this).append(recoverButton);
@@ -392,7 +392,7 @@ $(document).ready(function () {
         }
 
         //add recover button
-        let recoverButton = $('<a class="btn btn-light" href="#"><i class="fas fa-sync-alt"></i></a>');
+        let recoverButton = $('<button class="btn btn-light"><i class="fas fa-sync-alt"></i></button>');
         recoverButton.click(clickRecover);
         $(this).children('.delete-button').hide();
         $(this).append(recoverButton);
