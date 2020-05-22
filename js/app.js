@@ -222,40 +222,38 @@ $(document).ready(function () {
 
     //Delete button
     newElementEntry.children().filter('.delete-button').click(function () {
-      if (confirm('Really want to delete this?\n\nNote that this action only removes the label from this list not from Github.')) {
-        if ($(this).parent().attr('new') === 'true') {
-          $(this).parent().remove();
+      if ($(this).parent().attr('new') === 'true') {
+        $(this).parent().remove();
+      }
+      else {
+        $(this).parent().prepend('<hr class="deleted">');
+        $(this).siblings().attr('disabled', 'true');
+        $(this).attr('disabled', 'true');
+        $(this).parent().attr('action', 'delete');
+      }
+
+      //add recover button
+      let recoverButton = $('<a class="btn" href="#"><i class="icon-refresh"></i></a>');
+      recoverButton.click(function () {
+        //recover label-element's deleted state
+        $(this).siblings().filter('hr').remove();
+        $(this).siblings().removeAttr('disabled');
+        if ($(this).siblings().filter('[name="name"]').attr('orig-val') === $(this).siblings().filter('[name="name"]').val() &&
+          $(this).siblings().filter('[name="color"]').attr('orig-val') === $(this).siblings().filter('[name="color"]').val()) {
+
+          $(this).parent().attr('action', 'none');
         }
         else {
-          $(this).parent().prepend('<hr class="deleted">');
-          $(this).siblings().attr('disabled', 'true');
-          $(this).attr('disabled', 'true');
-          $(this).parent().attr('action', 'delete');
+          $(this).parent().attr('action', 'update');
         }
-
-        //add recover button
-        let recoverButton = $('<a class="btn" href="#"><i class="icon-refresh"></i></a>');
-        recoverButton.click(function () {
-          //recover label-element's deleted state
-          $(this).siblings().filter('hr').remove();
-          $(this).siblings().removeAttr('disabled');
-          if ($(this).siblings().filter('[name="name"]').attr('orig-val') === $(this).siblings().filter('[name="name"]').val() &&
-            $(this).siblings().filter('[name="color"]').attr('orig-val') === $(this).siblings().filter('[name="color"]').val()) {
-
-            $(this).parent().attr('action', 'none');
-          }
-          else {
-            $(this).parent().attr('action', 'update');
-          }
-          $(this).remove();
-          checkIfAnyActionNeeded();
-        });//end recover button's click
-
-        $(this).parent().append(recoverButton);
-
+        $(this).remove();
         checkIfAnyActionNeeded();
-        return;
-      }
+      });//end recover button's click
+
+      $(this).parent().append(recoverButton);
+
+      checkIfAnyActionNeeded();
+      return;
     });
 
     //activate color picker on color-box field
