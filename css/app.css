@@ -34,7 +34,7 @@ body{
 }
 
 .label-fitting {
-    max-width: 45%;
+    /* max-width: 45%; */
     /* min-width: 7rem; */
     display: inline-flex;
 }

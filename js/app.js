@@ -221,7 +221,26 @@ $(document).ready(function () {
     });
 
     //Delete button
-    newElementEntry.children().filter('.delete-button').click(deleteLabel);
+    newElementEntry.children().filter('.delete-button').click(function () {
+      if ($(this).parent().attr('new') === 'true') {
+        $(this).parent().remove();
+      }
+      else {
+        $(this).parent().prepend('<hr class="deleted">');
+        $(this).siblings().attr('disabled', 'true');
+        $(this).attr('disabled', 'true');
+        $(this).parent().attr('action', 'delete');
+      }
+
+      //add recover button
+      let recoverButton = $('<a class="btn btn-light" href="#"><i class="fas fa-sync-alt"></i></a>');
+      recoverButton.click(clickRecover);//end recover button's click
+      $(this).hide();
+      $(this).parent().append(recoverButton);
+
+      checkIfAnyActionNeeded();
+      return;
+    });
 
     //activate color picker on color-box field
     newElementEntry.children().filter('.color-box').ColorPicker({
@@ -275,40 +294,20 @@ $(document).ready(function () {
     $('#commitButton').attr('disabled', 'disabled');
   }
 
-  function deleteLabel() {
-    if ($(this).parent().attr('new') === 'true') {
-      $(this).parent().remove();
+  function clickRecover() {
+    //recover label-element's deleted state
+    $(this).siblings().filter('hr').remove();
+    $(this).siblings().removeAttr('disabled');
+    $(this).siblings('.delete-button').show();
+    if ($(this).siblings().filter('[name="name"]').attr('orig-val') === $(this).siblings().filter('[name="name"]').val() &&
+      $(this).siblings().filter('[name="color"]').attr('orig-val') === $(this).siblings().filter('[name="color"]').val()) {
+      $(this).parent().attr('action', 'none');
     }
     else {
-      $(this).parent().prepend('<hr class="deleted">');
-      $(this).siblings().attr('disabled', 'true');
-      $(this).attr('disabled', 'true');
-      $(this).parent().attr('action', 'delete');
+      $(this).parent().attr('action', 'update');
     }
-
-    //add recover button
-    let recoverButton = $('<a class="btn btn-light" href="#"><i class="fas fa-sync-alt"></i></a>');
-    recoverButton.click(function () {
-      //recover label-element's deleted state
-      $(this).siblings().filter('hr').remove();
-      $(this).siblings().removeAttr('disabled');
-      $(this).siblings('.delete-button').show();
-      if ($(this).siblings().filter('[name="name"]').attr('orig-val') === $(this).siblings().filter('[name="name"]').val() &&
-        $(this).siblings().filter('[name="color"]').attr('orig-val') === $(this).siblings().filter('[name="color"]').val()) {
-
-        $(this).parent().attr('action', 'none');
-      }
-      else {
-        $(this).parent().attr('action', 'update');
-      }
-      $(this).remove();
-      checkIfAnyActionNeeded();
-    });//end recover button's click
-    $(this).hide();
-    $(this).parent().append(recoverButton);
-
+    $(this).remove();
     checkIfAnyActionNeeded();
-    return;
   }
 
   $('#listLabelsButton').click(function () {
@@ -349,6 +348,12 @@ $(document).ready(function () {
         $(this).children(".delete-button").attr('disabled', 'true');
         $(this).attr('action', 'delete');
       }
+
+      //add recover button
+      let recoverButton = $('<a class="btn btn-light" href="#"><i class="fas fa-sync-alt"></i></a>');
+      recoverButton.click(clickRecover);
+      $(this).children('.delete-button').hide();
+      $(this).append(recoverButton);
     });
 
     checkIfAnyActionNeeded();
@@ -385,6 +390,12 @@ $(document).ready(function () {
           $(this).children(".delete-button").attr('disabled', 'true');
           $(this).attr('action', 'delete');
         }
+
+        //add recover button
+        let recoverButton = $('<a class="btn btn-light" href="#"><i class="fas fa-sync-alt"></i></a>');
+        recoverButton.click(clickRecover);
+        $(this).children('.delete-button').hide();
+        $(this).append(recoverButton);
       });
 
       apiCallListLabels(username, repo, 'copy', function () {
