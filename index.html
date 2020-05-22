@@ -21,8 +21,8 @@
 <head>
   <meta charset="utf-8">
   <title>Github Label Manager</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="legend">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="author" content="github.com/Badwater-Apps">
   <link href="css/bootstrap.css" rel="stylesheet">
   <link href="css/colorpicker.css" rel="stylesheet" />
@@ -45,13 +45,13 @@
   <div id="content" class="container">
 
     <div class="row">
-      <div class="col-12 col-md-4">
+      <div class="col-12 col-md-6">
 
-        <legend>Manage your Github labels</legend>
+        <h3>Manage your Github labels</h3>
         <form autocomplete="on">
           <input id="targetOwnerRepo" type="url" class="input-block form-control" placeholder="Owner:Repo"
             onchange="copyToBelow(this)">
-          <script type="text/javascript">
+          <script>
             function copyToBelow(element) {
               document.getElementById('targetUsername').value = element.value.split(':')[0];
             }
@@ -67,14 +67,14 @@
         <div id="optionalCopyContainer" class="card bg-light card-body mb-3">
           <button type="button" class="btn btn-block btn-secondary" data-toggle="collapse"
             data-target="#optionalCopyStuff">Copy an existing repo's labels (Optional)</button>
-          <span class="form-text text-muted">You can copy any repo's labels and then modify them before committing to
-            your repo.</span>
+          <span class="form-text text-muted">You can copy any repo's labels and then modify them before committing to your repo.</span>
           <div id="optionalCopyStuff" class="collapse">
             <form class="form-inline">
               <input id="copyUrl" type="url" class="input-block form-control mt-2" placeholder="Owner:Repo">
               <button id="copyFromRepoButton" type="button" class="btn btn-info btn-block"
                 data-loading-text="Adding...">Add</button>
-              <button id="cloneFromRepoButton" type="button" class="btn btn-info btn-block" data-loading-text="Cloning...">Delete
+              <button id="cloneFromRepoButton" type="button" class="btn btn-info btn-block"
+                data-loading-text="Cloning...">Delete
                 all existing labels and add</button>
               <span class="form-text text-muted">Can be any repo, no password or token required for copying.</span>
             </form>
@@ -89,93 +89,95 @@
         <br>
 
         <div class="card bg-light card-body mb-3">
-          <legend>Which repo is in use</legend>
+          <h3>Which repo is in use</h3>
           <pre><span id="targetIndicator">Not using any yet!</span></pre>
         </div>
-      </div>
 
-      <div class="col-12 col-md-4">
-        <legend>Labels</legend>
-        <form id="labelsForm" class="form-inline"></form>
-        <button id="addNewLabelEntryButton" type="button" class="btn btn-success btn-block">Add a new label</button>
-        <button id="revert-button" type="button" class="btn btn-warning btn-block"
-          data-loading-text="Resetting...">Revert
-          to original</button>
-        <button id="deleteAllButton" type="button" class="btn btn-danger btn-block"
-          data-loading-text="Deleting...">Delete all labels</button>
-      </div>
+        <div>
+          <h3>Help</h3>
+          <p>This web app works by making cross-site requests to Github's API.</p>
+          <p>This web app does not cache at all. It does not store your usernames or personal access tokens.</p>
+          <p class="mb-4">You can download this website and use it on your localhost.</p>
 
-      <div class="col-12 col-md-4">
-        <h4>Help</h4>
-        <p>This web app works by making cross-site requests to Github's API.</p>
-        <p>This web app does not cache at all. It does not store your usernames or personal access tokens.</p>
-        <p class="mb-4">You can download this website and use it on your localhost.</p>
-
-        <!-- Accordion stuff -->
-        <div id="accordion">
-          <div class="card">
-            <div class="card-header" id="card-token-safety">
-              <h5 class="mb-0">
-                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse-card-token-safety"
-                  aria-expanded="true" aria-controls="collapse-card-token-safety">
-                  Is my personal access token safe?
-                </button>
-              </h5>
+          <!-- Accordion stuff -->
+          <div id="accordion">
+            <div class="card">
+              <div class="card-header" id="card-token-safety">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" data-toggle="collapse"
+                    data-target="#collapse-card-token-safety" aria-expanded="true"
+                    aria-controls="collapse-card-token-safety">
+                    Is my personal access token safe?
+                  </button>
+                </h5>
+              </div>
+              <div id="collapse-card-token-safety" class="collapse show" aria-labelledby="card-token-safety"
+                data-parent="#accordion">
+                <div class="card-body">
+                  <p>
+                    This web app authenticates to Github API via <strong>HTTP Basic Authentication</strong>, but all API
+                    calls
+                    are done over <strong>SSL</strong>, so your personal access token is safe.
+                  </p>
+                  <p>
+                    Although you can use your password in lieu of a personal access token, it is highly encouraged to
+                    use
+                    a personal access token.
+                  </p>
+                  <p><a
+                      href="https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line">How
+                      to create a personal access token.</a></p>
+                </div>
+              </div>
             </div>
-            <div id="collapse-card-token-safety" class="collapse show" aria-labelledby="card-token-safety"
-              data-parent="#accordion">
-              <div class="card-body">
-                <p>
-                  This web app authenticates to Github API via <strong>HTTP Basic Authentication</strong>, but all API
-                  calls
-                  are done over <strong>SSL</strong>, so your personal access token is safe.
-                </p>
-                <p>
-                  Although you can use your password in lieu of a personal access token, it is highly encouraged to use
-                  a personal access token.
-                </p>
-                <p><a
-                    href="https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line">How
-                    to create a personal access token.</a></p>
+            <div class="card">
+              <div class="card-header" id="card-validation">
+                <h5 class="mb-0">
+                  <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-card-validation"
+                    aria-expanded="false" aria-controls="collapse-card-validation">
+                    Validation and errors
+                  </button>
+                </h5>
+              </div>
+              <div id="collapse-card-validation" class="collapse" aria-labelledby="card-validation"
+                data-parent="#accordion">
+                <div class="card-body">
+                  <p>
+                    There is not much validation and error prevention, so you should check your changes before
+                    commiting.
+                  </p>
+                  <p>
+                    <code>Unprocessable Entity</code> usually means that you tried to commit a duplicate label name or
+                    leave something empty.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-          <div class="card">
-            <div class="card-header" id="card-validation">
-              <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-card-validation"
-                  aria-expanded="false" aria-controls="collapse-card-validation">
-                  Validation and errors
-                </button>
-              </h5>
-            </div>
-            <div id="collapse-card-validation" class="collapse" aria-labelledby="card-validation"
-              data-parent="#accordion">
-              <div class="card-body">
-                <p>
-                  There is not much validation and error prevention, so you should check your changes before commiting.
-                </p>
-                <p>
-                  <code>Unprocessable Entity</code> usually means that you tried to commit a duplicate label name or
-                  leave something empty.
-                </p>
-              </div>
-            </div>
-          </div>
+          <!-- Accordion ends -->
         </div>
-        <!-- Accordion ends -->
+      </div>
+      <!-- col -->
+
+      <div class="col-12 col-md-6">
+        <h3>Labels</h3>
+        <button id="revert-button" type="button" class="btn btn-warning btn-block mb-2"
+          data-loading-text="Resetting...">Revert to original</button>
+        <button id="deleteAllButton" type="button" class="btn btn-danger btn-block mb-2"
+          data-loading-text="Deleting...">Delete all labels</button>
+        <form id="labelsForm" class="form-inline"></form>
+        <button id="addNewLabelEntryButton" type="button" class="btn btn-success btn-block mb-3">Add a new label</button>
       </div>
     </div>
-    <br>
-    <br>
-  </div> <!-- /container -->
+  </div>
+  <!-- /container -->
 
   <!-- Le javascript
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
-  <script type="text/javascript" src="js/jquery.js"></script>
-  <script type="text/javascript" src="js/colorpicker.js"></script>
-  <script type="text/javascript" src="js/bootstrap.bundle.js"></script>
+  <script src="js/jquery.js"></script>
+  <script src="js/colorpicker.js"></script>
+  <script src="js/bootstrap.bundle.js"></script>
   <script defer src="js/app.js"></script>
 
   <div id="loadingModal" class="modal fade" tabindex="-1" role="dialog">
