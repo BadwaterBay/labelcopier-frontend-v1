@@ -80,7 +80,7 @@ $(document).ready(function () {
               label.color = label.color.toUpperCase();
               createNewLabelEntry(label, mode);
               //sets target indicator text
-              $('#targetIndicator').html('<strong>Repo owner:</strong> ' + targetOwner + "<br /><strong>Repo:</strong> " + targetRepo +  '<br /><strong>Username:</strong> ' + targetUsername);
+              $('#targetIndicator').html('<strong>Repo owner:</strong> ' + targetOwner + "<br /><strong>Repo:</strong> " + targetRepo + '<br /><strong>Username:</strong> ' + targetUsername);
             });
           }//if
 
@@ -106,7 +106,6 @@ $(document).ready(function () {
   }
 
   function apiCallCreateLabel(labelObject, callback) {
-
     $.ajax({
       type: "POST",
       url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/labels',
@@ -172,39 +171,43 @@ $(document).ready(function () {
   function createNewLabelEntry(label, mode) {
 
     let action = ' action="none" ';
-    let uncommitedSignClass = "";
+    let uncommittedSignClass = '';
 
     if (mode === 'copy' || mode === 'new') {
       action = ' action="create" new="true" ';
-      uncommitedSignClass = ' uncommited ';
+      uncommittedSignClass = ' uncommitted ';
     }
 
     if (label === undefined || label === null) {
       label = {
-        name: "",
-        color: ""
+        name: '',
+        color: '',
+        description: ''
       };
     }
 
     let origNameVal = ' orig-val="' + label.name + '"';
     let origColorVal = ' orig-val="' + label.color + '"';
+    let origDescriptionVal = ' orig-val="' + label.description + '"';
 
     let newElementEntry = $('\
-      <div class="label-entry ' + uncommitedSignClass + '" ' + action + '>\
+      <div class="label-entry ' + uncommittedSignClass + '" ' + action + '>\
       <input name="name" type="text" class="form-control input-sm label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
       <span class="sharp-sign">#</span>\
       <input name="color" type="text" class="form-control input-sm color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
-      <button type="button" class="btn btn-danger delete-button">Delete</button>\
+      <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
+      <button type="button" class="btn btn-light hidden recover-button"><i class="fas fa-sync-alt"></i></button>\
+      <input name="description" type="text" class="form-control input-sm label-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
       </div>\
-      ');
+    ');
 
-    newElementEntry.children().filter('.color-box').css('background-color', '#' + label.color);
+    newElementEntry.children('.color-box').css('background-color', '#' + label.color);
 
-    newElementEntry.children().filter(':input[orig-val]').change(function () {
+    newElementEntry.children(':input[orig-val]').change(function () {
 
       if ($(this).val() === $(this).attr('orig-val')) {//unchanged
         $(this).parent().attr('action', 'none');
-        $(this).parent().removeClass('uncommited');
+        $(this).parent().removeClass('uncommitted');
       }
       else {//changed
         if ($(this).parent().attr('new') === 'true') {
@@ -213,7 +216,7 @@ $(document).ready(function () {
         else {
           $(this).parent().attr('action', 'update');
         }
-        $(this).parent().addClass('uncommited');
+        $(this).parent().addClass('uncommitted');
       }
 
       checkIfAnyActionNeeded();
@@ -221,43 +224,44 @@ $(document).ready(function () {
     });
 
     //Delete button
-    newElementEntry.children().filter('.delete-button').click(function () {
+    newElementEntry.children('.delete-button').click(function () {
       if ($(this).parent().attr('new') === 'true') {
         $(this).parent().remove();
       }
       else {
         $(this).parent().prepend('<hr class="deleted">');
-        $(this).siblings().attr('disabled', 'true');
-        $(this).attr('disabled', 'true');
+        $(this).siblings().attr('disabled');
+        $(this).siblings('.recover-button').removeAttr('disabled');
+        $(this).addClass('hidden');
         $(this).parent().attr('action', 'delete');
       }
 
-      //add recover button
-      let recoverButton = $('<a class="btn" href="#"><i class="icon-refresh"></i></a>');
-      recoverButton.click(function () {
-        //recover label-element's deleted state
-        $(this).siblings().filter('hr').remove();
-        $(this).siblings().removeAttr('disabled');
-        if ($(this).siblings().filter('[name="name"]').attr('orig-val') === $(this).siblings().filter('[name="name"]').val() &&
-          $(this).siblings().filter('[name="color"]').attr('orig-val') === $(this).siblings().filter('[name="color"]').val()) {
 
-          $(this).parent().attr('action', 'none');
-        }
-        else {
-          $(this).parent().attr('action', 'update');
-        }
-        $(this).remove();
-        checkIfAnyActionNeeded();
-      });//end recover button's click
-
-      $(this).parent().append(recoverButton);
+      $(this).siblings('.recover-button').removeClass('hidden');
 
       checkIfAnyActionNeeded();
       return;
     });
 
+    newElementEntry.children('.recover-button').click(function () {
+      $(this).siblings('hr').remove();
+      $(this).siblings().removeAttr('disabled');
+      $(this).siblings('.delete-button').removeClass('hidden');
+      $(this).addClass('hidden');
+
+      if ($(this).siblings('[name="name"]').attr('orig-val') === $(this).siblings('[name="name"]').val() &&
+        $(this).siblings('[name="color"]').attr('orig-val') === $(this).siblings('[name="color"]').val()) {
+        $(this).parent().attr('action', 'none');
+      }
+      else {
+        $(this).parent().attr('action', 'update');
+      }
+
+      checkIfAnyActionNeeded();
+    });
+
     //activate color picker on color-box field
-    newElementEntry.children().filter('.color-box').ColorPicker({
+    newElementEntry.children('.color-box').ColorPicker({
       //http://www.eyecon.ro/colorpicker
       color: label.color,
       onSubmit: function (hsb, hex, rgb, el) {
@@ -271,7 +275,7 @@ $(document).ready(function () {
         // since it is triggered programmatically
         if ($(el).val() === $(el).attr('orig-val')) {
           $(el).parent().attr('action', 'none');
-          $(el).parent().removeClass('uncommited');
+          $(el).parent().removeClass('uncommitted');
         }
         else {
           if ($(el).parent().attr('new') === 'true') {
@@ -280,7 +284,7 @@ $(document).ready(function () {
           else {
             $(el).parent().attr('action', 'update');
           }
-          $(el).parent().addClass('uncommited');
+          $(el).parent().addClass('uncommitted');
         }
         checkIfAnyActionNeeded();
         return;
@@ -308,7 +312,7 @@ $(document).ready(function () {
     $('#commitButton').attr('disabled', 'disabled');
   }
 
-  $('#listLabelsButton').click(function () {
+  $('#button-list-labels').click(function () {
     let theButton = $(this);// dealing with closure
     targetOwner = $('#targetOwnerRepo').val().split(':')[0];
     targetRepo = $('#targetOwnerRepo').val().split(':')[1];
@@ -322,7 +326,7 @@ $(document).ready(function () {
       });
     }
     else {
-      alert("Please follow the format: \n\nusername:repo");
+      alert("Please follow the format: \n\nOwner:Repo");
       theButton.button('reset');
     }
   });
@@ -336,16 +340,19 @@ $(document).ready(function () {
   });
 
   $('#deleteAllButton').click(function () {
-    $(this).parent().children("#labelsForm").children().each(function() {
+    $(this).parent().children("#labelsForm").children().each(function () {
       if ($(this).attr('new') === 'true') {
         $(this).remove();
       }
       else {
         $(this).prepend('<hr class="deleted">');
-        $(this).children().attr('disabled', 'true');
-        $(this).children(".delete-button").attr('disabled', 'true');
+        $(this).children().attr('disabled');
+        $(this).children(".recover-button").removeAttr('disabled');
+        $(this).children('.delete-button').addClass('hidden');
+        $(this).children('.recover-button').removeClass('hidden');
         $(this).attr('action', 'delete');
       }
+
     });
 
     checkIfAnyActionNeeded();
@@ -359,7 +366,7 @@ $(document).ready(function () {
     if (username && repo) {
       apiCallListLabels(username, repo, 'copy', function () {
         theButton.button('reset');
-      });//set addUncommited to true because those are coming from another repo
+      });//set adduncommitted to true because those are coming from another repo
     }
     else {
       alert("Please follow the format: \n\nusername:repo");
@@ -367,26 +374,29 @@ $(document).ready(function () {
     }
   });
 
-  $('#cloneFromRepoButton').click(function() {
+  $('#cloneFromRepoButton').click(function () {
     let username = $('#copyUrl').val().split(':')[0];
     let repo = $('#copyUrl').val().split(':')[1];
 
     if (username && repo) {
-      $("#labelsForm").children().each(function() {
+      $("#labelsForm").children().each(function () {
         if ($(this).attr('new') === 'true') {
           $(this).remove();
         }
         else {
           $(this).prepend('<hr class="deleted">');
-          $(this).children().attr('disabled', 'true');
-          $(this).children(".delete-button").attr('disabled', 'true');
+          $(this).children().attr('disabled');
+          $(this).children(".recover-button").removeAttr('disabled');
+          $(this).children('.delete-button').addClass('hidden');
+          $(this).children('.recover-button').removeClass('hidden');
           $(this).attr('action', 'delete');
         }
+
       });
-  
+
       apiCallListLabels(username, repo, 'copy', function () {
         $(this).button('reset');
-      });//set addUncommited to true because those are coming from another repo
+      });//set adduncommitted to true because those are coming from another repo
     }
     else {
       alert("Please follow the format: \n\nusername:repo");
@@ -436,9 +446,10 @@ $(document).ready(function () {
   */
   function serializeLabel(jObjectLabelEntry) {
     return {
-      name: jObjectLabelEntry.children().filter('[name="name"]').val(),
-      color: jObjectLabelEntry.children().filter('[name="color"]').val(),
-      originalName: jObjectLabelEntry.children().filter('[name="name"]').attr('orig-val')
+      name: jObjectLabelEntry.children('[name="name"]').val(),
+      color: jObjectLabelEntry.children('[name="color"]').val(),
+      description: jObjectLabelEntry.children('[name="description"]').val(),
+      originalName: jObjectLabelEntry.children('[name="name"]').attr('orig-val')
     };
   }
 
