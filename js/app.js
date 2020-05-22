@@ -86,7 +86,7 @@ $(document).ready(function () {
 
           if (response.length === 0) {
             if (pageNum === 1) {
-              alert('No labels exist within this repo!')
+              alert('No labels exist within this repo!');
             }
             return;
           }
