@@ -117,7 +117,6 @@ $(document).ready(function () {
           callback(response);
         }
         writeLog('Created label: ' + labelObject.name);
-        console.log(labelObject);
       },
       error: function (jqXHR, textStatus, errorThrown) {
         writeLog('Creation of label failed for: ' + labelObject.name + ' Error: ' + errorThrown);
@@ -192,13 +191,13 @@ $(document).ready(function () {
     let origDescriptionVal = ' orig-val="' + label.description + '"';
 
     let newElementEntry = $('\
-      <div class="label-entry ' + uncommitedSignClass + '" ' + action + '>\
+      <div class="label-entry ' + uncommittedSignClass + '" ' + action + '>\
       <input name="name" type="text" class="form-control input-sm label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
       <span class="sharp-sign">#</span>\
       <input name="color" type="text" class="form-control input-sm color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
       <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
       <button type="button" class="btn btn-light hidden recover-button"><i class="fas fa-sync-alt"></i></button>\
-      <input name="descrption" type="text" class="form-control input-sm label-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
+      <input name="description" type="text" class="form-control input-sm label-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
       </div>\
     ');
 
@@ -449,6 +448,7 @@ $(document).ready(function () {
     return {
       name: jObjectLabelEntry.children('[name="name"]').val(),
       color: jObjectLabelEntry.children('[name="color"]').val(),
+      description: jObjectLabelEntry.children('[name="description"]').val(),
       originalName: jObjectLabelEntry.children('[name="name"]').attr('orig-val')
     };
   }
