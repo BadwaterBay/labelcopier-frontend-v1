@@ -198,9 +198,9 @@ $(document).ready(function () {
       </div>\
       ');
 
-    newElementEntry.children().filter('.color-box').css('background-color', '#' + label.color);
+    newElementEntry.children('.color-box').css('background-color', '#' + label.color);
 
-    newElementEntry.children().filter(':input[orig-val]').change(function () {
+    newElementEntry.children(':input[orig-val]').change(function () {
 
       if ($(this).val() === $(this).attr('orig-val')) {//unchanged
         $(this).parent().attr('action', 'none');
@@ -221,7 +221,7 @@ $(document).ready(function () {
     });
 
     //Delete button
-    newElementEntry.children().filter('.delete-button').click(function () {
+    newElementEntry.children('.delete-button').click(function () {
       if ($(this).parent().attr('new') === 'true') {
         $(this).parent().remove();
       }
@@ -243,7 +243,7 @@ $(document).ready(function () {
     });
 
     //activate color picker on color-box field
-    newElementEntry.children().filter('.color-box').ColorPicker({
+    newElementEntry.children('.color-box').ColorPicker({
       //http://www.eyecon.ro/colorpicker
       color: label.color,
       onSubmit: function (hsb, hex, rgb, el) {
@@ -296,11 +296,11 @@ $(document).ready(function () {
 
   function clickRecover() {
     //recover label-element's deleted state
-    $(this).siblings().filter('hr').remove();
+    $(this).siblings('hr').remove();
     $(this).siblings().removeAttr('disabled');
     $(this).siblings('.delete-button').show();
-    if ($(this).siblings().filter('[name="name"]').attr('orig-val') === $(this).siblings().filter('[name="name"]').val() &&
-      $(this).siblings().filter('[name="color"]').attr('orig-val') === $(this).siblings().filter('[name="color"]').val()) {
+    if ($(this).siblings('[name="name"]').attr('orig-val') === $(this).siblings('[name="name"]').val() &&
+      $(this).siblings('[name="color"]').attr('orig-val') === $(this).siblings('[name="color"]').val()) {
       $(this).parent().attr('action', 'none');
     }
     else {
@@ -450,9 +450,9 @@ $(document).ready(function () {
   */
   function serializeLabel(jObjectLabelEntry) {
     return {
-      name: jObjectLabelEntry.children().filter('[name="name"]').val(),
-      color: jObjectLabelEntry.children().filter('[name="color"]').val(),
-      originalName: jObjectLabelEntry.children().filter('[name="name"]').attr('orig-val')
+      name: jObjectLabelEntry.children('[name="name"]').val(),
+      color: jObjectLabelEntry.children('[name="color"]').val(),
+      originalName: jObjectLabelEntry.children('[name="name"]').attr('orig-val')
     };
   }
 
