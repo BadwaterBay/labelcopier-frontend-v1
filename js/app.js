@@ -80,7 +80,7 @@ $(document).ready(function () {
               label.color = label.color.toUpperCase();
               createNewLabelEntry(label, mode);
               //sets target indicator text
-              $('#targetIndicator').html('<strong>Repo owner:</strong> ' + targetOwner + "<br /><strong>Repo:</strong> " + targetRepo +  '<br /><strong>Username:</strong> ' + targetUsername);
+              $('#targetIndicator').html('<strong>Repo owner:</strong> ' + targetOwner + "<br /><strong>Repo:</strong> " + targetRepo + '<br /><strong>Username:</strong> ' + targetUsername);
             });
           }//if
 
@@ -221,63 +221,7 @@ $(document).ready(function () {
     });
 
     //Delete button
-    newElementEntry.children().filter('.delete-button').click(function () {
-      if ($(this).parent().attr('new') === 'true') {
-        $(this).parent().remove();
-      }
-      else {
-        $(this).parent().prepend('<hr class="deleted">');
-        $(this).siblings().attr('disabled', 'true');
-        $(this).attr('disabled', 'true');
-        $(this).parent().attr('action', 'delete');
-      }
-
-      //add recover button
-      let recoverButton = $('<a class="btn" href="#"><i class="icon-refresh"></i></a>');
-      recoverButton.click(function () {
-        //recover label-element's deleted state
-        $(this).siblings().filter('hr').remove();
-        $(this).siblings().removeAttr('disabled');
-        if ($(this).siblings().filter('[name="name"]').attr('orig-val') === $(this).siblings().filter('[name="name"]').val() &&
-          $(this).siblings().filter('[name="color"]').attr('orig-val') === $(this).siblings().filter('[name="color"]').val()) {
-
-          $(this).parent().attr('action', 'none');
-        }
-        else {
-          $(this).parent().attr('action', 'update');
-        }
-        $(this).remove();
-        checkIfAnyActionNeeded();
-      });//end recover button's click
-
-<<<<<<< HEAD
-      $(this).parent().append(recoverButton);
-=======
-        //add recover button
-        let recoverButton = $('<a class="btn btn-light" href="#"><i class="fas fa-sync-alt"></i></a>');
-        recoverButton.click(function () {
-          //recover label-element's deleted state
-          $(this).siblings().filter('hr').remove();
-          $(this).siblings().removeAttr('disabled');
-          $(this).siblings('.delete-button').show();
-          if ($(this).siblings().filter('[name="name"]').attr('orig-val') === $(this).siblings().filter('[name="name"]').val() &&
-            $(this).siblings().filter('[name="color"]').attr('orig-val') === $(this).siblings().filter('[name="color"]').val()) {
-
-            $(this).parent().attr('action', 'none');
-          }
-          else {
-            $(this).parent().attr('action', 'update');
-          }
-          $(this).remove();
-          checkIfAnyActionNeeded();
-        });//end recover button's click
-        $(this).hide();
-        $(this).parent().append(recoverButton);
->>>>>>> Commit changes before rebase
-
-      checkIfAnyActionNeeded();
-      return;
-    });
+    newElementEntry.children().filter('.delete-button').click(deleteLabel);
 
     //activate color picker on color-box field
     newElementEntry.children().filter('.color-box').ColorPicker({
@@ -331,6 +275,42 @@ $(document).ready(function () {
     $('#commitButton').attr('disabled', 'disabled');
   }
 
+  function deleteLabel() {
+    if ($(this).parent().attr('new') === 'true') {
+      $(this).parent().remove();
+    }
+    else {
+      $(this).parent().prepend('<hr class="deleted">');
+      $(this).siblings().attr('disabled', 'true');
+      $(this).attr('disabled', 'true');
+      $(this).parent().attr('action', 'delete');
+    }
+
+    //add recover button
+    let recoverButton = $('<a class="btn btn-light" href="#"><i class="fas fa-sync-alt"></i></a>');
+    recoverButton.click(function () {
+      //recover label-element's deleted state
+      $(this).siblings().filter('hr').remove();
+      $(this).siblings().removeAttr('disabled');
+      $(this).siblings('.delete-button').show();
+      if ($(this).siblings().filter('[name="name"]').attr('orig-val') === $(this).siblings().filter('[name="name"]').val() &&
+        $(this).siblings().filter('[name="color"]').attr('orig-val') === $(this).siblings().filter('[name="color"]').val()) {
+
+        $(this).parent().attr('action', 'none');
+      }
+      else {
+        $(this).parent().attr('action', 'update');
+      }
+      $(this).remove();
+      checkIfAnyActionNeeded();
+    });//end recover button's click
+    $(this).hide();
+    $(this).parent().append(recoverButton);
+
+    checkIfAnyActionNeeded();
+    return;
+  }
+
   $('#listLabelsButton').click(function () {
     let theButton = $(this);// dealing with closure
     targetOwner = $('#targetOwnerRepo').val().split(':')[0];
@@ -359,7 +339,7 @@ $(document).ready(function () {
   });
 
   $('#deleteAllButton').click(function () {
-    $(this).parent().children("#labelsForm").children().each(function() {
+    $(this).parent().children("#labelsForm").children().each(function () {
       if ($(this).attr('new') === 'true') {
         $(this).remove();
       }
@@ -390,12 +370,12 @@ $(document).ready(function () {
     }
   });
 
-  $('#cloneFromRepoButton').click(function() {
+  $('#cloneFromRepoButton').click(function () {
     let username = $('#copyUrl').val().split(':')[0];
     let repo = $('#copyUrl').val().split(':')[1];
 
     if (username && repo) {
-      $("#labelsForm").children().each(function() {
+      $("#labelsForm").children().each(function () {
         if ($(this).attr('new') === 'true') {
           $(this).remove();
         }
@@ -406,7 +386,7 @@ $(document).ready(function () {
           $(this).attr('action', 'delete');
         }
       });
-  
+
       apiCallListLabels(username, repo, 'copy', function () {
         $(this).button('reset');
       });//set addUncommited to true because those are coming from another repo
