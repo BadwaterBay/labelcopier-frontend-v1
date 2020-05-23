@@ -66,21 +66,21 @@ $(document).ready(function () {
     }
   });
 
-  function apiCallListLabels(username, repo, mode, callback) {
+  function apiCallGetEntries(username, repo, kind, mode, callback) {
     let pageNum = 1;
-    getLabels(username, repo, mode, callback, pageNum);
+    apiCallGetEntriesRecursive(username, repo, kind, mode, callback, pageNum);
 
-    function getLabels(username, repo, mode, callback, pageNum) {
+    function apiCallGetEntriesRecursive(username, repo, kind, mode, callback, pageNum) {
       $.ajax({
         type: 'GET',
-        url: 'https://api.github.com/repos/' + username + '/' + repo + '/labels' + '?page=' + pageNum,
+        url: 'https://api.github.com/repos/' + username + '/' + repo + '/' + kind + '?page=' + pageNum,
         success: function (response) {
           if (response) {
             response.forEach(label => {
               label.color = label.color.toUpperCase();
               createNewLabelEntry(label, mode);
               //sets target indicator text
-              $('#targetIndicator').html('<strong>Repo owner:</strong> ' + targetOwner + "<br /><strong>Repo:</strong> " + targetRepo + '<br /><strong>Username:</strong> ' + username);
+              $('#which-repo-in-use').html('<strong>Repo owner:</strong> ' + targetOwner + "<br /><strong>Repo:</strong> " + targetRepo + '<br /><strong>Username:</strong> ' + username);
             });
           }//if
 
@@ -90,7 +90,7 @@ $(document).ready(function () {
             }
             return;
           }
-          else getLabels(username, repo, mode, callback, ++pageNum);
+          else apiCallGetEntriesRecursive(username, repo, kind, mode, callback, ++pageNum);
 
           if (typeof callback === 'function') {
             callback(response);
@@ -304,20 +304,20 @@ $(document).ready(function () {
         $(this).css('background-color', '#' + this.value);
       });
 
-    $('#labelsForm').prepend(newElementEntry);
+    $('#form-labels').prepend(newElementEntry);
   }
 
-  $('#addNewLabelEntryButton').click(function () {
+  $('#add-new-label-entry').click(function () {
     createNewLabelEntry(null, 'new');
   });
 
   function clearAllLabels() {
-    $('#labelsForm').text('');
-    $('#commitButton').text('Commit changes');
-    $('#commitButton').attr('disabled', 'disabled');
+    $('#form-labels').text('');
+    $('#commit-to-target-repo').text('Commit changes');
+    $('#commit-to-target-repo').attr('disabled', 'disabled');
   }
 
-  $('#button-list-labels').click(function () {
+  $('#list-all-labels').click(function () {
     let theButton = $(this);// dealing with closure
     targetOwner = $('#targetOwner').val();
     targetRepo = $('#targetRepo').val();
@@ -325,7 +325,7 @@ $(document).ready(function () {
     if (targetOwner && targetRepo) {
       clearAllLabels();
 
-      apiCallListLabels(targetOwner, targetRepo, 'list', () => {
+      apiCallGetEntries(targetOwner, targetRepo, 'labels', 'list', () => {
         theButton.button('reset');
       });
     }
@@ -335,16 +335,16 @@ $(document).ready(function () {
     }
   });
 
-  $('#revert-button').click(function () {
+  $('#revert-to-original').click(function () {
     let theButton = $(this);// dealing with closure
     clearAllLabels();
-    apiCallListLabels(targetOwner, targetRepo, 'list', () => {
+    apiCallGetEntries(targetOwner, targetRepo, 'labels', 'list', () => {
       theButton.button('reset');
     });
   });
 
-  $('#deleteAllButton').click(function () {
-    $("#labelsForm").children().each(function () {
+  $('#delete-all-labels').click(function () {
+    $("#form-labels").children().each(function () {
       if ($(this).attr('new') === 'true') {
         $(this).remove();
       }
@@ -362,13 +362,13 @@ $(document).ready(function () {
     checkIfAnyActionNeeded();
   })
 
-  $('#copyFromRepoButton').click(function () {
+  $('#copy-labels-from').click(function () {
     let theButton = $(this);// dealing with closure
     let username = $('#copyFromOwner').val();
     let repo = $('#copyFromRepo').val();
 
     if (username && repo) {
-      apiCallListLabels(username, repo, 'copy', function () {
+      apiCallGetEntries(username, repo, 'labels', 'copy', function () {
         theButton.button('reset');
       });//set adduncommitted to true because those are coming from another repo
     }
@@ -378,12 +378,12 @@ $(document).ready(function () {
     }
   });
 
-  $('#cloneFromRepoButton').click(function () {
+  $('#delete-and-copy-labels-from').click(function () {
     let username = $('#copyFromOwner').val();
     let repo = $('#copyFromRepo').val();
 
     if (username && repo) {
-      $("#labelsForm").children().each(function () {
+      $("#form-labels").children().each(function () {
         if ($(this).attr('new') === 'true') {
           $(this).remove();
         }
@@ -398,7 +398,7 @@ $(document).ready(function () {
 
       });
 
-      apiCallListLabels(username, repo, 'copy', function () {
+      apiCallGetEntries(username, repo, 'labels', 'copy', function () {
         $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
     }
@@ -410,7 +410,7 @@ $(document).ready(function () {
     checkIfAnyActionNeeded();
   })
 
-  $('#commitButton').click(function () {
+  $('#commit-to-target-repo').click(function () {
     let theButton = $(this);// dealing with closure
     let password = $('#personalAccessToken').val();
 
@@ -464,11 +464,11 @@ $(document).ready(function () {
     let isNeeded = $('.label-entry:not([action="none"])').length > 0;
 
     if (isNeeded) {
-      $('#commitButton').removeAttr('disabled');
-      $('#commitButton').removeClass('disabled');
+      $('#commit-to-target-repo').removeAttr('disabled');
+      $('#commit-to-target-repo').removeClass('disabled');
     }
     else {
-      $('#commitButton').attr('disabled', 'disabled');
+      $('#commit-to-target-repo').attr('disabled', 'disabled');
     }
 
     return isNeeded;
@@ -515,7 +515,7 @@ $(document).ready(function () {
 
     //reload labels after changes
     clearAllLabels();
-    apiCallListLabels(targetOwner, targetRepo, 'list');
+    apiCallGetEntries(targetOwner, targetRepo, 'labels', 'list');
   });
 
   /* ========== The rest is BASE64 STUFF ========== */
