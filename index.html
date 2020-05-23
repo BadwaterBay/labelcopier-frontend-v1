@@ -65,28 +65,28 @@
             placeholder="Username for authentication">
           <input id="githubPassword" type="password" class="input-block form-control"
             placeholder="Personal access token">
-          <button id="button-list-labels" type="button" class="btn btn-block btn-secondary mb-2"
+          <button id="button-list-labels" type="button" class="btn btn-block btn-outline-secondary mb-2"
             data-loading-text="Loading...">List labels in this repo</button>
         </form>
 
         <div id="optionalCopyContainer" class="card bg-light card-body mb-3">
-          <button type="button" class="btn btn-block btn-secondary" data-toggle="collapse"
+          <button type="button" class="btn btn-block btn-outline-secondary" data-toggle="collapse"
             data-target="#optionalCopyStuff">Copy an existing repo's labels (Optional)</button>
           <span class="form-text text-muted">You can copy any repo's labels and then modify them before committing to
             your repo.</span>
           <div id="optionalCopyStuff" class="collapse">
             <form class="form-inline">
               <input id="copyUrl" type="url" class="input-block form-control mt-2" placeholder="Owner:Repo">
-              <button id="copyFromRepoButton" type="button" class="btn btn-info btn-block"
+              <button id="copyFromRepoButton" type="button" class="btn btn-outline-info btn-block"
                 data-loading-text="Adding...">Add</button>
-              <button id="cloneFromRepoButton" type="button" class="btn btn-info btn-block"
+              <button id="cloneFromRepoButton" type="button" class="btn btn-outline-info btn-block"
                 data-loading-text="Cloning...">Delete all existing labels and add</button>
               <span class="form-text text-muted">Can be any repo, no password or token required for copying.</span>
             </form>
           </div>
         </div>
 
-        <button id="commitButton" type="button" class="btn btn-success btn-block btn-lg" disabled
+        <button id="commitButton" type="button" class="btn btn-outline-success btn-block btn-lg" disabled
           data-loading-text="Commiting...">
           Commit changes
         </button>
@@ -166,12 +166,12 @@
 
       <div class="col-12 col-md-6">
         <h3>Labels</h3>
-        <button id="revert-button" type="button" class="btn btn-warning btn-block mb-2"
+        <button id="revert-button" type="button" class="btn btn-outline-warning btn-block mb-2"
           data-loading-text="Resetting...">Revert to original</button>
-        <button id="deleteAllButton" type="button" class="btn btn-danger btn-block mb-2"
+        <button id="deleteAllButton" type="button" class="btn btn-outline-danger btn-block mb-2"
           data-loading-text="Deleting...">Delete all labels</button>
         <form id="labelsForm" class="form-inline"></form>
-        <button id="addNewLabelEntryButton" type="button" class="btn btn-success btn-block mb-3">Add a new
+        <button id="addNewLabelEntryButton" type="button" class="btn btn-outline-success btn-block mb-3">Add a new
           label</button>
       </div>
     </div>
@@ -181,12 +181,12 @@
   <!-- Le javascript
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
-  <!-- <script src="js/jquery.js"></script> -->
+  <script src="js/jquery.js"></script>
   <script src="js/colorpicker.js"></script>
   <!-- <script src="js/bootstrap.bundle.js"></script> -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
+    crossorigin="anonymous"></script> -->
   <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js"
     integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U"
     crossorigin="anonymous"></script>

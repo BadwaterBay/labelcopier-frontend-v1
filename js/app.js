@@ -202,7 +202,7 @@ $(document).ready(function () {
       <span class="sharp-sign">#</span>\
       <input name="color" type="text" class="form-control input-sm color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
       <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
-      <button type="button" class="btn btn-light hidden recover-button"><i class="fas fa-sync-alt"></i></button>\
+      <button type="button" class="btn btn-dark hidden recover-button"><i class="fas fa-sync-alt"></i></button>\
       <input name="description" type="text" class="form-control input-sm label-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
       </div>\
     ');
