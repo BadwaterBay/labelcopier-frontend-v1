@@ -1,6 +1,6 @@
 # Fix #000  (<=== Add issue number here)
 
-**IMPORTANT:** *Please don't create a Pull Request (PR) before creating an issue first, unless you're fixing a typo.*
+**IMPORTANT:** *Please don't create a Pull Request (PR) before creating an issue first, unless you're fixing a typo-sort-of issue.*
 
 ## Details
 
