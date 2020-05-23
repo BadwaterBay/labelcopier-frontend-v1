@@ -20,6 +20,7 @@ $(document).ready(function () {
   let targetRepo;
   let targetOwner;
   let isLoadingShown = false;
+
   let loadingSemaphore = (function () {
     let count = 0;
 
@@ -66,54 +67,56 @@ $(document).ready(function () {
     }
   });
 
-  function apiCallGetEntries(username, repo, kind, mode, callback) {
-    let pageNum = 1;
-    apiCallGetEntriesRecursive(username, repo, kind, mode, callback, pageNum);
+  function apiCallGetEntriesRecursive(username, repo, kind, mode, callback, pageNum) {
+    $.ajax({
+      type: 'GET',
+      url: 'https://api.github.com/repos/' + username + '/' + repo + '/' + kind + '?page=' + pageNum,
+      success: function (response) {
+        if (response) {
+          response.forEach(label => {
+            label.color = label.color.toUpperCase();
+            createNewLabelEntry(label, mode);
+            //sets target indicator text
+            $('#which-repo-in-use').html('<strong>Repo owner:</strong> ' + targetOwner + "<br /><strong>Repo:</strong> " + targetRepo + '<br /><strong>Username:</strong> ' + username);
+          });
+        }//if
 
-    function apiCallGetEntriesRecursive(username, repo, kind, mode, callback, pageNum) {
-      $.ajax({
-        type: 'GET',
-        url: 'https://api.github.com/repos/' + username + '/' + repo + '/' + kind + '?page=' + pageNum,
-        success: function (response) {
-          if (response) {
-            response.forEach(label => {
-              label.color = label.color.toUpperCase();
-              createNewLabelEntry(label, mode);
-              //sets target indicator text
-              $('#which-repo-in-use').html('<strong>Repo owner:</strong> ' + targetOwner + "<br /><strong>Repo:</strong> " + targetRepo + '<br /><strong>Username:</strong> ' + username);
-            });
-          }//if
-
-          if (response.length === 0) {
-            if (pageNum === 1) {
-              alert('No labels exist within this repo!');
-            }
-            return;
-          }
-          else apiCallGetEntriesRecursive(username, repo, kind, mode, callback, ++pageNum);
-
-          if (typeof callback === 'function') {
-            callback(response);
-          }
-        },
-        error: function (response) {
-          if (response.status === 404) {
-            alert('Not found! If this is a private repo make sure you provide a password.');
-          }
-
-          if (typeof callback === 'function') {
-            callback(response);
-          }
+        if (typeof callback === 'function') {
+          callback(response);
         }
-      });
-      checkIfAnyActionNeeded();
-    }
+
+        if (response.length === 0) {
+          if (pageNum === 1) {
+            alert('No labels exist within this repo!');
+          }
+          return;
+        }
+        else {
+          apiCallGetEntriesRecursive(username, repo, kind, mode, callback, ++pageNum);
+        }
+
+      },
+      error: function (response) {
+        if (response.status === 404) {
+          alert('Not found! If this is a private repo make sure you provide a password.');
+        }
+
+        if (typeof callback === 'function') {
+          callback(response);
+        }
+      }
+    });
   }
 
-  function apiCallCreateLabel(labelObject, callback) {
+  function apiCallGetEntries(username, repo, kind, mode, callback) {
+    apiCallGetEntriesRecursive(username, repo, kind, mode, callback, 1);
+    checkIfAnyActionNeeded();
+  }
+
+  function apiCallCreateEntries(labelObject, kind, callback) {
     $.ajax({
       type: "POST",
-      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/labels',
+      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind,
       data: JSON.stringify(labelObject),
       success: function (response) {
         // console.log("success: ");
@@ -129,13 +132,13 @@ $(document).ready(function () {
     });
   }
 
-  function apiCallUpdateLabel(labelObject, callback) {
+  function apiCallUpdateEntries(labelObject, kind, callback) {
     let originalName = labelObject.originalName;
     delete labelObject.originalName;
 
     $.ajax({
       type: "PATCH",
-      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/labels/' + originalName,
+      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind + '/' + originalName,
       data: JSON.stringify(labelObject),
       success: function (response) {
         // console.log("success: ");
@@ -151,10 +154,10 @@ $(document).ready(function () {
     });
   }
 
-  function apiCallDeleteLabel(labelObject, callback) {
+  function apiCallDeleteEntries(labelObject, kind, callback) {
     $.ajax({
       type: "DELETE",
-      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/labels/' + labelObject.name,
+      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind + '/' + labelObject.name,
       success: function (response) {
         // console.log("success: ");
         // console.log(response);
@@ -330,7 +333,7 @@ $(document).ready(function () {
       });
     }
     else {
-      alert("Please follow the format: \n\nOwner:Repo");
+      alert("Please enter the repo owner and the repo");
       theButton.button('reset');
     }
   });
@@ -485,19 +488,19 @@ $(document).ready(function () {
     //To be deleted
     $('.label-entry[action="delete"]').each(function () {
       let labelObject = serializeLabel($(this));
-      apiCallDeleteLabel(labelObject);
+      apiCallDeleteEntries(labelObject, 'labels');
     });
 
     //To be updated
     $('.label-entry[action="update"]').each(function () {
       let labelObject = serializeLabel($(this));
-      apiCallUpdateLabel(labelObject);
+      apiCallUpdateEntries(labelObject, 'labels');
     });
 
     //To be created
     $('.label-entry[action="create"]').each(function () {
       let labelObject = serializeLabel($(this));
-      apiCallCreateLabel(labelObject);
+      apiCallCreateEntries(labelObject, 'labels');
     });
   }
 
