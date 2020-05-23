@@ -32,6 +32,7 @@
     integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
   <link href="css/colorpicker.css" rel="stylesheet" />
   <link href="css/app.css" rel="stylesheet" />
+  <link rel='icon' href='#' type='image/x-icon' />
 </head>
 
 <body>
@@ -76,14 +77,15 @@
             </div>
             <div class="checkbox">
               <label>
-                <input type="checkbox" name="checkOwnerOfRepo" onclick="copyToUsername(this.form)">I'm the owner of the repo
+                <input type="checkbox" name="checkOwnerOfRepo" onclick="copyToUsername(this.form)">
+                I'm the owner of the repo
               </label>
             </div>
             <div class="form-group">
-              <label for="targetUsername" name="targetUsername" class="bmd-label-floating">
+              <label class="bmd-label-floating"  for="targetUsername">
                 Username for authentication
               </label>
-              <input type="url" class="form-control" id="targetUsername">
+              <input type="url" class="form-control" id="targetUsername" name="targetUsername">
               <span class="bmd-help">
                 You can manage repos you own or have access to
               </span>
@@ -230,13 +232,17 @@
     function copyToUsername(f) {
       if (f.checkOwnerOfRepo.checked === true) {
         f.targetUsername.value = f.targetOwner.value;
+        f.targetUsername.disabled = true;
       }
-      if (f.checkOwnerOfRepo.checked === false) {
+      else {
         f.targetUsername.value = '';
+        f.targetUsername.disabled = false;
       }
     }
   </script>
-  <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+  <script>
+    $(document).ready(function () { $('body').bootstrapMaterialDesign(); });
+  </script>
 
   <div id="loadingModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
