@@ -80,7 +80,7 @@ $(document).ready(function () {
               label.color = label.color.toUpperCase();
               createNewLabelEntry(label, mode);
               //sets target indicator text
-              $('#targetIndicator').html('<strong>Repo owner:</strong> ' + targetOwner + "<br /><strong>Repo:</strong> " + targetRepo + '<br /><strong>Username:</strong> ' + targetUsername);
+              $('#targetIndicator').html('<strong>Repo owner:</strong> ' + targetOwner + "<br /><strong>Repo:</strong> " + targetRepo + '<br /><strong>Username:</strong> ' + username);
             });
           }//if
 
