@@ -197,13 +197,12 @@ $(document).ready(function () {
 
     let newElementEntry = $('\
       <div class="label-entry ' + uncommittedSignClass + '" ' + action + '>\
-      <hr class="hidden deleted">\
       <input name="name" type="text" class="form-control input-sm label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
       <span class="sharp-sign">#</span>\
       <input name="color" type="text" class="form-control input-sm color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
+      <input name="description" type="text" class="form-control input-sm label-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
       <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
       <button type="button" class="btn btn-dark hidden recover-button"><i class="fas fa-sync-alt"></i></button>\
-      <input name="description" type="text" class="form-control input-sm label-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
       </div>\
     ');
 
@@ -235,8 +234,8 @@ $(document).ready(function () {
         $(this).parent().remove();
       }
       else {
-        $(this).siblings('.deleted').removeClass('hidden');
-        $(this).siblings().attr('disabled');
+        $(this).siblings().addClass('deleted');
+        $(this).siblings().attr('disabled', 'true');
         $(this).siblings('.recover-button').removeAttr('disabled');
         $(this).addClass('hidden');
         $(this).parent().attr('action', 'delete');
@@ -250,7 +249,7 @@ $(document).ready(function () {
     });
 
     newElementEntry.children('.recover-button').click(function () {
-      $(this).siblings('hr').addClass('hidden');
+      $(this).siblings().removeClass('deleted');
       $(this).siblings().removeAttr('disabled');
       $(this).siblings('.delete-button').removeClass('hidden');
       $(this).addClass('hidden');
