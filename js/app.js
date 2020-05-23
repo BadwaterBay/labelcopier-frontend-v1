@@ -56,7 +56,7 @@ $(document).ready(function () {
       }
     },
     beforeSend: function (xhr) {
-      let password = $('#githubPassword').val().trim();
+      let password = $('#personalAccessToken').val().trim();
       loadingSemaphore.acquire();
       // only add authorization if a password is provided. Adding empty authorization header
       // fails loading for public repos
@@ -320,9 +320,8 @@ $(document).ready(function () {
 
   $('#button-list-labels').click(function () {
     let theButton = $(this);// dealing with closure
-    targetOwner = $('#targetOwnerRepo').val().split(':')[0];
-    targetRepo = $('#targetOwnerRepo').val().split(':')[1];
-    targetUsername = $('#targetUsername').val();
+    targetOwner = $('#targetOwner').val();
+    targetRepo = $('#targetRepo').val();
 
     if (targetOwner && targetRepo) {
       clearAllLabels();
@@ -366,8 +365,8 @@ $(document).ready(function () {
 
   $('#copyFromRepoButton').click(function () {
     let theButton = $(this);// dealing with closure
-    let username = $('#copyUrl').val().split(':')[0];
-    let repo = $('#copyUrl').val().split(':')[1];
+    let username = $('#copyFromOwner').val();
+    let repo = $('#copyFromRepo').val();
 
     if (username && repo) {
       apiCallListLabels(username, repo, 'copy', function () {
@@ -381,8 +380,8 @@ $(document).ready(function () {
   });
 
   $('#cloneFromRepoButton').click(function () {
-    let username = $('#copyUrl').val().split(':')[0];
-    let repo = $('#copyUrl').val().split(':')[1];
+    let username = $('#copyFromOwner').val();
+    let repo = $('#copyFromRepo').val();
 
     if (username && repo) {
       $("#labelsForm").children().each(function () {
@@ -414,7 +413,7 @@ $(document).ready(function () {
 
   $('#commitButton').click(function () {
     let theButton = $(this);// dealing with closure
-    let password = $('#githubPassword').val();
+    let password = $('#personalAccessToken').val();
 
     if (password.trim() === '') {
       alert('You need to enter your password for repo: ' + targetRepo + ' in order to commit labels.');
@@ -440,7 +439,7 @@ $(document).ready(function () {
   //   html: true
   // });
 
-  // $('#githubPassword').popover({
+  // $('#personalAccessToken').popover({
   //   title: "My token/password for what?",
   //   content: "Token/Password is only required for committing. It won't be required until you try to commit something. It is encouraged to use a token instead of your password.",
   //   trigger: "hover",
