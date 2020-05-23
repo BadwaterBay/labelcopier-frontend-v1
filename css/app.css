@@ -15,11 +15,15 @@ body{
 }
 
 .deleted{
-    color: #7a7a7a;
+    color: #828282;
 }
 
-.deleted:disabled {
-    background-color: #707070;
+/* .deleted:disabled {
+    background-color: #e5e4e3;
+} */
+
+.label-entry > button {
+    margin-top: 0.25rem;
 }
 
 .uncommited:before{
@@ -33,14 +37,18 @@ body{
 }
 
 .label-fitting {
-    /* max-width: 45%; */
-    /* min-width: 7rem; */
+    max-width: 75%;
+    min-width: 70%;
     display: inline-flex;
 }
 
 .color-fitting {
-    max-width: 5.25rem;
-    min-width: 5rem;
+    max-width: 15%;
+    min-width: 4rem;
+}
+
+.description-fitting {
+    min-width: 100%;
 }
 
 #copyUrl {

@@ -200,9 +200,9 @@ $(document).ready(function () {
       <input name="name" type="text" class="form-control input-sm label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
       <span class="sharp-sign">#</span>\
       <input name="color" type="text" class="form-control input-sm color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
-      <input name="description" type="text" class="form-control input-sm label-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
       <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
-      <button type="button" class="btn btn-dark hidden recover-button"><i class="fas fa-sync-alt"></i></button>\
+      <button type="button" class="btn btn-success hidden recover-button"><i class="fas fa-history"></i></button>\
+      <input name="description" type="text" class="form-control input-sm description-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
       </div>\
     ');
 
@@ -344,13 +344,13 @@ $(document).ready(function () {
   });
 
   $('#deleteAllButton').click(function () {
-    $(this).parent().children("#labelsForm").children().each(function () {
+    $("#labelsForm").children().each(function () {
       if ($(this).attr('new') === 'true') {
         $(this).remove();
       }
       else {
-        $(this).children('.deleted').removeClass('hidden');
-        $(this).children().attr('disabled');
+        $(this).children().addClass('deleted');
+        $(this).children().attr('disabled', 'true');
         $(this).children(".recover-button").removeAttr('disabled');
         $(this).children('.delete-button').addClass('hidden');
         $(this).children('.recover-button').removeClass('hidden');
