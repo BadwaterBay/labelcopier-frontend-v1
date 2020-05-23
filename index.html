@@ -108,11 +108,13 @@
             <form>
               <div class="form-group">
                 <label for="targetOwner" class="bmd-label-floating">Repo owner</label>
-                <input type="url" class="form-control" id="copyFromOwner" onchange="copyToBelow(this)">
+                <input type="url" class="form-control" id="copyFromOwner">
+                <span class="bmd-help">Such as: Badwater-Apps</span>
               </div>
               <div class="form-group">
                 <label for="targetRepo" class="bmd-label-floating">Repo</label>
                 <input type="url" class="form-control" id="copyFromRepo">
+                <span class="bmd-help">Such as: template-for-label-and-milestone-1</span>
               </div>
             </form>
             <button id="copyFromRepoButton" type="button" class="btn btn-outline-info btn-block"
