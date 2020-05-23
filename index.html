@@ -27,18 +27,21 @@
   <!-- <link href="css/bootstrap.css" rel="stylesheet"> -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700%7CMaterial+Icons">
   <script async src="https://kit.fontawesome.com/8eb33a81c5.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+  <link rel="stylesheet"
+    href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css"
+    integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
   <link href="css/colorpicker.css" rel="stylesheet" />
   <link href="css/app.css" rel="stylesheet" />
 </head>
 
 <body>
   <a href="https://github.com/Badwater-Apps/github-label-manager-2" target="_blank">
-    <img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1031;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
+    <img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1031;"
+      src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
   </a>
   <div class="navbar sticky-top navbar-expand-md navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="#">&nbsp;Github Label Manager</a>
+      <a class="navbar-brand" href="#">Github&nbsp;Label&nbsp;Manager</a>
       <ul class="navbar-nav mr-auto">
         <!-- <li class="nav-item"><a class="nav-link" href="">Item</a></li> -->
       </ul>
@@ -49,35 +52,46 @@
     <div class="row">
       <div class="col-12 col-md-6">
         <div class="card bg-light card-body mb-3">
-          <h3>Manage your Github labels</h3>
+          <div class="card-header">
+            <h3>Manage your Github labels</h3>
+          </div>
           <form autocomplete="on">
-            <input id="targetOwnerRepo" type="url" class="input-block form-control" placeholder="Owner:Repo" onchange="copyToBelow(this)">
+            <input id="targetOwnerRepo" type="url" class="input-block form-control" placeholder="Owner:Repo"
+              onchange="copyToBelow(this)">
             <script>
               function copyToBelow(element) {
                 document.getElementById('targetUsername').value = element.value.split(':')[0];
               }
             </script>
-            <input id="targetUsername" type="url" class="input-block form-control" placeholder="Username for authentication">
-            <input id="githubPassword" type="password" class="input-block form-control" placeholder="Personal access token">
-            <button id="button-list-labels" type="button" class="btn btn-block btn-outline-secondary" data-loading-text="Loading...">
+            <input id="targetUsername" type="url" class="input-block form-control"
+              placeholder="Username for authentication">
+            <input id="githubPassword" type="password" class="input-block form-control"
+              placeholder="Personal access token">
+            <button id="button-list-labels" type="button" class="btn btn-block btn-outline-secondary"
+              data-loading-text="Loading...">
               List labels in this repo
             </button>
-            <button id="commitButton" type="button" class="btn btn-outline-success btn-block" disabled data-loading-text="Commiting...">
+            <button id="commitButton" type="button" class="btn btn-outline-success btn-block" disabled
+              data-loading-text="Commiting...">
               Commit changes
             </button>
-            <button id="revert-button" type="button" class="btn btn-outline-warning btn-block" data-loading-text="Resetting...">
+            <button id="revert-button" type="button" class="btn btn-outline-warning btn-block"
+              data-loading-text="Resetting...">
               Revert to original
             </button>
-            <button id="deleteAllButton" type="button" class="btn btn-outline-danger btn-block" data-loading-text="Deleting...">
+            <button id="deleteAllButton" type="button" class="btn btn-outline-danger btn-block"
+              data-loading-text="Deleting...">
               Delete all labels
             </button>
           </form>
         </div>
 
         <div id="optionalCopyContainer" class="card bg-light card-body mb-3">
-          <h4>
-            Copy an existing repo's labels (Optional)
-          </h4>
+          <div class="card-header">
+            <h3>
+              Copy an existing repo's labels (Optional)
+            </h3>
+          </div>
           <div class="form-text text-muted">
             You can copy any repo's labels and then modify them before committing to your repo.
           </div>
@@ -95,46 +109,42 @@
         </div>
 
         <div class="card bg-light card-body mb-3">
-          <h3>Which repo is in use</h3>
-          <pre><span id="targetIndicator">Not using any yet!</span></pre>
-        </div>
-
-        <div>
-          <div class="card bg-light card-body mb-3">
-            <div class="card-header">
-              <h4>
-                How this web app works?
-              </h4>
-            </div>
-            <div id="collapse-card-token-safety">
-              <div class="card-body">
-                <p>
-                  This web app works by making cross-site requests to Github's API. You can also download this website and use it on your localhost.
-                </p>
-              </div>
+          <div class="card-header">
+            <h3>
+              How this web app works?
+            </h3>
+          </div>
+          <div id="collapse-card-token-safety">
+            <div class="card-body">
+              <p>
+                This web app works by making cross-site requests to Github's API. You can also download this website and
+                use it on your localhost.
+              </p>
             </div>
           </div>
+        </div>
 
-          <div class="card bg-light card-body mb-3">
-            <div class="card-header">
-              <h4>
-                Is my personal access token safe?
-              </h4>
-            </div>
-            <div>
-              <div class="card-body">
-                <p>
-                  This web app authenticates to Github API via <strong>HTTP Basic Authentication</strong>, but all API calls are done over <strong>SSL</strong>, so your personal access token is safe.
-                </p>
-                <p>
-                  Although you can use your password in lieu of a personal access token, it is highly encouraged to use a personal access token.
-                </p>
-                <p>
-                  <a href="https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line"
-                    target="_blank">How to create a personal access token.
-                  </a>
-                </p>
-              </div>
+        <div class="card bg-light card-body mb-3">
+          <div class="card-header">
+            <h3>
+              Is my personal access token safe?
+            </h3>
+          </div>
+          <div>
+            <div class="card-body">
+              <p>
+                This web app authenticates to Github API via <strong>HTTP Basic Authentication</strong>, but all API
+                calls are done over <strong>SSL</strong>, so your personal access token is safe.
+              </p>
+              <p>
+                Although you can use your password in lieu of a personal access token, it is highly encouraged to use a
+                personal access token.
+              </p>
+              <p>
+                <a href="https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line"
+                  target="_blank">How to create a personal access token.
+                </a>
+              </p>
             </div>
           </div>
         </div>
@@ -143,11 +153,21 @@
 
       <div class="col-12 col-md-6">
         <div class="card bg-light card-body mb-3">
-          <h3>Labels</h3>
-          <button id="addNewLabelEntryButton" type="button" class="btn btn-outline-success btn-block mb-3">
-            Add a new label
-          </button>
-          <form id="labelsForm" class="form-inline"></form>
+          <div class="card-header">
+            <h3>Which repo is in use</h3>
+          </div>
+          <pre><span id="targetIndicator">Not using any yet!</span></pre>
+        </div>
+        <div class="card bg-light card-body mb-3">
+          <div class="card-header">
+            <h3>Labels</h3>
+          </div>
+          <div class="card-body">
+            <button id="addNewLabelEntryButton" type="button" class="btn btn-outline-success btn-block mb-3">
+              Add a new label
+            </button>
+            <form id="labelsForm" class="form-inline"></form>
+          </div>
         </div>
       </div>
     </div>
@@ -161,8 +181,12 @@
   <script src="js/colorpicker.js"></script>
   <!-- <script src="js/bootstrap.bundle.js"></script> -->
   <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
-  <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js"
+    integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js"
+    integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9"
+    crossorigin="anonymous"></script>
   <script defer src="js/app.js"></script>
 
   <div id="loadingModal" class="modal fade" tabindex="-1" role="dialog">
