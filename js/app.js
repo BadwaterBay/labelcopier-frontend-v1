@@ -388,8 +388,8 @@ $(document).ready(function () {
           $(this).remove();
         }
         else {
-          $(this).children('.deleted').removeClass('hidden');
-          $(this).children().attr('disabled');
+          $(this).children().addClass('deleted');
+          $(this).children().attr('disabled', 'true');
           $(this).children(".recover-button").removeAttr('disabled');
           $(this).children('.delete-button').addClass('hidden');
           $(this).children('.recover-button').removeClass('hidden');
