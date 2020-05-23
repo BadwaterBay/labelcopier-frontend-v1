@@ -32,6 +32,7 @@
     integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
   <link href="css/colorpicker.css" rel="stylesheet" />
   <link href="css/app.css" rel="stylesheet" />
+  <link rel='icon' href='#' type='image/x-icon' />
 </head>
 
 <body>
@@ -57,24 +58,46 @@
           </div>
           <form>
             <div class="form-group">
-              <label for="targetOwner" class="bmd-label-floating">Repo owner</label>
-              <input type="url" class="form-control" id="targetOwner" onchange="copyToBelow(this)">
-              <span class="bmd-help">Such as: Badwater-Apps</span>
+              <label for="targetOwner" class="bmd-label-floating">
+                Repo owner
+              </label>
+              <input type="url" class="form-control" id="targetOwner" name="targetOwner">
+              <span class="bmd-help">
+                Such as: Badwater-Apps
+              </span>
             </div>
             <div class="form-group">
-              <label for="targetRepo" class="bmd-label-floating">Repo</label>
+              <label for="targetRepo" class="bmd-label-floating">
+                Repo
+              </label>
               <input type="url" class="form-control" id="targetRepo">
-              <span class="bmd-help">Such as: template-for-label-and-milestone-1</span>
+              <span class="bmd-help">
+                Such as: template-for-label-and-milestone-1
+              </span>
+            </div>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="checkOwnerOfRepo" onclick="copyToUsername(this.form)">
+                I'm the owner of the repo
+              </label>
             </div>
             <div class="form-group">
-              <label for="targetUsername" class="bmd-label-floating">Username for authentication</label>
-              <input type="url" class="form-control" id="targetUsername">
-              <span class="bmd-help">You can manage repos you own or have access to</span>
+              <label class="bmd-label-floating"  for="targetUsername">
+                Username for authentication
+              </label>
+              <input type="url" class="form-control" id="targetUsername" name="targetUsername">
+              <span class="bmd-help">
+                You can manage repos you own or have access to
+              </span>
             </div>
             <div class="form-group">
-              <label for="personalAccessToken" class="bmd-label-floating">Personal access token</label>
+              <label for="personalAccessToken" class="bmd-label-floating">
+                Personal access token
+              </label>
               <input type="password" class="form-control" id="personalAccessToken">
-              <span class="bmd-help">We don't store your personal access token</span>
+              <span class="bmd-help">
+                We don't store your personal access token
+              </span>
             </div>
           </form>
           <button id="button-list-labels" type="button" class="btn btn-block btn-outline-secondary"
@@ -205,12 +228,21 @@
     integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9"
     crossorigin="anonymous"></script>
   <script defer src="js/app.js"></script>
-  <script defer>
-    function copyToBelow(element) {
-      document.getElementById('targetUsername').value = element.value;
+  <script defer>    
+    function copyToUsername(f) {
+      if (f.checkOwnerOfRepo.checked === true) {
+        f.targetUsername.value = f.targetOwner.value;
+        f.targetUsername.disabled = true;
+      }
+      else {
+        f.targetUsername.value = '';
+        f.targetUsername.disabled = false;
+      }
     }
   </script>
-  <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+  <script>
+    $(document).ready(function () { $('body').bootstrapMaterialDesign(); });
+  </script>
 
   <div id="loadingModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
