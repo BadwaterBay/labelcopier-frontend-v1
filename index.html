@@ -23,8 +23,12 @@
   <title>Github Label Manager</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="author" content="github.com/Badwater-Apps">
-  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+  <meta name="author" content="github.com/Badwater-Apps" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+  <script async src="https://kit.fontawesome.com/8eb33a81c5.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet"
+    href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css"
+    integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
   <!-- <link href="css/bootstrap.css" rel="stylesheet"> -->
   <link href="css/colorpicker.css" rel="stylesheet" />
   <link href="css/app.css" rel="stylesheet" />
@@ -68,15 +72,15 @@
         <div id="optionalCopyContainer" class="card bg-light card-body mb-3">
           <button type="button" class="btn btn-block btn-secondary" data-toggle="collapse"
             data-target="#optionalCopyStuff">Copy an existing repo's labels (Optional)</button>
-          <span class="form-text text-muted">You can copy any repo's labels and then modify them before committing to your repo.</span>
+          <span class="form-text text-muted">You can copy any repo's labels and then modify them before committing to
+            your repo.</span>
           <div id="optionalCopyStuff" class="collapse">
             <form class="form-inline">
               <input id="copyUrl" type="url" class="input-block form-control mt-2" placeholder="Owner:Repo">
               <button id="copyFromRepoButton" type="button" class="btn btn-info btn-block"
                 data-loading-text="Adding...">Add</button>
               <button id="cloneFromRepoButton" type="button" class="btn btn-info btn-block"
-                data-loading-text="Cloning...">Delete
-                all existing labels and add</button>
+                data-loading-text="Cloning...">Delete all existing labels and add</button>
               <span class="form-text text-muted">Can be any repo, no password or token required for copying.</span>
             </form>
           </div>
@@ -167,7 +171,8 @@
         <button id="deleteAllButton" type="button" class="btn btn-danger btn-block mb-2"
           data-loading-text="Deleting...">Delete all labels</button>
         <form id="labelsForm" class="form-inline"></form>
-        <button id="addNewLabelEntryButton" type="button" class="btn btn-success btn-block mb-3">Add a new label</button>
+        <button id="addNewLabelEntryButton" type="button" class="btn btn-success btn-block mb-3">Add a new
+          label</button>
       </div>
     </div>
   </div>
@@ -176,11 +181,20 @@
   <!-- Le javascript
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
-  <script async src="https://kit.fontawesome.com/8eb33a81c5.js" crossorigin="anonymous"></script>
-  <script src="js/jquery.js"></script>
+  <!-- <script src="js/jquery.js"></script> -->
   <script src="js/colorpicker.js"></script>
   <!-- <script src="js/bootstrap.bundle.js"></script> -->
-  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js"
+    integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js"
+    integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9"
+    crossorigin="anonymous"></script>
+
+
   <script defer src="js/app.js"></script>
 
   <div id="loadingModal" class="modal fade" tabindex="-1" role="dialog">
