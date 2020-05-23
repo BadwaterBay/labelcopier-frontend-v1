@@ -1,0 +1,62 @@
+// sass --watch ./sass/app.scss:./css/app.min.css --style compressed
+
+body{
+  background-color: #fcfcfc;
+}
+
+.color-box input[type="text"]{
+  color: whitesmoke;
+}
+
+.label-entry{
+  padding-bottom: 10px;
+
+  > button {
+    margin-top: 0.25rem;
+  }
+}
+
+.hidden{
+  display: none;
+}
+
+.deleted{
+  color: #828282;
+
+  // &:disabled {
+  //   background-color: #e5e4e3;
+  // }
+}
+
+.uncommitted:before{
+  content: "* ";
+  margin-left: -9px;
+  float: left;
+}
+
+#content{
+  margin-top: 60px;
+}
+
+.label-fitting {
+  max-width: 75%;
+  min-width: 70%;
+  display: inline-flex;
+}
+
+.color-fitting {
+  max-width: 15%;
+  min-width: 4rem;
+}
+
+.description-fitting {
+  min-width: 100%;
+}
+
+#copyUrl {
+  width: 100%;
+}
+
+form > input {
+  margin-bottom: 0.5rem;
+}
