@@ -305,7 +305,7 @@ $(document).ready(function () {
         $(this).css('background-color', '#' + this.value);
       });
 
-    $('#labelsForm').append(newElementEntry);
+    $('#labelsForm').prepend(newElementEntry);
   }
 
   $('#addNewLabelEntryButton').click(function () {
