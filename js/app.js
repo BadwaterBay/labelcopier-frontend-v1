@@ -260,12 +260,15 @@ $(document).ready(function () {
 
     let newElementEntry = $('\
       <div class="label-entry ' + uncommittedSignClass + '" ' + action + '>\
+      <div class="card">\
+      <div class="card-body">\
       <input name="name" type="text" class="form-control input-sm label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
-      <span class="sharp-sign">#</span>\
       <input name="color" type="text" class="form-control input-sm color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
+      <input name="description" type="text" class="form-control input-sm description-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
+      </div>\
+      </div>\
       <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
       <button type="button" class="btn btn-success hidden recover-button"><i class="fas fa-history"></i></button>\
-      <input name="description" type="text" class="form-control input-sm description-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
       </div>\
     ');
 
