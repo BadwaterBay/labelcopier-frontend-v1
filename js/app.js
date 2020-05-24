@@ -255,7 +255,8 @@ $(document).ready(function () {
       $(this).addClass('hidden');
 
       if ($(this).siblings('[name="name"]').attr('orig-val') === $(this).siblings('[name="name"]').val() &&
-        $(this).siblings('[name="color"]').attr('orig-val') === $(this).siblings('[name="color"]').val()) {
+        $(this).siblings('[name="color"]').attr('orig-val') === $(this).siblings('[name="color"]').val() &&
+        $(this).siblings('[name="description"]').attr('orig-val') === $(this).siblings('[name="description"]').val()) {
         $(this).parent().attr('action', 'none');
       }
       else {
