@@ -67,14 +67,6 @@ body{
   opacity: .45;
 }
 
-// .deleted{
-//   color: #828282;
-
-//   &:disabled {
-//     background-color: #e5e4e3;
-//   }
-// }
-
 .uncommitted:before{
   content: "* ";
   margin-left: -12px;
@@ -83,8 +75,4 @@ body{
 
 #content{
   margin-top: 60px;
-}
-
-form > input {
-  margin-bottom: 0.5rem;
 }
