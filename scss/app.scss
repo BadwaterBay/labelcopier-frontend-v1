@@ -10,6 +10,7 @@ body{
 }
 
 .label-entry, .milestone-entry{
+  width: 100%;
   padding-bottom: 10px;
   display: grid;
   grid-template-columns: 0fr 1fr 50px;
