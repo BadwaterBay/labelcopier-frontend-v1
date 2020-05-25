@@ -263,7 +263,7 @@ $(document).ready(function () {
       <div class="card">\
       <div class="card-body">\
       <div class="flexbox-container">\
-      <input name="name" type="text" class="form-control title-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
+      <input name="name" type="text" class="form-control label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
       <input name="color" type="text" class="form-control color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
       </div>\
       <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
