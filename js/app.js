@@ -385,14 +385,6 @@ $(document).ready(function () {
 
   function createNewMilestoneEntry(milestone, mode) {
 
-    let action = ' action="none" ';
-    let uncommittedSignClass = '';
-
-    if (mode === 'copy' || mode === 'new') {
-      action = ' action="create" new="true" ';
-      uncommittedSignClass = ' uncommitted ';
-    }
-
     if (milestone === undefined || milestone === null) {
       milestone = {
         title: '',
@@ -401,6 +393,18 @@ $(document).ready(function () {
         due_on: '',
         number: null
       };
+    }
+
+    let action = ' action="none" ';
+    let uncommittedSignClass = '';
+
+    if (mode === 'copy' || mode === 'new') {
+      action = ' action="create" new="true" ';
+      uncommittedSignClass = ' uncommitted ';
+    }
+
+    if (mode === 'copy') {
+      milestone.number = null;
     }
 
     let origTitleVal = ' data-orig-val="' + milestone.title + '"';
