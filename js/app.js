@@ -218,7 +218,7 @@ $(document).ready(function () {
         writeLog('Deleted ' + kind + 'numbered: ' + nameForEntry);
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        writeLog('Deletion of label failed for: ' + nameForEntry + ' Error: ' + errorThrown);
+        writeLog('Deletion of ' + kind + ' failed for: ' + nameForEntry + ' Error: ' + errorThrown);
       }
     });
   }
@@ -259,16 +259,21 @@ $(document).ready(function () {
 
     let newElementEntry = $('\
       <div class="label-entry ' + uncommittedSignClass + '" ' + action + '>\
-      <input name="name" type="text" class="form-control input-sm label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
-      <span class="sharp-sign">#</span>\
-      <input name="color" type="text" class="form-control input-sm color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
+      <div class="card">\
+      <div class="card-body">\
+      <div class="flexbox-container">\
+      <input name="name" type="text" class="form-control label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
+      <input name="color" type="text" class="form-control color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
+      </div>\
+      <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
+      </div>\
+      </div>\
       <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
       <button type="button" class="btn btn-success hidden recover-button"><i class="fas fa-history"></i></button>\
-      <input name="description" type="text" class="form-control input-sm description-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
       </div>\
     ');
 
-    newElementEntry.children('.color-box').css('background-color', '#' + label.color);
+    newElementEntry.find('.color-box').css('background-color', '#' + label.color);
 
     newElementEntry.children(':input[orig-val]').change(function () {
 
@@ -296,8 +301,7 @@ $(document).ready(function () {
         $(this).parent().remove();
       }
       else {
-        $(this).siblings().addClass('deleted');
-        $(this).siblings().attr('disabled', 'true');
+        $(this).siblings('.card').addClass('deleted-card');
         $(this).siblings('.recover-button').removeAttr('disabled');
         $(this).addClass('hidden');
         $(this).parent().attr('action', 'delete');
@@ -311,13 +315,13 @@ $(document).ready(function () {
     });
 
     newElementEntry.children('.recover-button').click(function () {
-      $(this).siblings().removeClass('deleted');
-      $(this).siblings().removeAttr('disabled');
+      $(this).siblings('.card').removeClass('deleted-card');
       $(this).siblings('.delete-button').removeClass('hidden');
       $(this).addClass('hidden');
 
       if ($(this).siblings('[name="name"]').attr('orig-val') === $(this).siblings('[name="name"]').val() &&
-        $(this).siblings('[name="color"]').attr('orig-val') === $(this).siblings('[name="color"]').val()) {
+        $(this).siblings('[name="color"]').attr('orig-val') === $(this).siblings('[name="color"]').val() &&
+        $(this).siblings('[name="description"]').attr('orig-val') === $(this).siblings('[name="description"]').val()) {
         $(this).parent().attr('action', 'none');
       }
       else {
@@ -328,7 +332,7 @@ $(document).ready(function () {
     });
 
     //activate color picker on color-box field
-    newElementEntry.children('.color-box').ColorPicker({
+    newElementEntry.find('.color-box').ColorPicker({
       //http://www.eyecon.ro/colorpicker
       color: label.color,
       onSubmit: function (hsb, hex, rgb, el) {
@@ -406,13 +410,17 @@ $(document).ready(function () {
     let origDescriptionVal = ' orig-val="' + milestone.description + '"';
     let due_on = milestone.due_on;
     let number = milestone.number;
-
+    
     let newElementEntry = $('\
       <div class="milestone-entry ' + uncommittedSignClass + '" ' + action + ' data-number="' + number + '" data-state="' + state + '" data-due_on="' + due_on + '">\
-      <input name="title" type="text" class="form-control input-sm milestone-fitting" placeholder="Title" value="' + milestone.title + '" ' + origTitleVal + '>\
+      <div class="card">\
+      <div class="card-body">\
+      <input name="title" type="text" class="form-control title-fitting" placeholder="Title" value="' + milestone.title + '" ' + origTitleVal + '>\
+      <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + milestone.description + '" ' + origDescriptionVal + '>\
+      </div>\
+      </div>\
       <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
       <button type="button" class="btn btn-success hidden recover-button"><i class="fas fa-history"></i></button>\
-      <input name="description" type="text" class="form-control input-sm description-fitting" placeholder="Description" value="' + milestone.description + '" ' + origDescriptionVal + '>\
       </div>\
     ');
 
@@ -435,15 +443,13 @@ $(document).ready(function () {
       checkIfAnyActionNeeded();
       return;
     });
-
-    //Delete button
+    
     newElementEntry.children('.delete-button').click(function () {
       if ($(this).parent().attr('new') === 'true') {
         $(this).parent().remove();
       }
       else {
-        $(this).siblings().addClass('deleted');
-        $(this).siblings().attr('disabled', 'true');
+        $(this).siblings('.card').addClass('deleted-card');
         $(this).siblings('.recover-button').removeAttr('disabled');
         $(this).addClass('hidden');
         $(this).parent().attr('action', 'delete');
@@ -456,8 +462,7 @@ $(document).ready(function () {
     });
 
     newElementEntry.children('.recover-button').click(function () {
-      $(this).siblings().removeClass('deleted');
-      $(this).siblings().removeAttr('disabled');
+      $(this).siblings('.card').removeClass('deleted-card');
       $(this).siblings('.delete-button').removeClass('hidden');
       $(this).addClass('hidden');
 
@@ -524,39 +529,64 @@ $(document).ready(function () {
         $(this).remove();
       }
       else {
-        $(this).children().addClass('deleted');
-        $(this).children().attr('disabled', 'true');
+        $(this).children('.card').addClass('deleted-card');
         $(this).children(".recover-button").removeAttr('disabled');
         $(this).children('.delete-button').addClass('hidden');
         $(this).children('.recover-button').removeClass('hidden');
         $(this).attr('action', 'delete');
       }
     });
-    checkIfAnyActionNeeded();
   }
 
   $('#delete-all-labels').click(function () {
     clickToDeleteAllEntries('#form-labels');
-  })
+    checkIfAnyActionNeeded();
+  }
 
   $('#delete-all-milestones').click(function () {
     clickToDeleteAllEntries('#form-milestones');
+    checkIfAnyActionNeeded();
   })
 
-  $('#copy-milestones-from').click(function () {
-    let theButton = $(this);// dealing with closure
+  function clickToCopyEntriesFrom(kind) {
     let username = $('#copyFromOwner').val();
     let repo = $('#copyFromRepo').val();
 
     if (username && repo) {
-      apiCallGetEntries(username, repo, 'milestones', 'copy', function () {
-        theButton.button('reset');
+      apiCallGetEntries(username, repo, kind, 'copy', function () {
+        $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
     }
     else {
       alert("Please enter the repo owner and the repo");
-      theButton.button('reset');
+      $(this).button('reset');
     }
+  }
+
+  $('#copy-labels-from').click(function () {
+    clickToCopyEntriesFrom('labels');
+  });
+
+  $('#copy-milestones-from').click(function () {
+    clickToCopyEntriesFrom('milestones');
+  });
+
+  $('#delete-and-copy-labels-from').click(function () {
+    let username = $('#copyFromOwner').val();
+    let repo = $('#copyFromRepo').val();
+
+    if (username && repo) {
+      clickToDeleteAllEntries('#form-labels');
+      apiCallGetEntries(username, repo, 'labels', 'copy', function () {
+        $(this).button('reset');
+      });//set adduncommitted to true because those are coming from another repo
+    }
+    else {
+      alert("Please follow the format: \n\nusername:repo");
+      $(this).button('reset');
+    }
+
+    checkIfAnyActionNeeded();
   });
 
   $('#delete-and-copy-milestones-from').click(function () {
@@ -564,21 +594,7 @@ $(document).ready(function () {
     let repo = $('#copyFromRepo').val();
 
     if (username && repo) {
-      $("#form-milestones").children().each(function () {
-        if ($(this).attr('new') === 'true') {
-          $(this).remove();
-        }
-        else {
-          $(this).children().addClass('deleted');
-          $(this).children().attr('disabled', 'true');
-          $(this).children(".recover-button").removeAttr('disabled');
-          $(this).children('.delete-button').addClass('hidden');
-          $(this).children('.recover-button').removeClass('hidden');
-          $(this).attr('action', 'delete');
-        }
-
-      });
-
+      clickToDeleteAllEntries('#form-milestones');
       apiCallGetEntries(username, repo, 'milestones', 'copy', function () {
         $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
@@ -589,7 +605,7 @@ $(document).ready(function () {
     }
 
     checkIfAnyActionNeeded();
-  })
+  });
 
   $('#commit-to-target-repo').click(function () {
     let theButton = $(this);// dealing with closure
@@ -639,11 +655,6 @@ $(document).ready(function () {
       };
     }
     else if (kind === 'milestones') {
-      console.log('title: ' + jObjectEntry.children('[name="title"]').val());
-      console.log('description: ' + jObjectEntry.children('[name="description"]').val());
-      console.log('number: ' + jObjectEntry.attr('data-number'));
-      console.log('state: ' + jObjectEntry.attr('data-state'));
-      console.log('due_on: ' + jObjectEntry.attr('data-due_on'));
       return {
         title: jObjectEntry.children('[name="title"]').val(),
         state: jObjectEntry.attr('data-state'),
