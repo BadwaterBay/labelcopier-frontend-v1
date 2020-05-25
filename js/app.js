@@ -274,21 +274,22 @@ $(document).ready(function () {
     newElementEntry.find('.color-box').css('background-color', '#' + label.color);
 
     newElementEntry.find(':input[data-orig-val]').change(function () {
+      let that = $(this).parents('.label-entry');
 
       if ($(this).val() === $(this).attr('data-orig-val')) {
         // If this is unchanged
-        $(this).parent().parent().parent().parent().attr('action', 'none');
-        $(this).parent().parent().parent().parent().removeClass('uncommitted');
+        that.attr('action', 'none');
+        that.removeClass('uncommitted');
       }
       else {
         // If this is changed
-        if ($(this).parent().parent().parent().parent().attr('new') === 'true') {
-          $(this).parent().parent().parent().parent().attr('action', 'create');
+        if (that.attr('new') === 'true') {
+          that.attr('action', 'create');
         }
         else {
-          $(this).parent().parent().parent().parent().attr('action', 'update');
+          that.attr('action', 'update');
         }
-        $(this).parent().parent().parent().parent().addClass('uncommitted');
+        that.addClass('uncommitted');
       }
 
       checkIfAnyActionNeeded();
@@ -433,21 +434,22 @@ $(document).ready(function () {
     ');
 
     newElementEntry.find(':input[data-orig-val]').change(function () {
+      let that = $(this).parents('.label-entry');
 
       if ($(this).val() === $(this).attr('data-orig-val')) {
         //unchanged
-        $(this).parent().parent().parent().parent().attr('action', 'none');
-        $(this).parent().parent().parent().parent().removeClass('uncommitted');
+        that.attr('action', 'none');
+        that.removeClass('uncommitted');
       }
       else {
         //changed
-        if ($(this).parent().parent().parent().parent().attr('new') === 'true') {
-          $(this).parent().parent().parent().parent().attr('action', 'create');
+        if (that.attr('new') === 'true') {
+          that.attr('action', 'create');
         }
         else {
-          $(this).parent().parent().parent().parent().attr('action', 'update');
+          that.attr('action', 'update');
         }
-        $(this).parent().parent().parent().parent().addClass('uncommitted');
+        that.addClass('uncommitted');
       }
 
       checkIfAnyActionNeeded();
