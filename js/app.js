@@ -300,7 +300,7 @@ $(document).ready(function () {
         $(this).parent().remove();
       }
       else {
-        $(this).siblings('.card').addClass('disabled-card');
+        $(this).siblings('.card').addClass('deleted-card');
         $(this).siblings('.recover-button').removeAttr('disabled');
         $(this).addClass('hidden');
         $(this).parent().attr('action', 'delete');
@@ -314,7 +314,7 @@ $(document).ready(function () {
     });
 
     newElementEntry.children('.recover-button').click(function () {
-      $(this).siblings('.card').removeClass('disabled-card');
+      $(this).siblings('.card').removeClass('deleted-card');
       $(this).siblings('.delete-button').removeClass('hidden');
       $(this).addClass('hidden');
 
