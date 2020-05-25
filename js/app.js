@@ -274,22 +274,22 @@ $(document).ready(function () {
     newElementEntry.find('.color-box').css('background-color', '#' + label.color);
 
     newElementEntry.find(':input[data-orig-val]').change(function () {
-      let that = $(this).parents('.label-entry');
+      let $label = $(this).parents('.label-entry');
 
       if ($(this).val() === $(this).attr('data-orig-val')) {
         // If this is unchanged
-        that.attr('action', 'none');
-        that.removeClass('uncommitted');
+        $label.attr('action', 'none');
+        $label.removeClass('uncommitted');
       }
       else {
         // If this is changed
-        if (that.attr('new') === 'true') {
-          that.attr('action', 'create');
+        if ($label.attr('new') === 'true') {
+          $label.attr('action', 'create');
         }
         else {
-          that.attr('action', 'update');
+          $label.attr('action', 'update');
         }
-        that.addClass('uncommitted');
+        $label.addClass('uncommitted');
       }
 
       checkIfAnyActionNeeded();
@@ -434,22 +434,22 @@ $(document).ready(function () {
     ');
 
     newElementEntry.find(':input[data-orig-val]').change(function () {
-      let that = $(this).parents('.label-entry');
+      let $label = $(this).parents('.label-entry');
 
       if ($(this).val() === $(this).attr('data-orig-val')) {
         //unchanged
-        that.attr('action', 'none');
-        that.removeClass('uncommitted');
+        $label.attr('action', 'none');
+        $label.removeClass('uncommitted');
       }
       else {
         //changed
-        if (that.attr('new') === 'true') {
-          that.attr('action', 'create');
+        if ($label.attr('new') === 'true') {
+          $label.attr('action', 'create');
         }
         else {
-          that.attr('action', 'update');
+          $label.attr('action', 'update');
         }
-        that.addClass('uncommitted');
+        $label.addClass('uncommitted');
       }
 
       checkIfAnyActionNeeded();
