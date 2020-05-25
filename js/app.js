@@ -76,7 +76,7 @@ $(document).ready(function () {
           response.forEach(e => {
             if (kind === 'labels') {
               e.color = e.color.toUpperCase();
-              createNewLabelEntry(e, mode);              
+              createNewLabelEntry(e, mode);
             }
             else if (kind === 'milestones') {
               createNewMilestoneEntry(e, mode)
@@ -121,7 +121,39 @@ $(document).ready(function () {
     checkIfAnyActionNeeded();
   }
 
+  function assignAPICallSign(entryObject, kind) {
+    let apiCallSign;
+    if (kind === 'labels') {
+      apiCallSign = entryObject.name;
+    }
+    else if (kind === 'milestones') {
+      apiCallSign = entryObject.number;
+    }
+    else {
+      apiCallSign = 'There\'s a bug in function assignAPICallSign!';
+    }
+    console.log(apiCallSign);
+    return apiCallSign;
+  };
+
+  function assignNameForEntry(entryObject, kind) {
+    let nameForEntry;
+    if (kind === 'labels') {
+      nameForEntry = entryObject.name;
+    }
+    else if (kind === 'milestones') {
+      nameForEntry = entryObject.title;
+    }
+    else {
+      nameForEntry = 'There\'s a bug in function assignAPICallSign!';
+    }
+    console.log(nameForEntry);
+    return nameForEntry;
+  };
+
   function apiCallCreateEntries(entryObject, kind, callback) {
+    let nameForEntry = assignNameForEntry(entryObject, kind);
+    
     $.ajax({
       type: "POST",
       url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind,
@@ -132,30 +164,10 @@ $(document).ready(function () {
         if (typeof callback === 'function') {
           callback(response);
         }
-        let entryName;
-        if (kind === 'labels') {
-          entryName = entryObject.name;
-        }
-        else if (kind === 'milestones') {
-          entryName = entryObject.title;
-        }
-        else {
-          entryName = 'There\'s a bug in function apiCallCreateEntries!';
-        }
-        writeLog('Created ' + kind + ': ' + entryName);
+        writeLog('Created ' + kind + ': ' + nameForEntry);
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        let entryName;
-        if (kind === 'labels') {
-          entryName = entryObject.name;
-        }
-        else if (kind === 'milestones') {
-          entryName = entryObject.title;
-        }
-        else {
-          entryName = 'There\'s a bug in function apiCallCreateEntries!';
-        }
-        writeLog('Creation of ' + kind + ' failed for: ' + entryName + ' Error: ' + errorThrown);
+        writeLog('Creation of ' + kind + ' failed for: ' + nameForEntry + ' Error: ' + errorThrown);
       }
     });
   }
@@ -168,8 +180,7 @@ $(document).ready(function () {
       delete entryObject.originalName;
     }
     else if (kind === 'milestones') {
-      originalEntry =  entryObject.originalTitle;
-      delete entryObject.originalTitle;
+      originalEntry = entryObject.number;
     }
 
     $.ajax({
@@ -182,12 +193,8 @@ $(document).ready(function () {
         if (typeof callback === 'function') {
           callback(response);
         }
-        if (kind === 'labels') {
-          writeLog('Updated ' + kind + ': ' + originalEntry + ' => ' + entryObject.name);
-        }
-        else if (kind === 'milestones') {
-          writeLog('Updated ' + kind + ': ' + originalEntry + ' => ' + entryObject.title);
-        }
+        let apiCallSign = assignAPICallSign(entryObject, kind);
+        writeLog('Updated ' + kind + ': ' + originalEntry + ' => ' + apiCallSign);
       },
       error: function (jqXHR, textStatus, errorThrown) {
         writeLog('Update of' + kind + 'failed for: ' + originalEntry + ' Error: ' + errorThrown);
@@ -196,30 +203,22 @@ $(document).ready(function () {
   }
 
   function apiCallDeleteEntries(entryObject, kind, callback) {
-    let originalEntry;
-    if (kind === 'labels') {
-      originalEntry = entryObject.originalName;
-    }
-    else if (kind === 'milestones') {
-      originalEntry =  entryObject.originalTitle;
-    }
-    else {
-      console.log('Bug in function apiCallDeleteEntries!');
-    }
+    let apiCallSign = assignAPICallSign(entryObject, kind);
+    let nameForEntry = assignNameForEntry(entryObject, kind);
 
     $.ajax({
       type: "DELETE",
-      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind + '/' + originalEntry,
+      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind + '/' + apiCallSign,
       success: function (response) {
         // console.log("success: ");
         // console.log(response);
         if (typeof callback === 'function') {
           callback(response);
         }
-        writeLog('Deleted label' + kind + ': ' + originalEntry);
+        writeLog('Deleted ' + kind + 'numbered: ' + nameForEntry);
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        writeLog('Deletion of label failed for: ' + originalEntry + ' Error: ' + errorThrown);
+        writeLog('Deletion of label failed for: ' + nameForEntry + ' Error: ' + errorThrown);
       }
     });
   }
@@ -395,23 +394,27 @@ $(document).ready(function () {
     if (milestone === undefined || milestone === null) {
       milestone = {
         title: '',
-        description: ''
+        state: '',
+        description: '',
+        due_on: '',
+        number: null
       };
     }
 
     let origTitleVal = ' orig-val="' + milestone.title + '"';
+    let state = milestone.state;
     let origDescriptionVal = ' orig-val="' + milestone.description + '"';
+    let due_on = milestone.due_on;
+    let number = milestone.number;
 
     let newElementEntry = $('\
-      <div class="milestone-entry ' + uncommittedSignClass + '" ' + action + '>\
+      <div class="milestone-entry ' + uncommittedSignClass + '" ' + action + ' data-number="' + number + '" data-state="' + state + '" data-due_on="' + due_on + '">\
       <input name="title" type="text" class="form-control input-sm milestone-fitting" placeholder="Title" value="' + milestone.title + '" ' + origTitleVal + '>\
       <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
       <button type="button" class="btn btn-success hidden recover-button"><i class="fas fa-history"></i></button>\
       <input name="description" type="text" class="form-control input-sm description-fitting" placeholder="Description" value="' + milestone.description + '" ' + origDescriptionVal + '>\
       </div>\
     ');
-
-    // newElementEntry.children('.color-box').css('background-color', '#' + milestone.color);
 
     newElementEntry.children(':input[orig-val]').change(function () {
 
@@ -626,20 +629,27 @@ $(document).ready(function () {
   /**
   * Makes a label entry out of a div having the class .label-entry
   */
-  function serializeEntries(jObjectLabelEntry, kind) {
+  function serializeEntries(jObjectEntry, kind) {
     if (kind === 'labels') {
       return {
-        name: jObjectLabelEntry.children('[name="name"]').val(),
-        color: jObjectLabelEntry.children('[name="color"]').val(),
-        description: jObjectLabelEntry.children('[name="description"]').val(),
-        originalName: jObjectLabelEntry.children('[name="name"]').attr('orig-val')
+        name: jObjectEntry.children('[name="name"]').val(),
+        color: jObjectEntry.children('[name="color"]').val(),
+        description: jObjectEntry.children('[name="description"]').val(),
+        originalName: jObjectEntry.children('[name="name"]').attr('orig-val').val()
       };
     }
     else if (kind === 'milestones') {
+      console.log('title: ' + jObjectEntry.children('[name="title"]').val());
+      console.log('description: ' + jObjectEntry.children('[name="description"]').val());
+      console.log('number: ' + jObjectEntry.attr('data-number'));
+      console.log('state: ' + jObjectEntry.attr('data-state'));
+      console.log('due_on: ' + jObjectEntry.attr('data-due_on'));
       return {
-        title: jObjectLabelEntry.children('[name="title"]').val(),
-        description: jObjectLabelEntry.children('[name="description"]').val(),
-        originalName: jObjectLabelEntry.children('[name="name"]').attr('orig-val')
+        title: jObjectEntry.children('[name="title"]').val(),
+        state: jObjectEntry.attr('data-state'),
+        description: jObjectEntry.children('[name="description"]').val(),
+        due_on: jObjectEntry.attr('data-due_on'),
+        number: jObjectEntry.attr('data-number')
       };
     }
     else {
