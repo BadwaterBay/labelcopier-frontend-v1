@@ -394,10 +394,10 @@ $(document).ready(function () {
     if (milestone === undefined || milestone === null) {
       milestone = {
         title: '',
-        state: '',
+        state: 'open',
         description: '',
         due_on: '',
-        number: null
+        number: ''
       };
     }
 
