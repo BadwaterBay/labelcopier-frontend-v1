@@ -121,21 +121,6 @@ $(document).ready(function () {
     checkIfAnyActionNeeded();
   }
 
-  function assignAPICallSign(entryObject, kind) {
-    let apiCallSign;
-    if (kind === 'labels') {
-      apiCallSign = entryObject.name;
-    }
-    else if (kind === 'milestones') {
-      apiCallSign = entryObject.number;
-    }
-    else {
-      apiCallSign = 'There\'s a bug in function assignAPICallSign!';
-    }
-    console.log(apiCallSign);
-    return apiCallSign;
-  };
-
   function assignNameForEntry(entryObject, kind) {
     let nameForEntry;
     if (kind === 'labels') {
@@ -147,7 +132,6 @@ $(document).ready(function () {
     else {
       nameForEntry = 'There\'s a bug in function assignAPICallSign!';
     }
-    console.log(nameForEntry);
     return nameForEntry;
   };
 
@@ -167,25 +151,33 @@ $(document).ready(function () {
         writeLog('Created ' + kind + ': ' + nameForEntry);
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        writeLog('Creation of ' + kind + ' failed for: ' + nameForEntry + ' Error: ' + errorThrown);
+        writeLog('Creation of ' + kind + ' failed for: ' + nameForEntry + ' due to error: ' + errorThrown);
       }
     });
   }
 
-  function apiCallUpdateEntries(entryObject, kind, callback) {
-    let originalEntry;
-
+  function assignAPICallSign4Update(entryObject, kind) {
+    let apiCallSign;
     if (kind === 'labels') {
-      originalEntry = entryObject.originalName;
+      apiCallSign = entryObject.originalName;
       delete entryObject.originalName;
     }
     else if (kind === 'milestones') {
-      originalEntry = entryObject.number;
+      apiCallSign = entryObject.number;
     }
+    else {
+      apiCallSign = 'There\'s a bug in function assignAPICallSign4Update!';
+    }
+    return apiCallSign;
+  };
+
+  function apiCallUpdateEntries(entryObject, kind, callback) {
+    let apiCallSign = assignAPICallSign4Update(entryObject, kind);
+    let nameForEntry = assignNameForEntry(entryObject, kind);
 
     $.ajax({
       type: "PATCH",
-      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind + '/' + originalEntry,
+      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind + '/' + apiCallSign,
       data: JSON.stringify(entryObject),
       success: function (response) {
         // console.log("success: ");
@@ -193,17 +185,30 @@ $(document).ready(function () {
         if (typeof callback === 'function') {
           callback(response);
         }
-        let apiCallSign = assignAPICallSign(entryObject, kind);
-        writeLog('Updated ' + kind + ': ' + originalEntry + ' => ' + apiCallSign);
+        writeLog('Updated ' + kind + ': ' + apiCallSign + ' => ' + nameForEntry);
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        writeLog('Update of' + kind + 'failed for: ' + originalEntry + ' Error: ' + errorThrown);
+        writeLog('Update of ' + kind + ' failed for: ' + apiCallSign + ' due to error: ' + errorThrown);
       }
     });
   }
 
+  function assignAPICallSign4Delete(entryObject, kind) {
+    let apiCallSign;
+    if (kind === 'labels') {
+      apiCallSign = entryObject.name;
+    }
+    else if (kind === 'milestones') {
+      apiCallSign = entryObject.number;
+    }
+    else {
+      apiCallSign = 'There\'s a bug in function assignAPICallSign4Delete!';
+    }
+    return apiCallSign;
+  }
+
   function apiCallDeleteEntries(entryObject, kind, callback) {
-    let apiCallSign = assignAPICallSign(entryObject, kind);
+    let apiCallSign = assignAPICallSign4Delete(entryObject, kind);
     let nameForEntry = assignNameForEntry(entryObject, kind);
 
     $.ajax({
@@ -218,7 +223,7 @@ $(document).ready(function () {
         writeLog('Deleted ' + kind + ': ' + nameForEntry);
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        writeLog('Deletion of ' + kind + ' failed for: ' + nameForEntry + ' Error: ' + errorThrown);
+        writeLog('Deletion of ' + kind + ' failed for: ' + nameForEntry + ' due to error: ' + errorThrown);
       }
     });
   }
@@ -253,42 +258,48 @@ $(document).ready(function () {
       };
     }
 
-    let origNameVal = ' orig-val="' + label.name + '"';
-    let origColorVal = ' orig-val="' + label.color + '"';
-    let origDescriptionVal = ' orig-val="' + label.description + '"';
+    let origNameVal = ' data-orig-val="' + label.name + '"';
+    let origColorVal = ' data-orig-val="' + label.color + '"';
+    let origDescriptionVal = ' data-orig-val="' + label.description + '"';
 
     let newElementEntry = $('\
       <div class="label-entry ' + uncommittedSignClass + '" ' + action + '>\
-      <div class="card">\
-      <div class="card-body">\
-      <div class="flexbox-container">\
-      <input name="name" type="text" class="form-control label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
-      <input name="color" type="text" class="form-control color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
-      </div>\
-      <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
-      </div>\
-      </div>\
-      <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
-      <button type="button" class="btn btn-success hidden recover-button"><i class="fas fa-history"></i></button>\
-      </div>\
+        <div class="card">\
+          <div class="card-body">\
+            <div class="flexbox-container">\
+              <input name="name" type="text" class="form-control label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
+              <input name="color" type="text" class="form-control color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
+              <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
+            </div>\
+          </div>\
+        </div>\
+        <button type="button" class="btn btn-danger delete-button">\
+          <i class="fas fa-trash-alt"></i>\
+        </button>\
+        <button type="button" class="btn btn-success hidden recover-button">\
+          <i class="fas fa-history"></i>\
+        </button>\
+      <div>\
     ');
 
     newElementEntry.find('.color-box').css('background-color', '#' + label.color);
 
-    newElementEntry.children(':input[orig-val]').change(function () {
+    newElementEntry.find(':input[data-orig-val]').change(function () {
 
-      if ($(this).val() === $(this).attr('orig-val')) {//unchanged
-        $(this).parent().attr('action', 'none');
-        $(this).parent().removeClass('uncommitted');
+      if ($(this).val() === $(this).attr('data-orig-val')) {
+        //unchanged
+        $(this).parent().parent().parent().parent().attr('action', 'none');
+        $(this).parent().parent().parent().parent().removeClass('uncommitted');
       }
-      else {//changed
-        if ($(this).parent().attr('new') === 'true') {
-          $(this).parent().attr('action', 'create');
+      else {
+        //changed
+        if ($(this).parent().parent().parent().parent().attr('new') === 'true') {
+          $(this).parent().parent().parent().parent().attr('action', 'create');
         }
         else {
-          $(this).parent().attr('action', 'update');
+          $(this).parent().parent().parent().parent().attr('action', 'update');
         }
-        $(this).parent().addClass('uncommitted');
+        $(this).parent().parent().parent().parent().addClass('uncommitted');
       }
 
       checkIfAnyActionNeeded();
@@ -319,9 +330,9 @@ $(document).ready(function () {
       $(this).siblings('.delete-button').removeClass('hidden');
       $(this).addClass('hidden');
 
-      if ($(this).siblings('[name="name"]').attr('orig-val') === $(this).siblings('[name="name"]').val() &&
-        $(this).siblings('[name="color"]').attr('orig-val') === $(this).siblings('[name="color"]').val() &&
-        $(this).siblings('[name="description"]').attr('orig-val') === $(this).siblings('[name="description"]').val()) {
+      if ($(this).siblings('[name="name"]').attr('data-orig-val') === $(this).siblings('[name="name"]').val() &&
+        $(this).siblings('[name="color"]').attr('data-orig-val') === $(this).siblings('[name="color"]').val() &&
+        $(this).siblings('[name="description"]').attr('data-orig-val') === $(this).siblings('[name="description"]').val()) {
         $(this).parent().attr('action', 'none');
       }
       else {
@@ -342,9 +353,9 @@ $(document).ready(function () {
 
         //-----------------------------
         //well here goes the copy-paste because normal binding to 'change' doesn't work
-        // on newElementEntry.children().filter(':input[orig-val]').change(function...
+        // on newElementEntry.children().filter(':input[data-orig-val]').change(function...
         // since it is triggered programmatically
-        if ($(el).val() === $(el).attr('orig-val')) {
+        if ($(el).val() === $(el).attr('data-orig-val')) {
           $(el).parent().attr('action', 'none');
           $(el).parent().removeClass('uncommitted');
         }
@@ -401,43 +412,51 @@ $(document).ready(function () {
         state: 'open',
         description: '',
         due_on: '',
-        number: ''
+        number: null
       };
     }
 
-    let origTitleVal = ' orig-val="' + milestone.title + '"';
+    let origTitleVal = ' data-orig-val="' + milestone.title + '"';
     let state = milestone.state;
-    let origDescriptionVal = ' orig-val="' + milestone.description + '"';
+    let origDescriptionVal = ' data-orig-val="' + milestone.description + '"';
     let due_on = milestone.due_on;
     let number = milestone.number;
     
     let newElementEntry = $('\
       <div class="milestone-entry ' + uncommittedSignClass + '" ' + action + ' data-number="' + number + '" data-state="' + state + '" data-due_on="' + due_on + '">\
-      <div class="card">\
-      <div class="card-body">\
-      <input name="title" type="text" class="form-control title-fitting" placeholder="Title" value="' + milestone.title + '" ' + origTitleVal + '>\
-      <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + milestone.description + '" ' + origDescriptionVal + '>\
-      </div>\
-      </div>\
-      <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
-      <button type="button" class="btn btn-success hidden recover-button"><i class="fas fa-history"></i></button>\
+        <div class="card">\
+          <div class="card-body">\
+            <div class="flexbox-container">\
+              <input name="title" type="text" class="form-control title-fitting" placeholder="Title" value="' + milestone.title + '" ' + origTitleVal + '>\
+              <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + milestone.description + '" ' + origDescriptionVal + '>\
+            </div>\
+          </div>\
+        </div>\
+        <button type="button" class="btn btn-danger delete-button">\
+          <i class="fas fa-trash-alt"></i>\
+        </button>\
+        <button type="button" class="btn btn-success hidden recover-button">\
+          <i class="fas fa-history"></i>\
+        </button>\
       </div>\
     ');
 
-    newElementEntry.children(':input[orig-val]').change(function () {
+    newElementEntry.find(':input[data-orig-val]').change(function () {
 
-      if ($(this).val() === $(this).attr('orig-val')) {//unchanged
-        $(this).parent().attr('action', 'none');
-        $(this).parent().removeClass('uncommitted');
+      if ($(this).val() === $(this).attr('data-orig-val')) {
+        //unchanged
+        $(this).parent().parent().parent().parent().attr('action', 'none');
+        $(this).parent().parent().parent().parent().removeClass('uncommitted');
       }
-      else {//changed
-        if ($(this).parent().attr('new') === 'true') {
-          $(this).parent().attr('action', 'create');
+      else {
+        //changed
+        if ($(this).parent().parent().parent().parent().attr('new') === 'true') {
+          $(this).parent().parent().parent().parent().attr('action', 'create');
         }
         else {
-          $(this).parent().attr('action', 'update');
+          $(this).parent().parent().parent().parent().attr('action', 'update');
         }
-        $(this).parent().addClass('uncommitted');
+        $(this).parent().parent().parent().parent().addClass('uncommitted');
       }
 
       checkIfAnyActionNeeded();
@@ -466,8 +485,8 @@ $(document).ready(function () {
       $(this).siblings('.delete-button').removeClass('hidden');
       $(this).addClass('hidden');
 
-      if ($(this).siblings('[name="title"]').attr('orig-val') === $(this).siblings('[name="title"]').val() &&
-        $(this).siblings('[name="description"]').attr('orig-val') === $(this).siblings('[name="description"]').val()) {
+      if ($(this).siblings('[name="title"]').attr('data-orig-val') === $(this).siblings('[name="title"]').val() &&
+        $(this).siblings('[name="description"]').attr('data-orig-val') === $(this).siblings('[name="description"]').val()) {
         $(this).parent().attr('action', 'none');
       }
       else {
@@ -648,20 +667,30 @@ $(document).ready(function () {
   function serializeEntries(jObjectEntry, kind) {
     if (kind === 'labels') {
       return {
-        name: jObjectEntry.children('[name="name"]').val(),
-        color: jObjectEntry.children('[name="color"]').val(),
-        description: jObjectEntry.children('[name="description"]').val(),
-        originalName: jObjectEntry.children('[name="name"]').attr('orig-val').val()
+        name: jObjectEntry.find('[name="name"]').val(),
+        color: jObjectEntry.find('[name="color"]').val(),
+        description: jObjectEntry.find('[name="description"]').val(),
+        originalName: jObjectEntry.find('[name="name"]').attr('data-orig-val')
       };
     }
     else if (kind === 'milestones') {
-      return {
-        title: jObjectEntry.children('[name="title"]').val(),
-        state: jObjectEntry.attr('data-state'),
-        description: jObjectEntry.children('[name="description"]').val(),
-        due_on: jObjectEntry.attr('data-due_on'),
-        number: jObjectEntry.attr('data-number')
-      };
+      if (jObjectEntry.attr('data-number') !== 'null') {
+        return {
+          title: jObjectEntry.find('[name="title"]').val(),
+          // state: jObjectEntry.attr('data-state'),
+          description: jObjectEntry.find('[name="description"]').val(),
+          // due_on: jObjectEntry.attr('data-due_on'),
+          number: parseInt(jObjectEntry.attr('data-number'))
+        };
+      }
+      else {
+        return {
+          title: jObjectEntry.find('[name="title"]').val(),
+          // state: jObjectEntry.attr('data-state'),
+          description: jObjectEntry.find('[name="description"]').val()
+          // due_on: jObjectEntry.attr('data-due_on')
+        };
+      }
     }
     else {
       console.log('Bug in function serializeEntries!');
@@ -742,7 +771,9 @@ $(document).ready(function () {
 
     //reload labels after changes
     clearAllLabels();
+    clearAllMilestones();
     apiCallGetEntries(targetOwner, targetRepo, 'labels', 'list');
+    apiCallGetEntries(targetOwner, targetRepo, 'milestones', 'list');
   });
 
   /* ========== The rest is BASE64 STUFF ========== */
@@ -873,7 +904,5 @@ $(document).ready(function () {
 
       return string;
     }
-
   };//end of Base64
-
 }); //end of doc ready
