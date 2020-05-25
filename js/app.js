@@ -533,31 +533,57 @@ $(document).ready(function () {
         $(this).attr('action', 'delete');
       }
     });
-    checkIfAnyActionNeeded();
   }
 
   $('#delete-all-labels').click(function () {
     clickToDeleteAllEntries('#form-labels');
+    checkIfAnyActionNeeded();
   })
 
   $('#delete-all-milestones').click(function () {
     clickToDeleteAllEntries('#form-milestones');
+    checkIfAnyActionNeeded();
   })
 
-  $('#copy-milestones-from').click(function () {
-    let theButton = $(this);// dealing with closure
+  function clickToCopyEntriesFrom(selector) {
     let username = $('#copyFromOwner').val();
     let repo = $('#copyFromRepo').val();
 
     if (username && repo) {
-      apiCallGetEntries(username, repo, 'milestones', 'copy', function () {
-        theButton.button('reset');
+      apiCallGetEntries(username, repo, selector, 'copy', function () {
+        $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
     }
     else {
       alert("Please enter the repo owner and the repo");
-      theButton.button('reset');
+      $(this).button('reset');
     }
+  }
+
+  $('#copy-labels-from').click(function () {
+    clickToCopyEntriesFrom('labels');
+  });
+
+  $('#copy-milestones-from').click(function () {
+    clickToCopyEntriesFrom('milestones');
+  });
+
+  $('#delete-and-copy-labels-from').click(function () {
+    let username = $('#copyFromOwner').val();
+    let repo = $('#copyFromRepo').val();
+
+    if (username && repo) {
+      clickToDeleteAllEntries('#form-labels');
+      apiCallGetEntries(username, repo, 'labels', 'copy', function () {
+        $(this).button('reset');
+      });//set adduncommitted to true because those are coming from another repo
+    }
+    else {
+      alert("Please follow the format: \n\nusername:repo");
+      $(this).button('reset');
+    }
+
+    checkIfAnyActionNeeded();
   });
 
   $('#delete-and-copy-milestones-from').click(function () {
@@ -565,21 +591,7 @@ $(document).ready(function () {
     let repo = $('#copyFromRepo').val();
 
     if (username && repo) {
-      $("#form-milestones").children().each(function () {
-        if ($(this).attr('new') === 'true') {
-          $(this).remove();
-        }
-        else {
-          $(this).children().addClass('deleted');
-          $(this).children().attr('disabled', 'true');
-          $(this).children(".recover-button").removeAttr('disabled');
-          $(this).children('.delete-button').addClass('hidden');
-          $(this).children('.recover-button').removeClass('hidden');
-          $(this).attr('action', 'delete');
-        }
-
-      });
-
+      clickToDeleteAllEntries('#form-milestones');
       apiCallGetEntries(username, repo, 'milestones', 'copy', function () {
         $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
@@ -590,7 +602,7 @@ $(document).ready(function () {
     }
 
     checkIfAnyActionNeeded();
-  })
+  });
 
   $('#commit-to-target-repo').click(function () {
     let theButton = $(this);// dealing with closure
