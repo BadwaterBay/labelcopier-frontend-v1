@@ -1,12 +1,12 @@
 <!--
-  This file is part of github-label-manager.
+  This file is part of github-label-manager-2.
 
-  github-label-manager is free software: you can redistribute it and/or modify
+  github-label-manager-2 is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  github-label-manager is distributed in the hope that it will be useful,
+  github-label-manager-2 is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
@@ -20,14 +20,17 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Github Label Manager</title>
+  <title>
+    Github Label Manager
+  </title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="author" content="github.com/Badwater-Apps" />
-  <!-- <link href="css/bootstrap.css" rel="stylesheet"> -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700%7CMaterial+Icons">
   <script async src="https://kit.fontawesome.com/8eb33a81c5.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+  <link rel="stylesheet"
+    href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css"
+    integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
   <link href="css/colorpicker.css" rel="stylesheet" />
   <link href="css/app.min.css" rel="stylesheet" />
   <link rel='icon' href='#' type='image/x-icon' />
@@ -35,11 +38,14 @@
 
 <body>
   <a href="https://github.com/Badwater-Apps/github-label-manager-2" target="_blank">
-    <img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1031;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
+    <img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1031;"
+      src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
   </a>
   <div class="navbar sticky-top navbar-expand-md navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="#">Github&nbsp;Label&nbsp;Manager</a>
+      <a class="navbar-brand" href="#">
+        Github&nbsp;Label&nbsp;Manager
+      </a>
       <ul class="navbar-nav mr-auto">
         <!-- <li class="nav-item"><a class="nav-link" href="">Item</a></li> -->
       </ul>
@@ -51,7 +57,9 @@
       <div class="col-12 col-md-6">
         <div class="card bg-light card-body mb-3">
           <div class="card-header">
-            <h3>Manage your Github labels</h3>
+            <h3>
+              Manage your Github labels and milestones
+            </h3>
           </div>
           <form>
             <div class="form-group">
@@ -97,22 +105,28 @@
               </span>
             </div>
           </form>
-          <button id="list-all-labels" type="button" class="btn btn-block btn-outline-secondary" data-loading-text="Loading...">
+          <button id="list-all-labels" type="button" class="btn btn-block btn-outline-secondary"
+            data-loading-text="Loading...">
             List labels in this repo
           </button>
-          <button id="list-all-milestones" type="button" class="btn btn-block btn-outline-secondary" data-loading-text="Loading...">
+          <button id="list-all-milestones" type="button" class="btn btn-block btn-outline-secondary"
+            data-loading-text="Loading...">
             List milestones in this repo
           </button>
-          <button id="commit-to-target-repo" type="button" class="btn btn-outline-success btn-block" disabled data-loading-text="Commiting...">
+          <button id="commit-to-target-repo" type="button" class="btn btn-outline-success btn-block" disabled
+            data-loading-text="Commiting...">
             Commit changes
           </button>
-          <button id="revert-to-original" type="button" class="btn btn-outline-warning btn-block" data-loading-text="Resetting...">
+          <button id="revert-to-original" type="button" class="btn btn-outline-warning btn-block"
+            data-loading-text="Resetting...">
             Revert to original
           </button>
-          <button id="delete-all-labels" type="button" class="btn btn-outline-danger btn-block" data-loading-text="Deleting...">
+          <button id="delete-all-labels" type="button" class="btn btn-outline-danger btn-block"
+            data-loading-text="Deleting...">
             Delete all labels
           </button>
-          <button id="delete-all-milestones" type="button" class="btn btn-outline-danger btn-block" data-loading-text="Deleting...">
+          <button id="delete-all-milestones" type="button" class="btn btn-outline-danger btn-block"
+            data-loading-text="Deleting...">
             Delete all milestones
           </button>
         </div>
@@ -129,27 +143,38 @@
           <div>
             <form>
               <div class="form-group">
-                <label for="targetOwner" class="bmd-label-floating">Repo owner</label>
+                <label for="targetOwner" class="bmd-label-floating">
+                  Repo owner
+                </label>
                 <input type="text" class="form-control" id="copyFromOwner">
-                <span class="bmd-help">Such as: Badwater-Apps</span>
+                <span class="bmd-help">
+                  Such as: Badwater-Apps
+                </span>
               </div>
               <div class="form-group">
-                <label for="targetRepo" class="bmd-label-floating">Repo</label>
+                <label for="targetRepo" class="bmd-label-floating">
+                  Repo
+                </label>
                 <input type="text" class="form-control" id="copyFromRepo">
-                <span class="bmd-help">Such as: template-for-label-and-milestone-1</span>
+                <span class="bmd-help">
+                  Such as: template-for-label-and-milestone-1
+                </span>
               </div>
             </form>
-            <button id="copy-labels-from" type="button" class="btn btn-outline-info btn-block" data-loading-text="Adding...">
+            <button id="copy-labels-from" type="button" class="btn btn-outline-info btn-block"
+              data-loading-text="Adding...">
               Copy labels
             </button>
             <button id="copy-milestones-from" type="button" class="btn btn-outline-info btn-block"
               data-loading-text="Adding...">
               Copy milestones
             </button>
-            <button id="delete-and-copy-labels-from" type="button" class="btn btn-outline-info btn-block" data-loading-text="Cloning...">
+            <button id="delete-and-copy-labels-from" type="button" class="btn btn-outline-info btn-block"
+              data-loading-text="Cloning...">
               Delete all existing labels and copy
             </button>
-            <button id="delete-and-copy-milestones-from" type="button" class="btn btn-outline-info btn-block" data-loading-text="Cloning...">
+            <button id="delete-and-copy-milestones-from" type="button" class="btn btn-outline-info btn-block"
+              data-loading-text="Cloning...">
               Delete all existing milestones and copy
             </button>
           </div>
@@ -160,13 +185,17 @@
       <div class="col-12 col-md-6">
         <div class="card bg-light card-body mb-3">
           <div class="card-header">
-            <h3>Which repo is in use?</h3>
+            <h3>
+              Which repo is in use?
+            </h3>
           </div>
           <span id="which-repo-in-use">Not using any yet!</span>
         </div>
         <div class="card bg-light card-body mb-3">
           <div class="card-header">
-            <h3>Labels</h3>
+            <h3>
+              Labels
+            </h3>
           </div>
           <div class="card-body">
             <button id="add-new-label-entry" type="button" class="btn btn-outline-success btn-block mb-3">
@@ -177,7 +206,9 @@
         </div>
         <div class="card bg-light card-body mb-3">
           <div class="card-header">
-            <h3>Milestones</h3>
+            <h3>
+              Milestones
+            </h3>
           </div>
           <div class="card-body">
             <button id="add-new-milestone-entry" type="button" class="btn btn-outline-success btn-block mb-3">
@@ -220,7 +251,8 @@
               </p>
               <p>
                 <a href="https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line"
-                  target="_blank">How to create a personal access token.
+                  target="_blank">
+                  How to create a personal access token?
                 </a>
               </p>
             </div>
@@ -231,15 +263,14 @@
   </div>
   <!-- /container -->
 
-  <!-- Le javascript
-    ================================================== -->
-  <!-- Placed at the end of the document so the pages load faster -->
-  <script src="js/jquery.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="js/colorpicker.js"></script>
-  <!-- <script src="js/bootstrap.bundle.js"></script> -->
-  <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
-  <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js"
+    integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js"
+    integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9"
+    crossorigin="anonymous"></script>
   <script defer src="js/app.js"></script>
   <script defer>
     function copyToUsername(f) {
@@ -253,7 +284,7 @@
       }
     }
   </script>
-  <script>
+  <script defer>
     $(document).ready(function () { $('body').bootstrapMaterialDesign(); });
   </script>
 
@@ -267,7 +298,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <p>Commiting…</p>
+          <p>Commiting...</p>
         </div>
       </div>
     </div>

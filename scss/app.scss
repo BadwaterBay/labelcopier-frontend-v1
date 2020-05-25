@@ -1,3 +1,4 @@
+// Use this command to let Sass watch for changes and output new css files:
 // sass --watch ./scss/app.scss:./css/app.min.css --style compressed
 
 body{
@@ -81,10 +82,6 @@ body{
 
 #content{
   margin-top: 60px;
-}
-
-#copyUrl {
-  width: 100%;
 }
 
 form > input {
