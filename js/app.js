@@ -111,11 +111,11 @@ $(document).ready(function () {
         }
       }
     });
+    checkIfAnyActionNeeded();
   }
 
   function apiCallGetEntries(username, repo, kind, mode, callback) {
     apiCallGetEntriesRecursive(username, repo, kind, mode, callback, 1);
-    checkIfAnyActionNeeded();
   }
 
   function assignNameForEntry(entryObject, kind) {
@@ -226,7 +226,7 @@ $(document).ready(function () {
   function clearAllLabels() {
     $('#form-labels').text('');
     $('#commit-to-target-repo').text('Commit changes');
-    $('#commit-to-target-repo').attr('disabled', 'disabled');
+    $('#commit-to-target-repo').attr('disabled', true);
   }
 
   function createNewLabelEntry(label, mode) {
@@ -380,7 +380,7 @@ $(document).ready(function () {
   function clearAllMilestones() {
     $('#form-milestones').text('');
     $('#commit-to-target-repo').text('Commit changes');
-    $('#commit-to-target-repo').attr('disabled', 'disabled');
+    $('#commit-to-target-repo').attr("disabled", true);
   }
 
   function createNewMilestoneEntry(milestone, mode) {
@@ -539,16 +539,15 @@ $(document).ready(function () {
         $(this).attr('action', 'delete');
       }
     });
+    checkIfAnyActionNeeded();
   }
 
   $('#delete-all-labels').click(function () {
     clickToDeleteAllEntries('#form-labels');
-    checkIfAnyActionNeeded();
   })
 
   $('#delete-all-milestones').click(function () {
     clickToDeleteAllEntries('#form-milestones');
-    checkIfAnyActionNeeded();
   })
 
   function clickToCopyEntriesFrom(kind) {
@@ -564,6 +563,7 @@ $(document).ready(function () {
       alert("Please enter the repo owner and the repo");
       $(this).button('reset');
     }
+    checkIfAnyActionNeeded();
   }
 
   $('#copy-labels-from').click(function () {
@@ -575,17 +575,17 @@ $(document).ready(function () {
   });
 
   $('#delete-and-copy-labels-from').click(function () {
-    let username = $('#copyFromOwner').val();
+    let owner = $('#copyFromOwner').val();
     let repo = $('#copyFromRepo').val();
 
-    if (username && repo) {
+    if (owner && repo) {
       clickToDeleteAllEntries('#form-labels');
-      apiCallGetEntries(username, repo, 'labels', 'copy', function () {
+      apiCallGetEntries(owner, repo, 'labels', 'copy', function () {
         $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
     }
     else {
-      alert("Please follow the format: \n\nusername:repo");
+      alert("Please enter the repo owner and the repo that you want to copy from");
       $(this).button('reset');
     }
 
@@ -593,17 +593,17 @@ $(document).ready(function () {
   });
 
   $('#delete-and-copy-milestones-from').click(function () {
-    let username = $('#copyFromOwner').val();
+    let owner = $('#copyFromOwner').val();
     let repo = $('#copyFromRepo').val();
 
-    if (username && repo) {
+    if (owner && repo) {
       clickToDeleteAllEntries('#form-milestones');
-      apiCallGetEntries(username, repo, 'milestones', 'copy', function () {
+      apiCallGetEntries(owner, repo, 'milestones', 'copy', function () {
         $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
     }
     else {
-      alert("Please follow the format: \n\nusername:repo");
+      alert("Please enter the repo owner and the repo that you want to copy from");
       $(this).button('reset');
     }
 
@@ -658,17 +658,14 @@ $(document).ready(function () {
   function checkIfAnyActionNeeded() {
     // returns true if any change has been made and activates or disactivates commit button accordingly
 
-    let isNeeded = $('.label-entry:not([action="none"])').length > 0 | $('.milestone-entry:not([action="none"])').length > 0;
+    let isNeeded = $('.label-entry:not([action="none"])').length > 0 || $('.milestone-entry:not([action="none"])').length > 0;
 
     if (isNeeded) {
       $('#commit-to-target-repo').removeAttr('disabled');
-      $('#commit-to-target-repo').removeClass('disabled');
     }
     else {
-      $('#commit-to-target-repo').attr('disabled', 'disabled');
+      $('#commit-to-target-repo').attr("disabled", true);
     }
-
-    return isNeeded;
   }
 
   function commit() {
