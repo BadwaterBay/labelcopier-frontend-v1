@@ -262,9 +262,9 @@ $(document).ready(function () {
       <div class="label-entry ' + uncommittedSignClass + '" ' + action + '>\
       <div class="card">\
       <div class="card-body">\
-      <input name="name" type="text" class="form-control input-sm label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
-      <input name="color" type="text" class="form-control input-sm color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
-      <input name="description" type="text" class="form-control input-sm description-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
+      <input name="name" type="text" class="form-control label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
+      <input name="color" type="text" class="form-control color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
+      <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
       </div>\
       </div>\
       <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
@@ -272,7 +272,7 @@ $(document).ready(function () {
       </div>\
     ');
 
-    newElementEntry.children('.color-box').css('background-color', '#' + label.color);
+    newElementEntry.find('.color-box').css('background-color', '#' + label.color);
 
     newElementEntry.children(':input[orig-val]').change(function () {
 
@@ -332,7 +332,7 @@ $(document).ready(function () {
     });
 
     //activate color picker on color-box field
-    newElementEntry.children('.color-box').ColorPicker({
+    newElementEntry.find('.color-box').ColorPicker({
       //http://www.eyecon.ro/colorpicker
       color: label.color,
       onSubmit: function (hsb, hex, rgb, el) {
@@ -407,10 +407,10 @@ $(document).ready(function () {
 
     let newElementEntry = $('\
       <div class="milestone-entry ' + uncommittedSignClass + '" ' + action + '>\
-      <input name="title" type="text" class="form-control input-sm milestone-fitting" placeholder="Title" value="' + milestone.title + '" ' + origTitleVal + '>\
+      <input name="title" type="text" class="form-control milestone-fitting" placeholder="Title" value="' + milestone.title + '" ' + origTitleVal + '>\
       <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
       <button type="button" class="btn btn-success hidden recover-button"><i class="fas fa-history"></i></button>\
-      <input name="description" type="text" class="form-control input-sm description-fitting" placeholder="Description" value="' + milestone.description + '" ' + origDescriptionVal + '>\
+      <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + milestone.description + '" ' + origDescriptionVal + '>\
       </div>\
     ');
 

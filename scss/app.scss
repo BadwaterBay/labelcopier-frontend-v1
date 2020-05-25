@@ -10,10 +10,33 @@ body{
 
 .label-entry{
   padding-bottom: 10px;
+  display: grid;
+  grid-template-columns: 0fr 9fr 1fr;
+  grid-column-gap: 5px;
+  // align-items: center;
 
-  > button {
-    margin-top: 0.25rem;
+  .card {
+    grid-column: 2 / 3;
   }
+
+  .label-fitting {
+    max-width: 75%;
+    min-width: 70%;
+    display: inline-flex;
+  }
+  
+  .color-fitting {
+    max-width: 15%;
+    min-width: 4rem;
+  }
+  
+  .description-fitting {
+    min-width: 100%;
+  }
+
+  // button {
+  //   margin-top: 0.25rem;
+  // }
 }
 
 .hidden{
@@ -36,21 +59,6 @@ body{
 
 #content{
   margin-top: 60px;
-}
-
-.label-fitting {
-  max-width: 75%;
-  min-width: 70%;
-  display: inline-flex;
-}
-
-.color-fitting {
-  max-width: 15%;
-  min-width: 4rem;
-}
-
-.description-fitting {
-  min-width: 100%;
 }
 
 #copyUrl {
