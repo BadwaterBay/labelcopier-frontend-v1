@@ -205,7 +205,7 @@ $(document).ready(function () {
       apiCallSign = 'There\'s a bug in function assignAPICallSign4Delete!';
     }
     return apiCallSign;
-  };
+  }
 
   function apiCallDeleteEntries(entryObject, kind, callback) {
     let apiCallSign = assignAPICallSign4Delete(entryObject, kind);
