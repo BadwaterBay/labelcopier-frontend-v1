@@ -11,9 +11,8 @@ body{
 .label-entry{
   padding-bottom: 10px;
   display: grid;
-  grid-template-columns: 0fr 9fr 1fr;
-  grid-column-gap: 5px;
-  // align-items: center;
+  grid-template-columns: 0fr 1fr 50px;
+  align-items: stretch;
 
   .card {
     grid-column: 2 / 3;
@@ -23,20 +22,23 @@ body{
     max-width: 75%;
     min-width: 70%;
     display: inline-flex;
+    margin-right: 4px;
   }
   
   .color-fitting {
     max-width: 15%;
     min-width: 4rem;
+    text-align: center;
   }
   
   .description-fitting {
     min-width: 100%;
   }
 
-  // button {
-  //   margin-top: 0.25rem;
-  // }
+  button {
+    margin-bottom: 0;
+    margin-left: 0.25rem;
+  }
 }
 
 .hidden{
@@ -53,7 +55,7 @@ body{
 
 .uncommitted:before{
   content: "* ";
-  margin-left: -9px;
+  margin-left: -12px;
   float: left;
 }
 
