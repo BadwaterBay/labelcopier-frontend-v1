@@ -215,7 +215,7 @@ $(document).ready(function () {
         if (typeof callback === 'function') {
           callback(response);
         }
-        writeLog('Deleted ' + kind + 'numbered: ' + nameForEntry);
+        writeLog('Deleted ' + kind + ': ' + nameForEntry);
       },
       error: function (jqXHR, textStatus, errorThrown) {
         writeLog('Deletion of ' + kind + ' failed for: ' + nameForEntry + ' Error: ' + errorThrown);
@@ -541,7 +541,7 @@ $(document).ready(function () {
   $('#delete-all-labels').click(function () {
     clickToDeleteAllEntries('#form-labels');
     checkIfAnyActionNeeded();
-  }
+  })
 
   $('#delete-all-milestones').click(function () {
     clickToDeleteAllEntries('#form-milestones');
