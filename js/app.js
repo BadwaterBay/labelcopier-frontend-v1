@@ -263,7 +263,7 @@ $(document).ready(function () {
       <div class="card">\
       <div class="card-body">\
       <div class="flexbox-container">\
-      <input name="name" type="text" class="form-control label-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
+      <input name="name" type="text" class="form-control title-fitting" placeholder="Name" value="' + label.name + '" ' + origNameVal + '>\
       <input name="color" type="text" class="form-control color-fitting color-box" placeholder="Color"  value="' + label.color + '" ' + origColorVal + '>\
       </div>\
       <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + label.description + '" ' + origDescriptionVal + '>\
@@ -407,10 +407,14 @@ $(document).ready(function () {
 
     let newElementEntry = $('\
       <div class="milestone-entry ' + uncommittedSignClass + '" ' + action + '>\
-      <input name="title" type="text" class="form-control milestone-fitting" placeholder="Title" value="' + milestone.title + '" ' + origTitleVal + '>\
+      <div class="card">\
+      <div class="card-body">\
+      <input name="title" type="text" class="form-control title-fitting" placeholder="Title" value="' + milestone.title + '" ' + origTitleVal + '>\
+      <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + milestone.description + '" ' + origDescriptionVal + '>\
+      </div>\
+      </div>\
       <button type="button" class="btn btn-danger delete-button"><i class="fas fa-trash-alt"></i></button>\
       <button type="button" class="btn btn-success hidden recover-button"><i class="fas fa-history"></i></button>\
-      <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + milestone.description + '" ' + origDescriptionVal + '>\
       </div>\
     ');
 
@@ -442,8 +446,7 @@ $(document).ready(function () {
         $(this).parent().remove();
       }
       else {
-        $(this).siblings().addClass('deleted');
-        $(this).siblings().attr('disabled', 'true');
+        $(this).siblings('.card').addClass('deleted-card');
         $(this).siblings('.recover-button').removeAttr('disabled');
         $(this).addClass('hidden');
         $(this).parent().attr('action', 'delete');
@@ -456,8 +459,7 @@ $(document).ready(function () {
     });
 
     newElementEntry.children('.recover-button').click(function () {
-      $(this).siblings().removeClass('deleted');
-      $(this).siblings().removeAttr('disabled');
+      $(this).siblings('.card').removeClass('deleted-card');
       $(this).siblings('.delete-button').removeClass('hidden');
       $(this).addClass('hidden');
 
