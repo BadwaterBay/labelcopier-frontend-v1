@@ -1,16 +1,16 @@
 /*
-  github-label-manager is free software: you can redistribute it and/or modify
+  github-label-manager-2 is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  github-label-manager is distributed in the hope that it will be useful,
+  github-label-manager-2 is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with github-label-manager.  If not, see <http://www.gnu.org/licenses/>.
+  along with github-label-manager-2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 "use strict";
@@ -26,12 +26,10 @@ $(document).ready(function () {
 
     return {
       acquire: function () {
-        // console.log("acq " + count);
         ++count;
         return null;
       },
       release: function () {
-        // console.log("rel " + count);
         if (count <= 0) {
           throw "Semaphore inconsistency";
         }
@@ -52,7 +50,6 @@ $(document).ready(function () {
       if (isLoadingShown && loadingSemaphore.isLocked() === false) {
         writeLog("All operations are done.");
 
-        //add close button
         $('#loadingModal .modal-content').append('<div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button></div>');
       }
     },
@@ -143,8 +140,6 @@ $(document).ready(function () {
       url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind,
       data: JSON.stringify(entryObject),
       success: function (response) {
-        // console.log("success: ");
-        // console.log(response);
         if (typeof callback === 'function') {
           callback(response);
         }
@@ -180,8 +175,6 @@ $(document).ready(function () {
       url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind + '/' + apiCallSign,
       data: JSON.stringify(entryObject),
       success: function (response) {
-        // console.log("success: ");
-        // console.log(response);
         if (typeof callback === 'function') {
           callback(response);
         }
@@ -215,8 +208,6 @@ $(document).ready(function () {
       type: "DELETE",
       url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind + '/' + apiCallSign,
       success: function (response) {
-        // console.log("success: ");
-        // console.log(response);
         if (typeof callback === 'function') {
           callback(response);
         }
@@ -231,8 +222,6 @@ $(document).ready(function () {
   function makeBasicAuth(username, password) {
     return "Basic " + Base64.encode(username + ":" + password);
   }
-
-  // Labels
 
   function clearAllLabels() {
     $('#form-labels').text('');
@@ -287,12 +276,12 @@ $(document).ready(function () {
     newElementEntry.find(':input[data-orig-val]').change(function () {
 
       if ($(this).val() === $(this).attr('data-orig-val')) {
-        //unchanged
+        // If this is unchanged
         $(this).parent().parent().parent().parent().attr('action', 'none');
         $(this).parent().parent().parent().parent().removeClass('uncommitted');
       }
       else {
-        //changed
+        // If this is changed
         if ($(this).parent().parent().parent().parent().attr('new') === 'true') {
           $(this).parent().parent().parent().parent().attr('action', 'create');
         }
@@ -342,8 +331,8 @@ $(document).ready(function () {
       checkIfAnyActionNeeded();
     });
 
-    //activate color picker on color-box field
     newElementEntry.find('.color-box').ColorPicker({
+      //activate color picker on color-box field
       //http://www.eyecon.ro/colorpicker
       color: label.color,
       onSubmit: function (hsb, hex, rgb, el) {
@@ -387,8 +376,6 @@ $(document).ready(function () {
   $('#add-new-label-entry').click(function () {
     createNewLabelEntry(null, 'new');
   });
-
-  // Milestones
 
   function clearAllMilestones() {
     $('#form-milestones').text('');
@@ -504,7 +491,6 @@ $(document).ready(function () {
   });
 
   function clickToListAllEntries(kind) {
-    let theButton = $(this);// dealing with closure
     targetOwner = $('#targetOwner').val();
     targetRepo = $('#targetRepo').val();
 
@@ -512,12 +498,12 @@ $(document).ready(function () {
       clearAllMilestones();
 
       apiCallGetEntries(targetOwner, targetRepo, kind, 'list', () => {
-        theButton.button('reset');
+        $(this).button('reset');
       });
     }
     else {
       alert("Please enter the repo owner and the repo");
-      theButton.button('reset');
+      $(this).button('reset');
     }
   }
 
@@ -525,20 +511,18 @@ $(document).ready(function () {
     clickToListAllEntries('labels');
   });
 
-
   $('#list-all-milestones').click(function () {
     clickToListAllEntries('milestones');
   });
 
   $('#revert-to-original').click(function () {
-    let theButton = $(this);// dealing with closure
     clearAllLabels();
     clearAllMilestones();
     apiCallGetEntries(targetOwner, targetRepo, 'labels', 'list', () => {
-      theButton.button('reset');
+      $(this).button('reset');
     });
     apiCallGetEntries(targetOwner, targetRepo, 'milestones', 'list', () => {
-      theButton.button('reset');
+      $(this).button('reset');
     });
   });
 
@@ -627,43 +611,17 @@ $(document).ready(function () {
   });
 
   $('#commit-to-target-repo').click(function () {
-    let theButton = $(this);// dealing with closure
     let password = $('#personalAccessToken').val();
 
     if (password.trim() === '') {
       alert('You need to enter your personal access token for repo: ' + targetRepo + ' in order to commit changes.');
-      theButton.button('reset');
+      $(this).button('reset');
       return;
     }
 
     commit();
   });
 
-  // //Enable popovers
-  // $('#targetRepo').popover({
-  //   title: 'Example',
-  //   content: '<code>github.com/Badwater-Apps/template-label-milestone-1</code> Then use <code>Badwater-Apps:template-label-milestone-1</code><br><em>Note that owner can also be an organization name.</em>',
-  //   trigger: 'hover',
-  //   html: true
-  // });
-
-  // $('#targetUsername').popover({
-  //   title: "Why 'username' again?",
-  //   content: "To let you modify a repo which belongs to another user or an organization. For example the repo maybe <code>my-organization:the-app</code> but username is <code>cylon</code>",
-  //   trigger: "hover",
-  //   html: true
-  // });
-
-  // $('#personalAccessToken').popover({
-  //   title: "My token/password for what?",
-  //   content: "Token/Password is only required for committing. It won't be required until you try to commit something. It is encouraged to use a token instead of your password.",
-  //   trigger: "hover",
-  //   html: true
-  // });
-
-  /**
-  * Makes a label entry out of a div having the class .label-entry
-  */
   function serializeEntries(jObjectEntry, kind) {
     if (kind === 'labels') {
       return {
@@ -697,10 +655,9 @@ $(document).ready(function () {
     }
   }
 
-  /**
-  * returns true if any change has been made and activates or disactivates commit button accordingly
-  */
   function checkIfAnyActionNeeded() {
+    // returns true if any change has been made and activates or disactivates commit button accordingly
+
     let isNeeded = $('.label-entry:not([action="none"])').length > 0 | $('.milestone-entry:not([action="none"])').length > 0;
 
     if (isNeeded) {
