@@ -274,7 +274,7 @@ $(document).ready(function () {
     newElementEntry.find('.color-box').css('background-color', '#' + label.color);
 
     newElementEntry.find(':input[data-orig-val]').change(function () {
-      let $label = $(this).parents('.label-entry');
+      let $label = $(this).closest('.label-entry');
 
       if ($(this).val() === $(this).attr('data-orig-val')) {
         // If this is unchanged
@@ -434,22 +434,22 @@ $(document).ready(function () {
     ');
 
     newElementEntry.find(':input[data-orig-val]').change(function () {
-      let $label = $(this).parents('.label-entry');
+      let $entry = $(this).closest('.label-entry');
 
       if ($(this).val() === $(this).attr('data-orig-val')) {
         //unchanged
-        $label.attr('action', 'none');
-        $label.removeClass('uncommitted');
+        $entry.attr('action', 'none');
+        $entry.removeClass('uncommitted');
       }
       else {
         //changed
-        if ($label.attr('new') === 'true') {
-          $label.attr('action', 'create');
+        if ($entry.attr('new') === 'true') {
+          $entry.attr('action', 'create');
         }
         else {
-          $label.attr('action', 'update');
+          $entry.attr('action', 'update');
         }
-        $label.addClass('uncommitted');
+        $entry.addClass('uncommitted');
       }
 
       checkIfAnyActionNeeded();
