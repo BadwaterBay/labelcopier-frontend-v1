@@ -501,8 +501,13 @@ $(document).ready(function () {
     targetRepo = $('#targetRepo').val();
 
     if (targetOwner && targetRepo) {
-      clearAllMilestones();
-
+      if (kind === 'labels') {
+        clearAllLabels();
+      }
+      if (kind === 'milestones') {
+        clearAllMilestones();
+      }
+      
       apiCallGetEntries(targetOwner, targetRepo, kind, 'list', () => {
         $(this).button('reset');
       });
