@@ -521,12 +521,15 @@ $(document).ready(function () {
     clickToListAllEntries('milestones');
   });
 
-  $('#revert-to-original').click(function () {
+  $('#revert-labels-to-original').click(function () {
     clearAllLabels();
-    clearAllMilestones();
     apiCallGetEntries(targetOwner, targetRepo, 'labels', 'list', () => {
       $(this).button('reset');
     });
+  });
+
+  $('#revert-milestones-to-original').click(function () {
+    clearAllMilestones();
     apiCallGetEntries(targetOwner, targetRepo, 'milestones', 'list', () => {
       $(this).button('reset');
     });
