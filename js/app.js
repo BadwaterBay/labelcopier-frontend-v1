@@ -511,6 +511,8 @@ $(document).ready(function () {
       apiCallGetEntries(targetOwner, targetRepo, kind, 'list', () => {
         $(this).button('reset');
       });
+      
+      $('#' + kind + '-tab').tab('show');
     }
     else {
       alert("Please enter the repo owner and the repo");
@@ -572,6 +574,8 @@ $(document).ready(function () {
       apiCallGetEntries(username, repo, kind, 'copy', function () {
         $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
+
+      $('#' + kind + '-tab').tab('show');
     }
     else {
       alert("Please enter the repo owner and the repo");
@@ -597,6 +601,8 @@ $(document).ready(function () {
       apiCallGetEntries(owner, repo, 'labels', 'copy', function () {
         $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
+
+      $('#labels-tab').tab('show');
     }
     else {
       alert("Please enter the repo owner and the repo that you want to copy from");
@@ -615,6 +621,8 @@ $(document).ready(function () {
       apiCallGetEntries(owner, repo, 'milestones', 'copy', function () {
         $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
+
+      $('#milestones-tab').tab('show');
     }
     else {
       alert("Please enter the repo owner and the repo that you want to copy from");
