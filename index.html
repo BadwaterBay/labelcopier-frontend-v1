@@ -121,14 +121,6 @@
             data-loading-text="Resetting...">
             Revert to original
           </button>
-          <button id="delete-all-labels" type="button" class="btn btn-outline-danger btn-block"
-            data-loading-text="Deleting...">
-            Delete all labels
-          </button>
-          <button id="delete-all-milestones" type="button" class="btn btn-outline-danger btn-block"
-            data-loading-text="Deleting...">
-            Delete all milestones
-          </button>
         </div>
 
         <div class="card bg-light card-body mb-3">
@@ -209,12 +201,20 @@
           <div class="card-body">
             <div class="tab-content" id="nav-tab-content">
               <div class="tab-pane active" id="labels-form" role="tabpanel" aria-labelledby="labels-tab">
+                <button id="delete-all-labels" type="button" class="btn btn-outline-danger btn-block"
+                  data-loading-text="Deleting...">
+                  Delete all labels
+                </button>
                 <button id="add-new-label-entry" type="button" class="btn btn-outline-success btn-block mb-3">
                   Add a new label
                 </button>
                 <form id="form-labels" class="form-inline"></form>
               </div>
               <div class="tab-pane" id="milestones-form" role="tabpanel" aria-labelledby="milestones-tab">
+                <button id="delete-all-milestones" type="button" class="btn btn-outline-danger btn-block"
+                  data-loading-text="Deleting...">
+                  Delete all milestones
+                </button>
                 <button id="add-new-milestone-entry" type="button" class="btn btn-outline-success btn-block mb-3">
                   Add a new milestone
                 </button>
