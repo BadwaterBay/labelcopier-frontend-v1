@@ -347,20 +347,20 @@ $(document).ready(function () {
         //well here goes the copy-paste because normal binding to 'change' doesn't work
         // on newElementEntry.children().filter(':input[data-orig-val]').change(function...
         // since it is triggered programmatically
-        if ($(el).val() === $(el).attr('data-orig-val')) {
-          $(el).parent().attr('action', 'none');
-          $(el).parent().removeClass('uncommitted');
-        }
-        else {
-          if ($(el).parent().attr('new') === 'true') {
-            $(el).parent().attr('action', 'create');
-          }
-          else {
-            $(el).parent().attr('action', 'update');
-          }
-          // $(el).closest('label-entry').addClass('uncommitted');
-        }
-        checkIfAnyActionNeeded();
+        // if ($(el).val() === $(el).attr('data-orig-val')) {
+        //   $(el).parent().attr('action', 'none');
+        //   $(el).parent().removeClass('uncommitted');
+        // }
+        // else {
+        //   if ($(el).parent().attr('new') === 'true') {
+        //     $(el).parent().attr('action', 'create');
+        //   }
+        //   else {
+        //     $(el).parent().attr('action', 'update');
+        //   }
+        //   // $(el).closest('label-entry').addClass('uncommitted');
+        // }
+        // checkIfAnyActionNeeded();
         return;
         //-----------------------------
       },
