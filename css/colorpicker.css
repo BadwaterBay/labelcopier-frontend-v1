@@ -44,6 +44,9 @@
 	height: 150px;
 	cursor: n-resize;
 }
+.colorpicker_hue:hover {
+	cursor: pointer;
+}
 .colorpicker_hue div {
 	position: absolute;
 	width: 35px;
@@ -146,19 +149,28 @@
 }
 .colorpicker_submit {
 	position: absolute;
-	width: 22px;
+	font-size: 0.85rem;
+	text-align: center;
+	color: #BBBBBB;
+	width: 44px;
 	height: 22px;
-	background: url(../images/colorpicker_submit.png) top;
-	left: 322px;
+	/* background: url(../images/colorpicker_submit.png) top; */
+	left: 300px;
 	top: 142px;
 	overflow: hidden;
+	border-style: solid;
+	border-width: 0.9px;
+	border-color: #BBBBBB;
+	border-radius: 2px;
+}
+.colorpicker_submit:hover {
+	cursor: pointer;
 }
 .colorpicker_focus {
 	background-position: center;
 }
-.colorpicker_hex.colorpicker_focus {
-	background-position: bottom;
-}
+/* .colorpicker_hex.colorpicker_focus {
+} */
 .colorpicker_submit.colorpicker_focus {
 	background-position: bottom;
 }
