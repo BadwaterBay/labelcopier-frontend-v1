@@ -597,43 +597,13 @@ $(document).ready(function () {
   });
 
   $('#delete-and-copy-labels-from').click(function () {
-    let owner = $('#copyFromOwner').val();
-    let repo = $('#copyFromRepo').val();
-
-    if (owner && repo) {
-      clickToDeleteAllEntries('#form-labels');
-      apiCallGetEntries(owner, repo, 'labels', 'copy', function () {
-        $(this).button('reset');
-      });//set adduncommitted to true because those are coming from another repo
-
-      $('#labels-tab').tab('show');
-    }
-    else {
-      alert("Please enter the repo owner and the repo that you want to copy from");
-      $(this).button('reset');
-    }
-
-    checkIfAnyActionNeeded();
+    $('#delete-all-labels').click();
+    $('#copy-labels-from').click();
   });
 
   $('#delete-and-copy-milestones-from').click(function () {
-    let owner = $('#copyFromOwner').val();
-    let repo = $('#copyFromRepo').val();
-
-    if (owner && repo) {
-      clickToDeleteAllEntries('#form-milestones');
-      apiCallGetEntries(owner, repo, 'milestones', 'copy', function () {
-        $(this).button('reset');
-      });//set adduncommitted to true because those are coming from another repo
-
-      $('#milestones-tab').tab('show');
-    }
-    else {
-      alert("Please enter the repo owner and the repo that you want to copy from");
-      $(this).button('reset');
-    }
-
-    checkIfAnyActionNeeded();
+    $('#delete-all-milestones').click();
+    $('#copy-milestones-from').click();
   });
 
   $('#commit-to-target-repo').click(function () {
