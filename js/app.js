@@ -134,7 +134,7 @@ $(document).ready(function () {
 
   function apiCallCreateEntries(entryObject, kind, callback) {
     let nameForEntry = assignNameForEntry(entryObject, kind);
-    
+
     $.ajax({
       type: "POST",
       url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind,
@@ -227,6 +227,8 @@ $(document).ready(function () {
     $('#form-labels').text('');
     $('#commit-to-target-repo').text('Commit changes');
     $('#commit-to-target-repo').attr('disabled', true);
+    $('#commit-to-target-repo').removeClass('btn-success')
+    $('#commit-to-target-repo').addClass('btn-outline-success');
   }
 
   function createNewLabelEntry(label, mode) {
@@ -382,6 +384,8 @@ $(document).ready(function () {
     $('#form-milestones').text('');
     $('#commit-to-target-repo').text('Commit changes');
     $('#commit-to-target-repo').attr("disabled", true);
+    $('#commit-to-target-repo').removeClass('btn-success')
+    $('#commit-to-target-repo').addClass('btn-outline-success');
   }
 
   function createNewMilestoneEntry(milestone, mode) {
@@ -413,7 +417,7 @@ $(document).ready(function () {
     let origDescriptionVal = ' data-orig-val="' + milestone.description + '"';
     let due_on = milestone.due_on;
     let number = milestone.number;
-    
+
     let newElementEntry = $('\
       <div class="milestone-entry ' + uncommittedSignClass + '" ' + action + ' data-number="' + number + '" data-state="' + state + '" data-due_on="' + due_on + '">\
         <div class="card">\
@@ -455,7 +459,7 @@ $(document).ready(function () {
       checkIfAnyActionNeeded();
       return;
     });
-    
+
     newElementEntry.children('.delete-button').click(function () {
       if ($(this).parent().attr('new') === 'true') {
         $(this).parent().remove();
@@ -501,11 +505,18 @@ $(document).ready(function () {
     targetRepo = $('#targetRepo').val();
 
     if (targetOwner && targetRepo) {
-      clearAllMilestones();
+      if (kind === 'labels') {
+        clearAllLabels();
+      }
+      if (kind === 'milestones') {
+        clearAllMilestones();
+      }
 
       apiCallGetEntries(targetOwner, targetRepo, kind, 'list', () => {
         $(this).button('reset');
       });
+
+      $('#' + kind + '-tab').tab('show');
     }
     else {
       alert("Please enter the repo owner and the repo");
@@ -521,12 +532,15 @@ $(document).ready(function () {
     clickToListAllEntries('milestones');
   });
 
-  $('#revert-to-original').click(function () {
+  $('#revert-labels-to-original').click(function () {
     clearAllLabels();
-    clearAllMilestones();
     apiCallGetEntries(targetOwner, targetRepo, 'labels', 'list', () => {
       $(this).button('reset');
     });
+  });
+
+  $('#revert-milestones-to-original').click(function () {
+    clearAllMilestones();
     apiCallGetEntries(targetOwner, targetRepo, 'milestones', 'list', () => {
       $(this).button('reset');
     });
@@ -564,6 +578,8 @@ $(document).ready(function () {
       apiCallGetEntries(username, repo, kind, 'copy', function () {
         $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
+
+      $('#' + kind + '-tab').tab('show');
     }
     else {
       alert("Please enter the repo owner and the repo");
@@ -589,6 +605,8 @@ $(document).ready(function () {
       apiCallGetEntries(owner, repo, 'labels', 'copy', function () {
         $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
+
+      $('#labels-tab').tab('show');
     }
     else {
       alert("Please enter the repo owner and the repo that you want to copy from");
@@ -607,6 +625,8 @@ $(document).ready(function () {
       apiCallGetEntries(owner, repo, 'milestones', 'copy', function () {
         $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
+
+      $('#milestones-tab').tab('show');
     }
     else {
       alert("Please enter the repo owner and the repo that you want to copy from");
@@ -668,9 +688,13 @@ $(document).ready(function () {
 
     if (isNeeded) {
       $('#commit-to-target-repo').removeAttr('disabled');
+      $('#commit-to-target-repo').removeClass('btn-outline-success')
+      $('#commit-to-target-repo').addClass('btn-success');
     }
     else {
       $('#commit-to-target-repo').attr("disabled", true);
+      $('#commit-to-target-repo').removeClass('btn-success')
+      $('#commit-to-target-repo').addClass('btn-outline-success');
     }
   }
 
