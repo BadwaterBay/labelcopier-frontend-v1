@@ -9,10 +9,7 @@
 (function ($) {
 	var ColorPicker = function () {
 		var
-			ids = {},
-			inAction,
 			charMin = 65,
-			visible,
 			tpl = '<div class="colorpicker"><div class="colorpicker_color"><div><div></div></div></div><div class="colorpicker_hue"><div></div></div><div class="colorpicker_new_color"></div><div class="colorpicker_current_color"></div><div class="colorpicker_hex"><input type="text" maxlength="6" size="6" /></div><div class="colorpicker_rgb_r colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_g colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_h colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_s colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_submit">Save</div></div>',
 			defaults = {
 				eventName: 'click',
@@ -188,13 +185,13 @@
 				$(document).unbind('mousemove', moveSelector);
 				return false;
 			},
-			enterSubmit = function (ev) {
+			enterSubmit = function () {
 				$(this).addClass('colorpicker_focus');
 			},
-			leaveSubmit = function (ev) {
+			leaveSubmit = function () {
 				$(this).removeClass('colorpicker_focus');
 			},
-			clickSubmit = function (ev) {
+			clickSubmit = function () {
 				var cal = $(this).parent();
 				var col = cal.data('colorpicker').color;
 				cal.data('colorpicker').origColor = col;
@@ -299,9 +296,8 @@
 				var max = Math.max(rgb.r, rgb.g, rgb.b);
 				var delta = max - min;
 				hsb.b = max;
-				if (max != 0) {
-
-				}
+				// if (max != 0) {
+				// }
 				hsb.s = max != 0 ? 255 * delta / max : 0;
 				if (hsb.s != 0) {
 					if (rgb.r == max) {
