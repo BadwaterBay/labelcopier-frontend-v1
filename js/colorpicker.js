@@ -92,7 +92,7 @@
 				setNewColor(col, cal.get(0));
 				cal.data('colorpicker').onChange.apply(cal, [col, HSBToHex(col), HSBToRGB(col)]);
 			},
-			blur = function (ev) {
+			blur = function () {
 				var cal = $(this).parent().parent();
 				cal.data('colorpicker').fields.parent().removeClass('colorpicker_focus');
 			},
@@ -128,7 +128,7 @@
 				$(document).unbind('mousemove', moveIncrement);
 				return false;
 			},
-			downHue = function (ev) {
+			downHue = function () {
 				var current = {
 					cal: $(this).parent(),
 					y: $(this).offset().top
@@ -155,7 +155,7 @@
 				$(document).unbind('mousemove', moveHue);
 				return false;
 			},
-			downSelector = function (ev) {
+			downSelector = function () {
 				var current = {
 					cal: $(this).parent(),
 					pos: $(this).offset()
@@ -198,7 +198,7 @@
 				setCurrentColor(col, cal.get(0));
 				cal.data('colorpicker').onSubmit(col, HSBToHex(col), HSBToRGB(col), cal.data('colorpicker').el);
 			},
-			show = function (ev) {
+			show = function () {
 				var cal = $('#' + $(this).data('colorpickerId'));
 				cal.data('colorpicker').onBeforeShow.apply(this, [cal.get(0)]);
 				var pos = $(this).offset();
