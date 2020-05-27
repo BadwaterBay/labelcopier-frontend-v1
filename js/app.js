@@ -130,7 +130,7 @@ $(document).ready(function () {
       nameForEntry = 'There\'s a bug in function assignAPICallSign!';
     }
     return nameForEntry;
-  };
+  }
 
   function apiCallCreateEntries(entryObject, kind, callback) {
     let nameForEntry = assignNameForEntry(entryObject, kind);
@@ -164,7 +164,7 @@ $(document).ready(function () {
       apiCallSign = 'There\'s a bug in function assignAPICallSign4Update!';
     }
     return apiCallSign;
-  };
+  }
 
   function apiCallUpdateEntries(entryObject, kind, callback) {
     let apiCallSign = assignAPICallSign4Update(entryObject, kind);
