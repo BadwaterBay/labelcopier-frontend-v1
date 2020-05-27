@@ -134,7 +134,7 @@ $(document).ready(function () {
 
   function apiCallCreateEntries(entryObject, kind, callback) {
     let nameForEntry = assignNameForEntry(entryObject, kind);
-    
+
     $.ajax({
       type: "POST",
       url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind,
@@ -417,7 +417,7 @@ $(document).ready(function () {
     let origDescriptionVal = ' data-orig-val="' + milestone.description + '"';
     let due_on = milestone.due_on;
     let number = milestone.number;
-    
+
     let newElementEntry = $('\
       <div class="milestone-entry ' + uncommittedSignClass + '" ' + action + ' data-number="' + number + '" data-state="' + state + '" data-due_on="' + due_on + '">\
         <div class="card">\
@@ -459,7 +459,7 @@ $(document).ready(function () {
       checkIfAnyActionNeeded();
       return;
     });
-    
+
     newElementEntry.children('.delete-button').click(function () {
       if ($(this).parent().attr('new') === 'true') {
         $(this).parent().remove();
@@ -511,11 +511,11 @@ $(document).ready(function () {
       if (kind === 'milestones') {
         clearAllMilestones();
       }
-      
+
       apiCallGetEntries(targetOwner, targetRepo, kind, 'list', () => {
         $(this).button('reset');
       });
-      
+
       $('#' + kind + '-tab').tab('show');
     }
     else {
