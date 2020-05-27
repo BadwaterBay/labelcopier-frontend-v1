@@ -358,7 +358,7 @@ $(document).ready(function () {
           else {
             $(el).parent().attr('action', 'update');
           }
-          $(el).parent().addClass('uncommitted');
+          // $(el).closest('label-entry').addClass('uncommitted');
         }
         checkIfAnyActionNeeded();
         return;
