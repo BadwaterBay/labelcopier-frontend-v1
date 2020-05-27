@@ -227,7 +227,7 @@ $(document).ready(function () {
     $('#form-labels').text('');
     $('#commit-to-target-repo').text('Commit changes');
     $('#commit-to-target-repo').attr('disabled', true);
-    $('#commit-to-target-repo').removeClass('btn-raised btn-success')
+    $('#commit-to-target-repo').removeClass('btn-success')
     $('#commit-to-target-repo').addClass('btn-outline-success');
   }
 
@@ -384,7 +384,7 @@ $(document).ready(function () {
     $('#form-milestones').text('');
     $('#commit-to-target-repo').text('Commit changes');
     $('#commit-to-target-repo').attr("disabled", true);
-    $('#commit-to-target-repo').removeClass('btn-raised btn-success')
+    $('#commit-to-target-repo').removeClass('btn-success')
     $('#commit-to-target-repo').addClass('btn-outline-success');
   }
 
@@ -689,11 +689,11 @@ $(document).ready(function () {
     if (isNeeded) {
       $('#commit-to-target-repo').removeAttr('disabled');
       $('#commit-to-target-repo').removeClass('btn-outline-success')
-      $('#commit-to-target-repo').addClass('btn-raised btn-success');
+      $('#commit-to-target-repo').addClass('btn-success');
     }
     else {
       $('#commit-to-target-repo').attr("disabled", true);
-      $('#commit-to-target-repo').removeClass('btn-raised btn-success')
+      $('#commit-to-target-repo').removeClass('btn-success')
       $('#commit-to-target-repo').addClass('btn-outline-success');
     }
   }
