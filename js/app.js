@@ -438,7 +438,7 @@ $(document).ready(function () {
     ');
 
     newElementEntry.find(':input[data-orig-val]').change(function () {
-      let $entry = $(this).closest('.label-entry');
+      let $entry = $(this).closest('.milestone-entry');
 
       if ($(this).val() === $(this).attr('data-orig-val')) {
         //unchanged
