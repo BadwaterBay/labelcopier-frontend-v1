@@ -1,5 +1,12 @@
+// Run this command to let sass watch for changes and automatically output
+// sass --watch ./scss/app.scss:./css/app.min.css --style compressed
+
 body {
   background-color: #fcfcfc;
+
+  #content {
+    margin-top: 60px;
+  }
 
   .color-box input[type="text"] {
     color: whitesmoke;
@@ -72,9 +79,5 @@ body {
     content: "* ";
     margin-left: -12px;
     float: left;
-  }
-
-  #content {
-    margin-top: 60px;
   }
 }
