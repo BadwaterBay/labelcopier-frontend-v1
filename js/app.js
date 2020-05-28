@@ -43,6 +43,17 @@ $(document).ready(function () {
     };
   }());
 
+  const getLoginInfo = () => {
+    return {
+      targetOwner: $('#targetOwner').val().trim(),
+      targetRepo: $('#targetRepo').val().trim(),
+      targetUsername: $('#targetUsername').val().trim(),
+      personalAccessToken: $('#personal-access-token').val().trim(),
+      copyFromOwner: $('#copy-from-owner').val().trim(),
+      copyFromRepo: $('#copy-from-repo').val().trim()
+    };
+  };
+
   $.ajaxSetup({
     cache: false,
     complete: function () {
@@ -54,20 +65,21 @@ $(document).ready(function () {
       }
     },
     beforeSend: function (xhr) {
-      let password = $('#personalAccessToken').val().trim();
+      let personalAccessToken = $('#personal-access-token').val().trim();
       loadingSemaphore.acquire();
-      // only add authorization if a password is provided. Adding empty authorization header
+      // only add authorization if a personalAccessToken is provided. Adding empty authorization header
       // fails loading for public repos
-      if (password) {
-        xhr.setRequestHeader('Authorization', makeBasicAuth(targetUsername, password));
+      if (personalAccessToken) {
+        xhr.setRequestHeader('Authorization', makeBasicAuth(targetUsername, personalAccessToken));
       }
     }
   });
 
-  function apiCallGetEntriesRecursive(username, repo, kind, mode, callback, pageNum) {
+  function apiCallGetEntriesRecursive(owner, repo, kind, mode, callback, pageNum) {
+
     $.ajax({
       type: 'GET',
-      url: 'https://api.github.com/repos/' + username + '/' + repo + '/' + kind + '?page=' + pageNum,
+      url: `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`,
       success: function (response) {
         if (response) {
           response.forEach(e => {
@@ -82,7 +94,7 @@ $(document).ready(function () {
               console.log('Bug in function apiCallGetEntriesRecursive!');
             }
             //sets target indicator text
-            $('#which-repo-in-use').html('<strong>Repo owner:</strong> ' + targetOwner + "<br /><strong>Repo:</strong> " + targetRepo + '<br /><strong>Username:</strong> ' + username);
+            $('#which-repo-in-use').html('<strong>Repo owner:</strong> ' + owner + "<br /><strong>Repo:</strong> " + repo + '<br /><strong>Username:</strong> ' + 'WORK IN PROGRESS');
           });
         }//if
 
@@ -97,13 +109,13 @@ $(document).ready(function () {
           return;
         }
         else {
-          apiCallGetEntriesRecursive(username, repo, kind, mode, callback, ++pageNum);
+          apiCallGetEntriesRecursive(owner, repo, kind, mode, callback, ++pageNum);
         }
 
       },
       error: function (response) {
         if (response.status === 404) {
-          alert('Not found! If this is a private repo make sure you provide a password.');
+          alert('Not found! If this is a private repo make sure you provide a personal access token.');
         }
 
         if (typeof callback === 'function') {
@@ -114,8 +126,8 @@ $(document).ready(function () {
     checkIfAnyModifications();
   }
 
-  function apiCallGetEntries(username, repo, kind, mode, callback) {
-    apiCallGetEntriesRecursive(username, repo, kind, mode, callback, 1);
+  function apiCallGetEntries(owner, repo, kind, mode, callback) {
+    apiCallGetEntriesRecursive(owner, repo, kind, mode, callback, 1);
   }
 
   function assignNameForEntry(entryObject, kind) {
@@ -219,8 +231,8 @@ $(document).ready(function () {
     });
   }
 
-  function makeBasicAuth(username, password) {
-    return "Basic " + Base64.encode(username + ":" + password);
+  function makeBasicAuth(username, personalAccessToken) {
+    return "Basic " + Base64.encode(username + ":" + personalAccessToken);
   }
 
   function clearAllLabels() {
@@ -506,6 +518,8 @@ $(document).ready(function () {
   });
 
   function clickToListAllEntries(kind) {
+    let login = getLoginInfo();
+
     targetOwner = $('#targetOwner').val();
     targetRepo = $('#targetRepo').val();
 
@@ -517,7 +531,7 @@ $(document).ready(function () {
         clearAllMilestones();
       }
 
-      apiCallGetEntries(targetOwner, targetRepo, kind, 'list', () => {
+      apiCallGetEntries(login.targetOwner, login.targetRepo, kind, 'list', () => {
         $(this).button('reset');
       });
       $(`#revert-${kind}-to-original`).removeAttr('disabled');
@@ -539,14 +553,16 @@ $(document).ready(function () {
 
   $('#revert-labels-to-original').click(function () {
     clearAllLabels();
-    apiCallGetEntries(targetOwner, targetRepo, 'labels', 'list', () => {
+    let login = getLoginInfo();
+    apiCallGetEntries(login.targetOwner, login.targetRepo, 'labels', 'list', () => {
       $(this).button('reset');
     });
   });
 
   $('#revert-milestones-to-original').click(function () {
     clearAllMilestones();
-    apiCallGetEntries(targetOwner, targetRepo, 'milestones', 'list', () => {
+    let login = getLoginInfo();
+    apiCallGetEntries(login.targetOwner, login.targetRepo, 'milestones', 'list', () => {
       $(this).button('reset');
     });
   });
@@ -576,11 +592,10 @@ $(document).ready(function () {
   })
 
   function clickToCopyEntriesFrom(kind) {
-    let username = $('#copyFromOwner').val();
-    let repo = $('#copyFromRepo').val();
+    let login = getLoginInfo();
 
     if (username && repo) {
-      apiCallGetEntries(username, repo, kind, 'copy', function () {
+      apiCallGetEntries(login.copyFromOwner, login.copyFromRepo, kind, 'copy', function () {
         $(this).button('reset');
       });//set adduncommitted to true because those are coming from another repo
 
@@ -612,9 +627,9 @@ $(document).ready(function () {
   });
 
   $('#commit-to-target-repo').click(function () {
-    let password = $('#personalAccessToken').val();
+    let personalAccessToken = $('#personal-access-token').val();
 
-    if (password.trim() === '') {
+    if (personalAccessToken.trim() === '') {
       alert('You need to enter your personal access token for repo: ' + targetRepo + ' in order to commit changes.');
       $(this).button('reset');
       return;
@@ -746,8 +761,9 @@ $(document).ready(function () {
     //reload labels after changes
     clearAllLabels();
     clearAllMilestones();
-    apiCallGetEntries(targetOwner, targetRepo, 'labels', 'list');
-    apiCallGetEntries(targetOwner, targetRepo, 'milestones', 'list');
+    let login = getLoginInfo();
+    apiCallGetEntries(login.targetOwner, login.targetRepo, 'labels', 'list');
+    apiCallGetEntries(login.targetOwner, login.targetRepo, 'milestones', 'list');
   });
 
   /* ========== The rest is BASE64 STUFF ========== */
