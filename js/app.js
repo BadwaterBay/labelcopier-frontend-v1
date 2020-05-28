@@ -275,7 +275,7 @@ $(document).ready(function () {
 
     newElementEntry.find('.color-box').css('background-color', '#' + label.color);
 
-    newElementEntry.find(':input[data-orig-val]').change(function () {
+    newElementEntry.find(':input[data-orig-val]').blur(function () {
       let $entry = $(this).closest('.label-entry');
 
       if ($(this).val() === $(this).attr('data-orig-val')) {
@@ -322,13 +322,15 @@ $(document).ready(function () {
       $(this).siblings('.delete-button').removeClass('hidden');
       $(this).addClass('hidden');
 
-      if ($(this).siblings('[name="name"]').attr('data-orig-val') === $(this).siblings('[name="name"]').val() &&
-        $(this).siblings('[name="color"]').attr('data-orig-val') === $(this).siblings('[name="color"]').val() &&
-        $(this).siblings('[name="description"]').attr('data-orig-val') === $(this).siblings('[name="description"]').val()) {
-        $(this).parent().attr('action', 'none');
+      let $entry = $(this).closest('.label-entry');
+
+      if ($entry.find('[name="name"]').attr('data-orig-val') === $entry.find('[name="name"]').val() &&
+        $entry.find('[name="color"]').attr('data-orig-val') === $entry.find('[name="color"]').val() &&
+        $entry.find('[name="description"]').attr('data-orig-val') === $entry.find('[name="description"]').val()) {
+        $entry.attr('action', 'none');
       }
       else {
-        $(this).parent().attr('action', 'update');
+        $entry.attr('action', 'update');
       }
 
       checkIfAnyActionNeeded();
@@ -437,7 +439,7 @@ $(document).ready(function () {
       </div>\
     ');
 
-    newElementEntry.find(':input[data-orig-val]').change(function () {
+    newElementEntry.find(':input[data-orig-val]').blur(function () {
       let $entry = $(this).closest('.milestone-entry');
 
       if ($(this).val() === $(this).attr('data-orig-val')) {
@@ -452,6 +454,7 @@ $(document).ready(function () {
         }
         else {
           $entry.attr('action', 'update');
+          console.log($entry.attr('action'));
         }
         $entry.addClass('uncommitted');
       }
@@ -482,12 +485,14 @@ $(document).ready(function () {
       $(this).siblings('.delete-button').removeClass('hidden');
       $(this).addClass('hidden');
 
-      if ($(this).siblings('[name="title"]').attr('data-orig-val') === $(this).siblings('[name="title"]').val() &&
-        $(this).siblings('[name="description"]').attr('data-orig-val') === $(this).siblings('[name="description"]').val()) {
-        $(this).parent().attr('action', 'none');
+      let $entry = $(this).closest('.milestone-entry');
+
+      if ($entry.find('[name="title"]').attr('data-orig-val') === $entry.find('[name="title"]').val() &&
+        $entry.find('[name="description"]').attr('data-orig-val') === $entry.find('[name="description"]').val()) {
+        $entry.attr('action', 'none');
       }
       else {
-        $(this).parent().attr('action', 'update');
+        $entry.attr('action', 'update');
       }
 
       checkIfAnyActionNeeded();
