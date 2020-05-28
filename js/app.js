@@ -659,9 +659,24 @@ $(document).ready(function () {
   function checkIfAnyActionNeeded() {
     // returns true if any change has been made and activates or disactivates commit button accordingly
 
-    let isNeeded = $('.label-entry:not([action="none"])').length > 0 || $('.milestone-entry:not([action="none"])').length > 0;
+    let labelsModified = $('.label-entry:not([action="none"])').length > 0;
+    let milestonesModified = $('.milestone-entry:not([action="none"])').length > 0;
 
-    if (isNeeded) {
+    if (labelsModified) {
+      $('#revert-labels-to-original').removeAttr('disabled');
+    }
+    else {
+      $('#revert-labels-to-original').attr('disabled', true);
+    }
+
+    if (milestonesModified) {
+      $('#revert-milestones-to-original').removeAttr('disabled');
+    }
+    else {
+      $('#revert-milestones-to-original').attr('disabled', true);
+    }
+
+    if (labelsModified || milestonesModified) {
       $('#commit-to-target-repo').removeAttr('disabled');
       $('#commit-to-target-repo').removeClass('btn-outline-success')
       $('#commit-to-target-repo').addClass('btn-success');
