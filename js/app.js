@@ -515,7 +515,6 @@ $(document).ready(function () {
       apiCallGetEntries(targetOwner, targetRepo, kind, 'list', () => {
         $(this).button('reset');
       });
-      $(`#revert-${kind}-to-original`).removeAttr('disabled');
       $('#' + kind + '-tab').tab('show');
     }
     else {
