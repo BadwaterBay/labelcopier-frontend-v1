@@ -111,7 +111,7 @@ $(document).ready(function () {
         }
       }
     });
-    checkIfAnyActionNeeded();
+    checkIfAnyModifications();
   }
 
   function apiCallGetEntries(username, repo, kind, mode, callback) {
@@ -294,7 +294,7 @@ $(document).ready(function () {
         $entry.addClass('uncommitted');
       }
 
-      checkIfAnyActionNeeded();
+      checkIfAnyModifications();
       return;
     });
 
@@ -313,7 +313,7 @@ $(document).ready(function () {
 
       $(this).siblings('.recover-button').removeClass('hidden');
 
-      checkIfAnyActionNeeded();
+      checkIfAnyModifications();
       return;
     });
 
@@ -333,7 +333,7 @@ $(document).ready(function () {
         $entry.attr('action', 'update');
       }
 
-      checkIfAnyActionNeeded();
+      checkIfAnyModifications();
     });
 
     newElementEntry.find('.color-box').ColorPicker({
@@ -362,7 +362,7 @@ $(document).ready(function () {
         //   }
         //   // $(el).closest('label-entry').addClass('uncommitted');
         // }
-        // checkIfAnyActionNeeded();
+        // checkIfAnyModifications();
         return;
         //-----------------------------
       },
@@ -459,7 +459,7 @@ $(document).ready(function () {
         $entry.addClass('uncommitted');
       }
 
-      checkIfAnyActionNeeded();
+      checkIfAnyModifications();
       return;
     });
 
@@ -476,7 +476,7 @@ $(document).ready(function () {
 
       $(this).siblings('.recover-button').removeClass('hidden');
 
-      checkIfAnyActionNeeded();
+      checkIfAnyModifications();
       return;
     });
 
@@ -495,7 +495,7 @@ $(document).ready(function () {
         $entry.attr('action', 'update');
       }
 
-      checkIfAnyActionNeeded();
+      checkIfAnyModifications();
     });
 
     $('#form-milestones').prepend(newElementEntry);
@@ -520,7 +520,6 @@ $(document).ready(function () {
       apiCallGetEntries(targetOwner, targetRepo, kind, 'list', () => {
         $(this).button('reset');
       });
-
       $('#' + kind + '-tab').tab('show');
     }
     else {
@@ -564,7 +563,7 @@ $(document).ready(function () {
         $(this).attr('action', 'delete');
       }
     });
-    checkIfAnyActionNeeded();
+    checkIfAnyModifications();
   }
 
   $('#delete-all-labels').click(function () {
@@ -590,7 +589,7 @@ $(document).ready(function () {
       alert("Please enter the repo owner and the repo");
       $(this).button('reset');
     }
-    checkIfAnyActionNeeded();
+    checkIfAnyModifications();
   }
 
   $('#copy-labels-from').click(function () {
@@ -656,12 +655,27 @@ $(document).ready(function () {
     }
   }
 
-  function checkIfAnyActionNeeded() {
+  function checkIfAnyModifications() {
     // returns true if any change has been made and activates or disactivates commit button accordingly
 
-    let isNeeded = $('.label-entry:not([action="none"])').length > 0 || $('.milestone-entry:not([action="none"])').length > 0;
+    let labelsModified = $('.label-entry:not([action="none"])').length > 0;
+    let milestonesModified = $('.milestone-entry:not([action="none"])').length > 0;
 
-    if (isNeeded) {
+    if (labelsModified) {
+      $('#revert-labels-to-original').removeAttr('disabled');
+    }
+    else {
+      $('#revert-labels-to-original').attr('disabled', true);
+    }
+
+    if (milestonesModified) {
+      $('#revert-milestones-to-original').removeAttr('disabled');
+    }
+    else {
+      $('#revert-milestones-to-original').attr('disabled', true);
+    }
+
+    if (labelsModified || milestonesModified) {
       $('#commit-to-target-repo').removeAttr('disabled');
       $('#commit-to-target-repo').removeClass('btn-outline-success')
       $('#commit-to-target-repo').addClass('btn-success');
