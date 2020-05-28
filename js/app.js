@@ -51,8 +51,8 @@ $(document).ready(function () {
     };
   };
 
-  function makeBasicAuth(username, personalAccessToken) {
-    return "Basic " + Base64.encode(username + ":" + personalAccessToken);
+  function makeBasicAuth(login) {
+    return "Basic " + Base64.encode(login.targetUsername + ":" + login.personalAccessToken);
   }
 
   $.ajaxSetup({
@@ -70,8 +70,8 @@ $(document).ready(function () {
       loadingSemaphore.acquire();
       // only add authorization if a personalAccessToken is provided. Adding empty authorization header
       // fails loading for public repos
-      if (login.personalAccessToken) {
-        xhr.setRequestHeader('Authorization', makeBasicAuth(login.targetUsername, login.personalAccessToken));
+      if (login.targetUsername && login.personalAccessToken) {
+        xhr.setRequestHeader('Authorization', makeBasicAuth(login));
       }
     }
   });
