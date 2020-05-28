@@ -16,9 +16,6 @@
 "use strict";
 
 $(document).ready(function () {
-  let targetUsername;
-  let targetRepo;
-  let targetOwner;
   let isLoadingShown = false;
 
   let loadingSemaphore = (function () {
@@ -54,6 +51,10 @@ $(document).ready(function () {
     };
   };
 
+  function makeBasicAuth(username, personalAccessToken) {
+    return "Basic " + Base64.encode(username + ":" + personalAccessToken);
+  }
+
   $.ajaxSetup({
     cache: false,
     complete: function () {
@@ -65,18 +66,18 @@ $(document).ready(function () {
       }
     },
     beforeSend: function (xhr) {
-      let personalAccessToken = $('#personal-access-token').val().trim();
+      let login = getLoginInfo();
       loadingSemaphore.acquire();
       // only add authorization if a personalAccessToken is provided. Adding empty authorization header
       // fails loading for public repos
-      if (personalAccessToken) {
-        xhr.setRequestHeader('Authorization', makeBasicAuth(targetUsername, personalAccessToken));
+      if (login.personalAccessToken) {
+        xhr.setRequestHeader('Authorization', makeBasicAuth(login.targetUsername, login.personalAccessToken));
       }
     }
   });
 
   function apiCallGetEntriesRecursive(owner, repo, kind, mode, callback, pageNum) {
-
+    let login = getLoginInfo();
     $.ajax({
       type: 'GET',
       url: `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`,
@@ -94,9 +95,19 @@ $(document).ready(function () {
               console.log('Bug in function apiCallGetEntriesRecursive!');
             }
             //sets target indicator text
-            $('#which-repo-in-use').html('<strong>Repo owner:</strong> ' + owner + "<br /><strong>Repo:</strong> " + repo + '<br /><strong>Username:</strong> ' + 'WORK IN PROGRESS');
+            $('#which-repo-in-use').html(`
+              <p>
+                <strong>Repo owner:</strong> ${login.targetOwner}
+              </p>
+              <p> 
+                <strong>Repo:</strong> ${login.targetRepo}
+              </p>
+              <p>
+                <strong>Username:</strong> ${login.targetUsername}
+              </p>`);
           });
-        }//if
+        }
+        //if
 
         if (typeof callback === 'function') {
           callback(response);
@@ -145,11 +156,12 @@ $(document).ready(function () {
   }
 
   function apiCallCreateEntries(entryObject, kind, callback) {
+    let login = getLoginInfo();
     let nameForEntry = assignNameForEntry(entryObject, kind);
 
     $.ajax({
       type: "POST",
-      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind,
+      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/kind`,
       data: JSON.stringify(entryObject),
       success: function (response) {
         if (typeof callback === 'function') {
@@ -179,12 +191,13 @@ $(document).ready(function () {
   }
 
   function apiCallUpdateEntries(entryObject, kind, callback) {
+    let login = getLoginInfo();
     let apiCallSign = assignAPICallSign4Update(entryObject, kind);
     let nameForEntry = assignNameForEntry(entryObject, kind);
 
     $.ajax({
       type: "PATCH",
-      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind + '/' + apiCallSign,
+      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/kind/${apiCallSign}`,
       data: JSON.stringify(entryObject),
       success: function (response) {
         if (typeof callback === 'function') {
@@ -213,12 +226,13 @@ $(document).ready(function () {
   }
 
   function apiCallDeleteEntries(entryObject, kind, callback) {
+    let login = getLoginInfo();
     let apiCallSign = assignAPICallSign4Delete(entryObject, kind);
     let nameForEntry = assignNameForEntry(entryObject, kind);
 
     $.ajax({
       type: "DELETE",
-      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind + '/' + apiCallSign,
+      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/kind/${apiCallSign}`,
       success: function (response) {
         if (typeof callback === 'function') {
           callback(response);
@@ -231,10 +245,6 @@ $(document).ready(function () {
     });
   }
 
-  function makeBasicAuth(username, personalAccessToken) {
-    return "Basic " + Base64.encode(username + ":" + personalAccessToken);
-  }
-
   function clearAllLabels() {
     $('#form-labels').text('');
     $('#commit-to-target-repo').text('Commit changes');
@@ -244,7 +254,6 @@ $(document).ready(function () {
   }
 
   function createNewLabelEntry(label, mode) {
-
     let action = ' action="none" ';
     let uncommittedSignClass = '';
 
@@ -520,10 +529,7 @@ $(document).ready(function () {
   function clickToListAllEntries(kind) {
     let login = getLoginInfo();
 
-    targetOwner = $('#targetOwner').val();
-    targetRepo = $('#targetRepo').val();
-
-    if (targetOwner && targetRepo) {
+    if (login.targetOwner && login.targetRepo) {
       if (kind === 'labels') {
         clearAllLabels();
       }
@@ -593,15 +599,16 @@ $(document).ready(function () {
   function clickToCopyEntriesFrom(kind) {
     let login = getLoginInfo();
 
-    if (username && repo) {
+    if (login.copyFromOwner && login.copyFromRepo) {
       apiCallGetEntries(login.copyFromOwner, login.copyFromRepo, kind, 'copy', function () {
         $(this).button('reset');
-      });//set adduncommitted to true because those are coming from another repo
+      });
+      //set adduncommitted to true because those are coming from another repo
 
       $('#' + kind + '-tab').tab('show');
     }
     else {
-      alert("Please enter the repo owner and the repo");
+      alert("Please enter the repo owner and the repo you want to copy from.");
       $(this).button('reset');
     }
     checkIfAnyModifications();
@@ -626,10 +633,10 @@ $(document).ready(function () {
   });
 
   $('#commit-to-target-repo').click(function () {
-    let personalAccessToken = $('#personal-access-token').val();
+    let login = getLoginInfo();
 
-    if (personalAccessToken.trim() === '') {
-      alert('You need to enter your personal access token for repo: ' + targetRepo + ' in order to commit changes.');
+    if (login.personalAccessToken === '') {
+      alert(`You need to enter your personal access token for repo ${login.targetRepo} in order to commit changes.`);
       $(this).button('reset');
       return;
     }
