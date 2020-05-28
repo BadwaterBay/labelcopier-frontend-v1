@@ -161,7 +161,7 @@ $(document).ready(function () {
 
     $.ajax({
       type: "POST",
-      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/kind`,
+      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/${kind}`,
       data: JSON.stringify(entryObject),
       success: function (response) {
         if (typeof callback === 'function') {
@@ -197,7 +197,7 @@ $(document).ready(function () {
 
     $.ajax({
       type: "PATCH",
-      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/kind/${apiCallSign}`,
+      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/${kind}/${apiCallSign}`,
       data: JSON.stringify(entryObject),
       success: function (response) {
         if (typeof callback === 'function') {
@@ -232,7 +232,7 @@ $(document).ready(function () {
 
     $.ajax({
       type: "DELETE",
-      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/kind/${apiCallSign}`,
+      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/${kind}/${apiCallSign}`,
       success: function (response) {
         if (typeof callback === 'function') {
           callback(response);
