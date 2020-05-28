@@ -520,6 +520,10 @@ $(document).ready(function () {
       apiCallGetEntries(targetOwner, targetRepo, kind, 'list', () => {
         $(this).button('reset');
       });
+<<<<<<< HEAD:public/js/app.js
+=======
+      $(`#revert-${kind}-to-original`).removeAttr('disabled');
+>>>>>>> enhancement/catch-revert-to-original-errors:js/app.js
       $('#' + kind + '-tab').tab('show');
     }
     else {
