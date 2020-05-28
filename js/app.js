@@ -876,7 +876,7 @@ $(document).ready(function () {
     _utf8_decode: function (utftext) {
       let string = "";
       let i = 0;
-      let c = c1 = c2 = 0;
+      let [c, c2, c3] = Array(3).fill(0);
 
       while (i < utftext.length) {
 
