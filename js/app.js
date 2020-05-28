@@ -16,9 +16,6 @@
 "use strict";
 
 $(document).ready(function () {
-  let targetUsername;
-  let targetRepo;
-  let targetOwner;
   let isLoadingShown = false;
 
   let loadingSemaphore = (function () {
@@ -43,6 +40,21 @@ $(document).ready(function () {
     };
   }());
 
+  const getLoginInfo = () => {
+    return {
+      targetOwner: $('#targetOwner').val().trim(),
+      targetRepo: $('#targetRepo').val().trim(),
+      targetUsername: $('#targetUsername').val().trim(),
+      personalAccessToken: $('#personal-access-token').val().trim(),
+      copyFromOwner: $('#copy-from-owner').val().trim(),
+      copyFromRepo: $('#copy-from-repo').val().trim()
+    };
+  };
+
+  function makeBasicAuth(login) {
+    return "Basic " + Base64.encode(login.targetUsername + ":" + login.personalAccessToken);
+  }
+
   $.ajaxSetup({
     cache: false,
     complete: function () {
@@ -54,20 +66,21 @@ $(document).ready(function () {
       }
     },
     beforeSend: function (xhr) {
-      let password = $('#personalAccessToken').val().trim();
+      let login = getLoginInfo();
       loadingSemaphore.acquire();
-      // only add authorization if a password is provided. Adding empty authorization header
+      // only add authorization if a personalAccessToken is provided. Adding empty authorization header
       // fails loading for public repos
-      if (password) {
-        xhr.setRequestHeader('Authorization', makeBasicAuth(targetUsername, password));
+      if (login.targetUsername && login.personalAccessToken) {
+        xhr.setRequestHeader('Authorization', makeBasicAuth(login));
       }
     }
   });
 
-  function apiCallGetEntriesRecursive(username, repo, kind, mode, callback, pageNum) {
+  function apiCallGetEntriesRecursive(owner, repo, kind, mode, callback, pageNum) {
+    let login = getLoginInfo();
     $.ajax({
       type: 'GET',
-      url: 'https://api.github.com/repos/' + username + '/' + repo + '/' + kind + '?page=' + pageNum,
+      url: `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`,
       success: function (response) {
         if (response) {
           response.forEach(e => {
@@ -82,9 +95,19 @@ $(document).ready(function () {
               console.log('Bug in function apiCallGetEntriesRecursive!');
             }
             //sets target indicator text
-            $('#which-repo-in-use').html('<strong>Repo owner:</strong> ' + targetOwner + "<br /><strong>Repo:</strong> " + targetRepo + '<br /><strong>Username:</strong> ' + username);
+            $('#which-repo-in-use').html(`
+              <p>
+                <strong>Repo owner:</strong> ${login.targetOwner}
+              </p>
+              <p> 
+                <strong>Repo:</strong> ${login.targetRepo}
+              </p>
+              <p>
+                <strong>Username:</strong> ${login.targetUsername}
+              </p>`);
           });
-        }//if
+        }
+        //if
 
         if (typeof callback === 'function') {
           callback(response);
@@ -97,13 +120,13 @@ $(document).ready(function () {
           return;
         }
         else {
-          apiCallGetEntriesRecursive(username, repo, kind, mode, callback, ++pageNum);
+          apiCallGetEntriesRecursive(owner, repo, kind, mode, callback, ++pageNum);
         }
 
       },
       error: function (response) {
         if (response.status === 404) {
-          alert('Not found! If this is a private repo make sure you provide a password.');
+          alert('Not found! If this is a private repo make sure you provide a personal access token.');
         }
 
         if (typeof callback === 'function') {
@@ -114,8 +137,8 @@ $(document).ready(function () {
     checkIfAnyModifications();
   }
 
-  function apiCallGetEntries(username, repo, kind, mode, callback) {
-    apiCallGetEntriesRecursive(username, repo, kind, mode, callback, 1);
+  function apiCallGetEntries(owner, repo, kind, mode, callback) {
+    apiCallGetEntriesRecursive(owner, repo, kind, mode, callback, 1);
   }
 
   function assignNameForEntry(entryObject, kind) {
@@ -133,11 +156,12 @@ $(document).ready(function () {
   }
 
   function apiCallCreateEntries(entryObject, kind, callback) {
+    let login = getLoginInfo();
     let nameForEntry = assignNameForEntry(entryObject, kind);
 
     $.ajax({
       type: "POST",
-      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind,
+      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/${kind}`,
       data: JSON.stringify(entryObject),
       success: function (response) {
         if (typeof callback === 'function') {
@@ -167,12 +191,13 @@ $(document).ready(function () {
   }
 
   function apiCallUpdateEntries(entryObject, kind, callback) {
+    let login = getLoginInfo();
     let apiCallSign = assignAPICallSign4Update(entryObject, kind);
     let nameForEntry = assignNameForEntry(entryObject, kind);
 
     $.ajax({
       type: "PATCH",
-      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind + '/' + apiCallSign,
+      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/${kind}/${apiCallSign}`,
       data: JSON.stringify(entryObject),
       success: function (response) {
         if (typeof callback === 'function') {
@@ -201,12 +226,13 @@ $(document).ready(function () {
   }
 
   function apiCallDeleteEntries(entryObject, kind, callback) {
+    let login = getLoginInfo();
     let apiCallSign = assignAPICallSign4Delete(entryObject, kind);
     let nameForEntry = assignNameForEntry(entryObject, kind);
 
     $.ajax({
       type: "DELETE",
-      url: 'https://api.github.com/repos/' + targetOwner + '/' + targetRepo + '/' + kind + '/' + apiCallSign,
+      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/${kind}/${apiCallSign}`,
       success: function (response) {
         if (typeof callback === 'function') {
           callback(response);
@@ -219,10 +245,6 @@ $(document).ready(function () {
     });
   }
 
-  function makeBasicAuth(username, password) {
-    return "Basic " + Base64.encode(username + ":" + password);
-  }
-
   function clearAllLabels() {
     $('#form-labels').text('');
     $('#commit-to-target-repo').text('Commit changes');
@@ -232,7 +254,6 @@ $(document).ready(function () {
   }
 
   function createNewLabelEntry(label, mode) {
-
     let action = ' action="none" ';
     let uncommittedSignClass = '';
 
@@ -506,10 +527,9 @@ $(document).ready(function () {
   });
 
   function clickToListAllEntries(kind) {
-    targetOwner = $('#targetOwner').val();
-    targetRepo = $('#targetRepo').val();
+    let login = getLoginInfo();
 
-    if (targetOwner && targetRepo) {
+    if (login.targetOwner && login.targetRepo) {
       if (kind === 'labels') {
         clearAllLabels();
       }
@@ -517,7 +537,7 @@ $(document).ready(function () {
         clearAllMilestones();
       }
 
-      apiCallGetEntries(targetOwner, targetRepo, kind, 'list', () => {
+      apiCallGetEntries(login.targetOwner, login.targetRepo, kind, 'list', () => {
         $(this).button('reset');
       });
       $('#' + kind + '-tab').tab('show');
@@ -538,14 +558,16 @@ $(document).ready(function () {
 
   $('#revert-labels-to-original').click(function () {
     clearAllLabels();
-    apiCallGetEntries(targetOwner, targetRepo, 'labels', 'list', () => {
+    let login = getLoginInfo();
+    apiCallGetEntries(login.targetOwner, login.targetRepo, 'labels', 'list', () => {
       $(this).button('reset');
     });
   });
 
   $('#revert-milestones-to-original').click(function () {
     clearAllMilestones();
-    apiCallGetEntries(targetOwner, targetRepo, 'milestones', 'list', () => {
+    let login = getLoginInfo();
+    apiCallGetEntries(login.targetOwner, login.targetRepo, 'milestones', 'list', () => {
       $(this).button('reset');
     });
   });
@@ -575,18 +597,18 @@ $(document).ready(function () {
   })
 
   function clickToCopyEntriesFrom(kind) {
-    let username = $('#copyFromOwner').val();
-    let repo = $('#copyFromRepo').val();
+    let login = getLoginInfo();
 
-    if (username && repo) {
-      apiCallGetEntries(username, repo, kind, 'copy', function () {
+    if (login.copyFromOwner && login.copyFromRepo) {
+      apiCallGetEntries(login.copyFromOwner, login.copyFromRepo, kind, 'copy', function () {
         $(this).button('reset');
-      });//set adduncommitted to true because those are coming from another repo
+      });
+      //set adduncommitted to true because those are coming from another repo
 
       $('#' + kind + '-tab').tab('show');
     }
     else {
-      alert("Please enter the repo owner and the repo");
+      alert("Please enter the repo owner and the repo you want to copy from.");
       $(this).button('reset');
     }
     checkIfAnyModifications();
@@ -611,10 +633,10 @@ $(document).ready(function () {
   });
 
   $('#commit-to-target-repo').click(function () {
-    let password = $('#personalAccessToken').val();
+    let login = getLoginInfo();
 
-    if (password.trim() === '') {
-      alert('You need to enter your personal access token for repo: ' + targetRepo + ' in order to commit changes.');
+    if (login.personalAccessToken === '') {
+      alert(`You need to enter your personal access token for repo ${login.targetRepo} in order to commit changes.`);
       $(this).button('reset');
       return;
     }
@@ -745,8 +767,9 @@ $(document).ready(function () {
     //reload labels after changes
     clearAllLabels();
     clearAllMilestones();
-    apiCallGetEntries(targetOwner, targetRepo, 'labels', 'list');
-    apiCallGetEntries(targetOwner, targetRepo, 'milestones', 'list');
+    let login = getLoginInfo();
+    apiCallGetEntries(login.targetOwner, login.targetRepo, 'labels', 'list');
+    apiCallGetEntries(login.targetOwner, login.targetRepo, 'milestones', 'list');
   });
 
   /* ========== The rest is BASE64 STUFF ========== */
