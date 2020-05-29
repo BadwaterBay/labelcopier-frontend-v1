@@ -873,6 +873,8 @@ $(document).ready(function () {
     } else {
       if (labelsModified || milestonesModified) {
         enableCommitButton();
+      } else {
+        disableCommitButton();
       }
     }
   }
