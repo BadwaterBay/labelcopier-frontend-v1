@@ -412,7 +412,7 @@ $(document).ready(function () {
   }
 
   function parseDate(raw) {
-    if (raw === null) {
+    if (raw === null || raw === '') {
       return ['', ''];
     }
     else {
@@ -680,6 +680,14 @@ $(document).ready(function () {
   function formatDate(dateInput) {
     let date = dateInput.val();
     let time = dateInput.attr('data-orig-time');
+    console.log(date);
+    console.log(time);
+
+    // if (!date && !time) {
+    //   console.log('NULL');
+    //   return null;
+    // }
+
     let dt = {};
     [dt.year, dt.month, dt.dayOfMonth] = date.split('-');
     [dt.hour, dt.minute, dt.second] = time.split(':');
@@ -688,7 +696,7 @@ $(document).ready(function () {
       dt[k] = Number(dt[k]);
     })
 
-    let dateObject = new Date(dt.year, dt.month, dt.dayOfMonth, dt.hour, dt.minute, dt.second);
+    let dateObject = new Date(dt.year, dt.month - 1, dt.dayOfMonth, dt.hour, dt.minute, dt.second);
     return JSON.stringify(dateObject);
   }
 
@@ -705,7 +713,7 @@ $(document).ready(function () {
       if (jObjectEntry.attr('data-number') !== 'null') {
         return {
           title: jObjectEntry.find('[name="title"]').val(),
-          state: jObjectEntry.find('[name="state]'),
+          state: jObjectEntry.find('[name="state]').val(),
           description: jObjectEntry.find('[name="description"]').val(),
           due_on: formatDate(jObjectEntry.find('[name="due-date"]')),
           number: parseInt(jObjectEntry.attr('data-number'))
@@ -714,7 +722,7 @@ $(document).ready(function () {
       else {
         return {
           title: jObjectEntry.find('[name="title"]').val(),
-          state: jObjectEntry.find('[name="state]'),
+          state: jObjectEntry.find('[name="state]').val(),
           description: jObjectEntry.find('[name="description"]').val(),
           due_on: formatDate(jObjectEntry.find('[name="due-date"]'))
         };
