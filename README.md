@@ -10,7 +10,7 @@
 
 ## Description
 
-This web app helps you manage labels and milestones.
+This web app helps you manage labels and milestones of your GitHub repositories.
 
 This project was adopted from [here](https://github.com/destan/github-label-manager). However, since that project hasn't been updated since 2016, we'd like to take this project into our own hands and continue developing and maintaining this open-source project for the community.
 
@@ -42,11 +42,12 @@ Questions are welcome.
 
 - Install Node with the package manager of your choice and npm.
 - Clone this repository.
-- Change directory to the project's root directory, run `npm ci` to install all node dependencies in your local environment.
+- Change directory to the project's root directory, run command `npm ci` to install all node dependencies in your local environment.
 
 ### Tools
 
-- Eslint: run `npm run lint`
+- Eslint: run command `npm run lint`
+- Formatting using Prettier: automatically runs when committing or manually run command `npm run format`
 
 ---
 
