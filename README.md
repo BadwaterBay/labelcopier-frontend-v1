@@ -6,7 +6,7 @@
 [![Open Source Love svg2](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-***
+---
 
 ## Description
 
@@ -22,7 +22,7 @@ We have made significant improvements since then:
 [![GitHub pull-requests](https://img.shields.io/github/issues-pr/Badwater-Apps/github-label-manager-2.svg)](https://GitHub.com/Badwater-Apps/github-label-manager-2/pull/)
 [![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/Badwater-Apps/github-label-manager-2.svg)](https://GitHub.com/Badwater-Apps/github-label-manager-2/pull/)
 
-***
+---
 
 ## Contribute to this project
 
@@ -34,7 +34,7 @@ Take on an issue and submit a pull request to resolve the issue.
 
 Questions are welcome.
 
-***
+---
 
 ## Development
 
@@ -48,11 +48,11 @@ Questions are welcome.
 
 - Eslint: run `npm run lint`
 
-***
+---
 
 ## License
 
-GPLv3	
+GPLv3
 
 github-label-manager-2 is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -61,8 +61,8 @@ the Free Software Foundation, either version 3 of the License, or
 
 github-label-manager-2 is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with github-label-manager.  If not, see <http://www.gnu.org/licenses/>.
+along with github-label-manager. If not, see <http://www.gnu.org/licenses/>.

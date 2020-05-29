@@ -1,11 +1,10 @@
-# Fix #000  (<=== Add issue number here)
+# Fix #000 (<=== Add issue number here)
 
-**IMPORTANT:** *Please don't create a Pull Request (PR) before creating an issue first, unless you're fixing a typo-sort-of issue.*
+**IMPORTANT:** _Please don't create a Pull Request (PR) before creating an issue first, unless you're fixing a typo-sort-of issue._
 
 ## Details
 
-*If the PR title isn't enough to describe your PR, please provide details here.*
-
+_If the PR title isn't enough to describe your PR, please provide details here._
 
 ## Checks
 
