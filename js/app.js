@@ -338,17 +338,23 @@ $(document).ready(function () {
         <div class="card">\
           <div class="card-body">\
             <div class="flexbox-container">\
-              <input name="name" type="text" class="form-control label-fitting" placeholder="Name" value="' +
+              <input name="name" type="text" \
+                class="form-control label-fitting" \
+                placeholder="Name" value="' +
         label.name +
         '" ' +
         origNameVal +
         '>\
-              <input name="color" type="text" class="form-control color-fitting color-box" placeholder="Color"  value="' +
+              <input name="color" type="text" \
+                class="form-control color-fitting color-box" \
+                placeholder="Color"  value="' +
         label.color +
         '" ' +
         origColorVal +
         '>\
-              <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' +
+              <input name="description" type="text" \
+                class="form-control description-fitting" \
+                placeholder="Description" value="' +
         label.description +
         '" ' +
         origDescriptionVal +
@@ -396,11 +402,14 @@ $(document).ready(function () {
       let currentVal = $(this).val();
       let originalVal = $(this).attr("data-orig-val");
 
-      if (setOfLabelNames.has(currentVal) && (currentVal !== originalVal)) {
+      if (setOfLabelNames.has(currentVal) && currentVal !== originalVal) {
         $entry.addClass("duplicate-entry");
         $(this).addClass("red-alert-background");
         alert("This label name has already been taken!");
         // In the future, we might use a popup instead of an alert
+      } else {
+        $entry.removeClass("duplicate-entry");
+        $(this).removeClass("red-alert-background");
       }
 
       checkIfAnyEntryModified();
@@ -548,12 +557,16 @@ $(document).ready(function () {
         <div class="card">\
           <div class="card-body">\
             <div class="flexbox-container">\
-              <input name="title" type="text" class="form-control title-fitting" placeholder="Title" value="' +
+              <input name="title" type="text" \
+                class="form-control title-fitting" \
+                placeholder="Title" value="' +
         milestone.title +
         '" ' +
         origTitleVal +
         '>\
-              <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' +
+              <input name="description" type="text" \
+                class="form-control description-fitting" \
+                placeholder="Description" value="' +
         milestone.description +
         '" ' +
         origDescriptionVal +
@@ -598,14 +611,14 @@ $(document).ready(function () {
       let currentVal = $(this).val();
       let originalVal = $(this).attr("data-orig-val");
 
-      if (
-        setOfMilestoneTitles.has(currentVal) &&
-        currentVal !== originalVal
-      ) {
+      if (setOfMilestoneTitles.has(currentVal) && currentVal !== originalVal) {
         $entry.addClass("duplicate-entry");
         $(this).addClass("red-alert-background");
         alert("This milestone title has already been taken!");
         // In the future, we might use a popup instead of an alert
+      } else {
+        $entry.removeClass("duplicate-entry");
+        $(this).removeClass("red-alert-background");
       }
 
       checkIfAnyEntryModified();
