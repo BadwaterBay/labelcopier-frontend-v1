@@ -4,7 +4,7 @@
   "description": "A web app that help you manage GitHub labels and milestones",
   "main": "index.html",
   "scripts": {
-    "lint": "eslint . && echo \"===End of eslint==\" && exit 0",
+    "lint": "eslint . && echo \"==> Finished running eslint\" && exit 0",
     "format": "npx prettier@2.0.5 . --write",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
