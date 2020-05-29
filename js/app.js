@@ -436,18 +436,20 @@ $(document).ready(function () {
     }
 
     let origTitleVal = ' data-orig-val="' + milestone.title + '"';
-    let state = milestone.state;
+    let origStateVal = ' data-orig-val="' + milestone.state + '"';
     let origDescriptionVal = ' data-orig-val="' + milestone.description + '"';
-    let due_on = milestone.due_on;
+    let origDueOnVal = ' data-orig-val="' + milestone.due_on + '"';
     let number = milestone.number;
 
     let newElementEntry = $('\
-      <div class="milestone-entry ' + uncommittedSignClass + '" ' + action + ' data-number="' + number + '" data-state="' + state + '" data-due_on="' + due_on + '">\
+      <div class="milestone-entry ' + uncommittedSignClass + '" ' + action + ' data-number="' + number + '" data-state="' + milestone.state + '" data-due_on="' + milestone.due_on + '">\
         <div class="card">\
           <div class="card-body">\
             <div class="flexbox-container">\
               <input name="title" type="text" class="form-control title-fitting" placeholder="Title" value="' + milestone.title + '" ' + origTitleVal + '>\
               <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + milestone.description + '" ' + origDescriptionVal + '>\
+              <input name="due-date" type="text" class="form-control due-date-fitting" placeholder="Due date" value="' + milestone.due_on + '" ' + origDueOnVal + '>\
+              <input name="state" type="text" class="form-control state-fitting" placeholder="State" value="' + milestone.state + '" ' + origStateVal + '>\
             </div>\
           </div>\
         </div>\
