@@ -411,6 +411,21 @@ $(document).ready(function () {
     $('#commit-to-target-repo').addClass('btn-outline-success');
   }
 
+  function parseDueDate(raw) {
+    let parsedDate = new Date(raw);
+    let year = parsedDate.getFullYear();
+    let month = Number(parsedDate.getMonth()) + 1;
+    if (month < 10) {
+      month = '0' + month.toString();
+    }
+    else {
+      month = month.toString();
+    }
+    let dayOfMonth = parsedDate.getDate();
+
+    return `${year}-${month}-${dayOfMonth}`;
+  }
+
   function createNewMilestoneEntry(milestone, mode) {
 
     if (milestone === undefined || milestone === null) {
@@ -438,7 +453,8 @@ $(document).ready(function () {
     let origTitleVal = ' data-orig-val="' + milestone.title + '"';
     let origStateVal = ' data-orig-val="' + milestone.state + '"';
     let origDescriptionVal = ' data-orig-val="' + milestone.description + '"';
-    let origDueOnVal = ' data-orig-val="' + milestone.due_on + '"';
+    let parsedDueDate = parseDueDate(milestone.due_on);
+    let origDueDate = ` data-orig-val="${parsedDueDate}"`;
     let number = milestone.number;
 
     let newElementEntry = $('\
@@ -448,7 +464,7 @@ $(document).ready(function () {
             <div class="flexbox-container">\
               <input name="title" type="text" class="form-control title-fitting" placeholder="Title" value="' + milestone.title + '" ' + origTitleVal + '>\
               <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + milestone.description + '" ' + origDescriptionVal + '>\
-              <input name="due-date" type="text" class="form-control due-date-fitting" placeholder="Due date" value="' + milestone.due_on + '" ' + origDueOnVal + '>\
+              <input name="due-date" type="date" class="form-control due-date-fitting" placeholder="Due date" value="' + parsedDueDate + '" ' + origDueDate + '>\
               <input name="state" type="text" class="form-control state-fitting" placeholder="State" value="' + milestone.state + '" ' + origStateVal + '>\
             </div>\
           </div>\
