@@ -411,19 +411,28 @@ $(document).ready(function () {
     $('#commit-to-target-repo').addClass('btn-outline-success');
   }
 
-  function parseDueDate(raw) {
-    let parsedDate = new Date(raw);
-    let year = parsedDate.getFullYear();
-    let month = Number(parsedDate.getMonth()) + 1;
-    if (month < 10) {
-      month = '0' + month.toString();
+  function parseDate(raw) {
+    if (raw === null) {
+      return ['', ''];
     }
     else {
-      month = month.toString();
+      let parsedDatetime = new Date(raw);
+      let year = parsedDatetime.getFullYear();
+      let month = Number(parsedDatetime.getMonth()) + 1;
+      if (month < 10) {
+        month = '0' + month.toString();
+      }
+      else {
+        month = month.toString();
+      }
+      let dayOfMonth = parsedDatetime.getDate();
+  
+      let hour = parsedDatetime.getHours();
+      let minute = parsedDatetime.getMinutes();
+      let second = parsedDatetime.getSeconds();
+  
+      return [`${year}-${month}-${dayOfMonth}`, `${hour}:${minute}:${second}`];
     }
-    let dayOfMonth = parsedDate.getDate();
-
-    return `${year}-${month}-${dayOfMonth}`;
   }
 
   function createNewMilestoneEntry(milestone, mode) {
@@ -453,8 +462,9 @@ $(document).ready(function () {
     let origTitleVal = ' data-orig-val="' + milestone.title + '"';
     let origStateVal = ' data-orig-val="' + milestone.state + '"';
     let origDescriptionVal = ' data-orig-val="' + milestone.description + '"';
-    let parsedDueDate = parseDueDate(milestone.due_on);
+    let [parsedDueDate, parsedDueTime] = parseDate(milestone.due_on);
     let origDueDate = ` data-orig-val="${parsedDueDate}"`;
+    let origDueTime = ` data-orig-time="${parsedDueTime}"`;
     let number = milestone.number;
 
     let newElementEntry = $('\
@@ -464,7 +474,9 @@ $(document).ready(function () {
             <div class="flexbox-container">\
               <input name="title" type="text" class="form-control title-fitting" placeholder="Title" value="' + milestone.title + '" ' + origTitleVal + '>\
               <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="' + milestone.description + '" ' + origDescriptionVal + '>\
-              <input name="due-date" type="date" class="form-control due-date-fitting" placeholder="Due date" value="' + parsedDueDate + '" ' + origDueDate + '>\
+              <label>Due Date: \
+                <input name="due-date" type="date" class="form-control due-date-fitting pl-1" value="' + parsedDueDate + '" ' + origDueDate + origDueTime + '>\
+              </label>\
               <input name="state" type="text" class="form-control state-fitting" placeholder="State" value="' + milestone.state + '" ' + origStateVal + '>\
             </div>\
           </div>\
