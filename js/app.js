@@ -393,10 +393,11 @@ $(document).ready(function () {
 
     newElementEntry.find('input[name="name"]').blur(function () {
       let $entry = $(this).closest(".label-entry");
+      let currentVal = $(this).val();
+      let originalVal = $(this).attr("data-orig-val");
 
-      if (setOfLabelNames.has($(this).val())) {
-        $entry.attr("action", "duplicate");
-        $entry.removeClass("uncommitted");
+      if (setOfLabelNames.has(currentVal) && (currentVal !== originalVal)) {
+        $entry.addClass("duplicate-entry");
         $(this).addClass("red-alert-background");
         alert("This label name has already been taken!");
         // In the future, we might use a popup instead of an alert
@@ -594,10 +595,14 @@ $(document).ready(function () {
 
     newElementEntry.find('input[name="title"]').blur(function () {
       let $entry = $(this).closest(".milestone-entry");
+      let currentVal = $(this).val();
+      let originalVal = $(this).attr("data-orig-val");
 
-      if (setOfMilestoneTitles.has($(this).val())) {
-        $entry.attr("action", "duplicate");
-        $entry.removeClass("uncommitted");
+      if (
+        setOfMilestoneTitles.has(currentVal) &&
+        currentVal !== originalVal
+      ) {
+        $entry.addClass("duplicate-entry");
         $(this).addClass("red-alert-background");
         alert("This milestone title has already been taken!");
         // In the future, we might use a popup instead of an alert
@@ -842,9 +847,8 @@ $(document).ready(function () {
     let labelsModified = $('.label-entry:not([action="none"])').length > 0;
     let milestonesModified =
       $('.milestone-entry:not([action="none"])').length > 0;
-    let labelsDuplicated = $('.label-entry[action="duplicate"]').length > 0;
-    let milestonesDuplicated =
-      $('.milestone-entry[action="duplicate"]').length > 0;
+    let labelsDuplicated = $(".label-entry.duplicate-entry").length > 0;
+    let milestonesDuplicated = $(".milestone-entry.duplicate-entry").length > 0;
 
     if (labelsModified) {
       $("#revert-labels-to-original").removeAttr("disabled");
