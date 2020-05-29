@@ -167,10 +167,10 @@ $(document).ready(function () {
         if (typeof callback === 'function') {
           callback(response);
         }
-        writeLog('Created ' + kind + ': ' + nameForEntry);
+        writeLog('Created ' + kind.slice(0, -1) + ': ' + nameForEntry);
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        writeLog('Creation of ' + kind + ' failed for: ' + nameForEntry + ' due to error: ' + errorThrown);
+        writeLog('Creation of ' + kind.slice(0, -1) + ' failed for: ' + nameForEntry + ' due to error: ' + errorThrown);
       }
     });
   }
@@ -203,10 +203,10 @@ $(document).ready(function () {
         if (typeof callback === 'function') {
           callback(response);
         }
-        writeLog('Updated ' + kind + ': ' + apiCallSign + ' => ' + nameForEntry);
+        writeLog('Updated ' + kind.slice(0, -1) + ': ' + apiCallSign + ' => ' + nameForEntry);
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        writeLog('Update of ' + kind + ' failed for: ' + apiCallSign + ' due to error: ' + errorThrown);
+        writeLog('Update of ' + kind.slice(0, -1) + ' failed for: ' + apiCallSign + ' due to error: ' + errorThrown);
       }
     });
   }
@@ -237,10 +237,10 @@ $(document).ready(function () {
         if (typeof callback === 'function') {
           callback(response);
         }
-        writeLog('Deleted ' + kind + ': ' + nameForEntry);
+        writeLog('Deleted ' + kind.slice(0, -1) + ': ' + nameForEntry);
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        writeLog('Deletion of ' + kind + ' failed for: ' + nameForEntry + ' due to error: ' + errorThrown);
+        writeLog('Deletion of ' + kind.slice(0, -1) + ' failed for: ' + nameForEntry + ' due to error: ' + errorThrown);
       }
     });
   }
