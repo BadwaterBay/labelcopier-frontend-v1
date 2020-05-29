@@ -417,21 +417,22 @@ $(document).ready(function () {
     }
     else {
       let parsedDatetime = new Date(raw);
-      let year = parsedDatetime.getFullYear();
-      let month = Number(parsedDatetime.getMonth()) + 1;
-      if (month < 10) {
-        month = '0' + month.toString();
+      let dt = {
+        year: parsedDatetime.getFullYear(),
+        month: parsedDatetime.getMonth() + 1,
+        dayOfMonth: parsedDatetime.getDate(),
+        hour: parsedDatetime.getHours(),
+        minute: parsedDatetime.getMinutes(),
+        second: parsedDatetime.getSeconds()
       }
-      else {
-        month = month.toString();
-      }
-      let dayOfMonth = parsedDatetime.getDate();
+
+      Object.keys(dt).forEach(k => {
+        if (dt[k] < 10) {
+          dt[k] = '0' + dt[k].toString();
+        }
+      });
   
-      let hour = parsedDatetime.getHours();
-      let minute = parsedDatetime.getMinutes();
-      let second = parsedDatetime.getSeconds();
-  
-      return [`${year}-${month}-${dayOfMonth}`, `${hour}:${minute}:${second}`];
+      return [`${dt.year}-${dt.month}-${dt.dayOfMonth}`, `${dt.hour}:${dt.minute}:${dt.second}`];
     }
   }
 
@@ -539,7 +540,9 @@ $(document).ready(function () {
       let $entry = $(this).closest('.milestone-entry');
 
       if ($entry.find('[name="title"]').attr('data-orig-val') === $entry.find('[name="title"]').val() &&
-        $entry.find('[name="description"]').attr('data-orig-val') === $entry.find('[name="description"]').val()) {
+        $entry.find('[name="description"]').attr('data-orig-val') === $entry.find('[name="description"]').val() &&
+        $entry.find('[name="due-date"]').attr('data-orig-val') === $entry.find('[name="due-date"]').val() &&
+        $entry.find('[name="state"]').attr('data-orig-val') === $entry.find('[name="state"]').val()) {
         $entry.attr('action', 'none');
       }
       else {
@@ -674,6 +677,21 @@ $(document).ready(function () {
     commit();
   });
 
+  function formatDate(dateInput) {
+    let date = dateInput.val();
+    let time = dateInput.attr('data-orig-time');
+    let dt = {};
+    [dt.year, dt.month, dt.dayOfMonth] = date.split('-');
+    [dt.hour, dt.minute, dt.second] = time.split(':');
+
+    Object.keys(dt).forEach(k => {
+      dt[k] = Number(dt[k]);
+    })
+
+    let dateObject = new Date(dt.year, dt.month, dt.dayOfMonth, dt.hour, dt.minute, dt.second);
+    return JSON.stringify(dateObject);
+  }
+
   function serializeEntries(jObjectEntry, kind) {
     if (kind === 'labels') {
       return {
@@ -687,18 +705,18 @@ $(document).ready(function () {
       if (jObjectEntry.attr('data-number') !== 'null') {
         return {
           title: jObjectEntry.find('[name="title"]').val(),
-          // state: jObjectEntry.attr('data-state'),
+          state: jObjectEntry.find('[name="state]'),
           description: jObjectEntry.find('[name="description"]').val(),
-          // due_on: jObjectEntry.attr('data-due_on'),
+          due_on: formatDate(jObjectEntry.find('[name="due-date"]')),
           number: parseInt(jObjectEntry.attr('data-number'))
         };
       }
       else {
         return {
           title: jObjectEntry.find('[name="title"]').val(),
-          // state: jObjectEntry.attr('data-state'),
-          description: jObjectEntry.find('[name="description"]').val()
-          // due_on: jObjectEntry.attr('data-due_on')
+          state: jObjectEntry.find('[name="state]'),
+          description: jObjectEntry.find('[name="description"]').val(),
+          due_on: formatDate(jObjectEntry.find('[name="due-date"]'))
         };
       }
     }
