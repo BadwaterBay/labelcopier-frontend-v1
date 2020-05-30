@@ -98,6 +98,14 @@ $(document).ready(function () {
   let setOfLabelNames = new Set();
   let setOfMilestoneTitles = new Set();
 
+  function apiCallGetUrl(owner, repo, kind, pageNum) {
+    let queryURL = `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`;
+    if (kind === "milestones") {
+      queryURL += `&state=all`;
+    }
+    return queryURL;
+  }
+
   function apiCallGetEntries(owner, repo, kind, mode, callback) {
     function apiCallGetEntriesRecursive(
       owner,
@@ -109,13 +117,7 @@ $(document).ready(function () {
     ) {
       $.ajax({
         type: "GET",
-        url: (function (owner, repo, kind, pageNum) {
-          let queryURL = `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`;
-          if (kind === "milestones") {
-            queryURL += `&state=all`;
-          }
-          return queryURL;
-        })(owner, repo, kind, pageNum), // IIFE
+        url: apiCallGetUrl(owner, repo, kind, pageNum),
         success: function (response) {
           if (response) {
             if (response.length === 0) {
