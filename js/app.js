@@ -18,15 +18,15 @@
 $(document).ready(function () {
   let isLoadingShown = false;
 
-  let loadingSemaphore = (function () {
+  const loadingSemaphore = (() => {
     let count = 0;
 
     return {
-      acquire: function () {
+      acquire: () => {
         ++count;
         return null;
       },
-      release: function () {
+      release: () => {
         if (count <= 0) {
           throw "Semaphore inconsistency";
         }
@@ -34,7 +34,7 @@ $(document).ready(function () {
         --count;
         return null;
       },
-      isLocked: function () {
+      isLocked: () => {
         return count > 0;
       },
     };
@@ -51,83 +51,87 @@ $(document).ready(function () {
     };
   };
 
-  function makeBasicAuth(login) {
+  const makeBasicAuth = (LOGIN_INFO) => {
     return (
       "Basic " +
-      Base64.encode(login.targetUsername + ":" + login.personalAccessToken)
+      BASE64.encode(
+        `${LOGIN_INFO.targetUsername}:${LOGIN_INFO.personalAccessToken}`
+      )
     );
-  }
+  };
 
   $.ajaxSetup({
     cache: false,
-    complete: function () {
+    complete: () => {
       loadingSemaphore.release();
       if (isLoadingShown && loadingSemaphore.isLocked() === false) {
         writeLog("All operations are done.");
 
-        $("#loadingModal .modal-content").append(
-          `<div class="modal-footer">
-            <button type="button" class="btn btn-secondary" \
-            data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">Close</span>
+        $("#loadingModal .modal-content").append(`
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary"
+              data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">
+                Close
+              </span>
             </button>
-          </div>`
-        );
+          </div>
+        `);
       }
     },
-    beforeSend: function (xhr) {
-      let login = getLoginInfo();
+    beforeSend: (xhr) => {
+      const LOGIN_INFO = getLoginInfo();
       loadingSemaphore.acquire();
       // only add authorization if a personalAccessToken is provided. Adding empty authorization header
       // fails loading for public repos
-      if (login.targetUsername && login.personalAccessToken) {
-        xhr.setRequestHeader("Authorization", makeBasicAuth(login));
+      if (LOGIN_INFO.targetUsername && LOGIN_INFO.personalAccessToken) {
+        xhr.setRequestHeader("Authorization", makeBasicAuth(LOGIN_INFO));
       }
     },
   });
 
-  function setWhichRepoInUseText() {
-    let login = getLoginInfo();
+  const setWhichRepoInUseText = () => {
+    const LOGIN_INFO = getLoginInfo();
     $("#which-repo-in-use").html(`
       <p>
-        <strong>Repo owner:</strong> ${login.targetOwner}
+        <strong>Repo owner:</strong> ${LOGIN_INFO.targetOwner}
       </p>
       <p> 
-        <strong>Repo:</strong> ${login.targetRepo}
+        <strong>Repo:</strong> ${LOGIN_INFO.targetRepo}
       </p>
       <p>
-        <strong>Username:</strong> ${login.targetUsername}
+        <strong>Username:</strong> ${LOGIN_INFO.targetUsername}
       </p>`);
-  }
+  };
 
-  let setOfLabelNames = new Set();
-  let setOfMilestoneTitles = new Set();
+  const LABEL_SET = new Set();
+  const MILESTONE_SET = new Set();
 
-  function apiCallGetUrl(owner, repo, kind, pageNum) {
-    let queryURL = `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`;
-    if (kind === "milestones") {
-      queryURL += `&state=all`;
-    }
-    return queryURL;
-  }
+  const apiCallGetEntries = (owner, repo, kind, mode, callback) => {
+    const apiCallGetUrl = (owner, repo, kind, pageNum) => {
+      let queryURL = `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`;
+      if (kind === "milestones") {
+        queryURL += "&state=all";
+      }
+      return queryURL;
+    };
 
-  function apiCallGetEntries(owner, repo, kind, mode, callback) {
-    function apiCallGetEntriesRecursive(
+    const apiCallGetEntriesRecursive = (
       owner,
       repo,
       kind,
       mode,
       callback,
       pageNum
-    ) {
+    ) => {
       $.ajax({
         type: "GET",
         url: apiCallGetUrl(owner, repo, kind, pageNum),
-        success: function (response) {
+        success: (response) => {
           if (response) {
             if (response.length === 0) {
               if (pageNum === 1) {
-                alert("No " + kind + " exist within this repo!");
+                alert(`No ${kind} exist in this repo!`);
               }
               return;
             }
@@ -135,12 +139,12 @@ $(document).ready(function () {
               response.forEach((e) => {
                 e.color = e.color.toUpperCase();
                 createNewLabelEntry(e, mode);
-                setOfLabelNames.add(e.name);
+                LABEL_SET.add(e.name);
               });
             } else if (kind === "milestones") {
               response.forEach((e) => {
                 createNewMilestoneEntry(e, mode);
-                setOfMilestoneTitles.add(e.title);
+                MILESTONE_SET.add(e.title);
               });
             } else {
               console.log("Bug in function apiCallGetEntriesRecursive!");
@@ -159,7 +163,7 @@ $(document).ready(function () {
             );
           }
         },
-        error: function (response) {
+        error: (response) => {
           if (response.status === 404) {
             alert(
               "Not found! If this is a private repo, make sure you provide a personal access token."
@@ -171,62 +175,59 @@ $(document).ready(function () {
         },
       });
       checkIfAnyEntryModified();
-    }
+    };
 
     setWhichRepoInUseText();
 
     if (kind === "labels") {
-      setOfLabelNames.clear();
+      LABEL_SET.clear();
     } else if (kind === "milestones") {
-      setOfMilestoneTitles.clear();
+      MILESTONE_SET.clear();
     } else {
       console.log("Bug in function apiCallGetEntries!");
     }
 
     apiCallGetEntriesRecursive(owner, repo, kind, mode, callback, 1);
-  }
+  };
 
-  function assignNameForEntry(entryObject, kind) {
-    let nameForEntry;
+  const assignNameForEntry = (entryObject, kind) => {
+    let nameOfEntry = "";
     if (kind === "labels") {
-      nameForEntry = entryObject.name;
+      nameOfEntry = entryObject.name;
     } else if (kind === "milestones") {
-      nameForEntry = entryObject.title;
+      nameOfEntry = entryObject.title;
     } else {
-      nameForEntry = "There's a bug in function assignAPICallSign!";
+      nameOfEntry = "There's a bug in function assignAPICallSign!";
     }
-    return nameForEntry;
-  }
+    return nameOfEntry;
+  };
 
-  function apiCallCreateEntries(entryObject, kind, callback) {
-    let login = getLoginInfo();
-    let nameForEntry = assignNameForEntry(entryObject, kind);
+  const apiCallCreateEntries = (entryObject, kind, callback) => {
+    const LOGIN_INFO = getLoginInfo();
+    const NAME_OF_ENTRY = assignNameForEntry(entryObject, kind);
 
     $.ajax({
       type: "POST",
-      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/${kind}`,
+      url: `https://api.github.com/repos/${LOGIN_INFO.targetOwner}/${LOGIN_INFO.targetRepo}/${kind}`,
       data: JSON.stringify(entryObject),
-      success: function (response) {
+      success: (response) => {
         if (typeof callback === "function") {
           callback(response);
         }
-        writeLog("Created " + kind.slice(0, -1) + ": " + nameForEntry);
+        writeLog(`Created ${kind.slice(0, -1)}: ${NAME_OF_ENTRY}`);
       },
-      error: function (jqXHR, textStatus, errorThrown) {
+      error: (jqXHR, textStatus, errorThrown) => {
         writeLog(
           "Creation of " +
             kind.slice(0, -1) +
-            " failed for: " +
-            nameForEntry +
-            " due to error: " +
-            errorThrown
+            `failed for: ${NAME_OF_ENTRY} due to error: ${errorThrown}`
         );
       },
     });
-  }
+  };
 
-  function assignAPICallSign4Update(entryObject, kind) {
-    let apiCallSign;
+  const assignAPICallSign4Update = (entryObject, kind) => {
+    let apiCallSign = "";
     if (kind === "labels") {
       apiCallSign = entryObject.originalName;
       delete entryObject.originalName;
@@ -236,45 +237,39 @@ $(document).ready(function () {
       apiCallSign = "There's a bug in function assignAPICallSign4Update!";
     }
     return apiCallSign;
-  }
+  };
 
-  function apiCallUpdateEntries(entryObject, kind, callback) {
-    let login = getLoginInfo();
-    let apiCallSign = assignAPICallSign4Update(entryObject, kind);
-    let nameForEntry = assignNameForEntry(entryObject, kind);
+  const apiCallUpdateEntries = (entryObject, kind, callback) => {
+    const LOGIN_INFO = getLoginInfo();
+    const API_CALL_SIGN = assignAPICallSign4Update(entryObject, kind);
+    const NAME_OF_ENTRY = assignNameForEntry(entryObject, kind);
 
     $.ajax({
       type: "PATCH",
-      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/${kind}/${apiCallSign}`,
+      url: `https://api.github.com/repos/${LOGIN_INFO.targetOwner}/${LOGIN_INFO.targetRepo}/${kind}/${API_CALL_SIGN}`,
       data: JSON.stringify(entryObject),
-      success: function (response) {
+      success: (response) => {
         if (typeof callback === "function") {
           callback(response);
         }
         writeLog(
           "Updated " +
             kind.slice(0, -1) +
-            ": " +
-            apiCallSign +
-            " => " +
-            nameForEntry
+            `: ${API_CALL_SIGN} => ${NAME_OF_ENTRY}`
         );
       },
-      error: function (jqXHR, textStatus, errorThrown) {
+      error: (jqXHR, textStatus, errorThrown) => {
         writeLog(
           "Update of " +
             kind.slice(0, -1) +
-            " failed for: " +
-            apiCallSign +
-            " due to error: " +
-            errorThrown
+            ` failed for: ${API_CALL_SIGN} due to error: ${errorThrown}`
         );
       },
     });
-  }
+  };
 
-  function assignAPICallSign4Delete(entryObject, kind) {
-    let apiCallSign;
+  const assignAPICallSign4Delete = (entryObject, kind) => {
+    let apiCallSign = "";
     if (kind === "labels") {
       apiCallSign = entryObject.name;
     } else if (kind === "milestones") {
@@ -283,49 +278,46 @@ $(document).ready(function () {
       apiCallSign = "There's a bug in function assignAPICallSign4Delete!";
     }
     return apiCallSign;
-  }
+  };
 
-  function apiCallDeleteEntries(entryObject, kind, callback) {
-    let login = getLoginInfo();
-    let apiCallSign = assignAPICallSign4Delete(entryObject, kind);
-    let nameForEntry = assignNameForEntry(entryObject, kind);
+  const apiCallDeleteEntries = (entryObject, kind, callback) => {
+    const LOGIN_INFO = getLoginInfo();
+    const API_CALL_SIGN = assignAPICallSign4Delete(entryObject, kind);
+    const NAME_OF_ENTRY = assignNameForEntry(entryObject, kind);
 
     $.ajax({
       type: "DELETE",
-      url: `https://api.github.com/repos/${login.targetOwner}/${login.targetRepo}/${kind}/${apiCallSign}`,
-      success: function (response) {
+      url: `https://api.github.com/repos/${LOGIN_INFO.targetOwner}/${LOGIN_INFO.targetRepo}/${kind}/${API_CALL_SIGN}`,
+      success: (response) => {
         if (typeof callback === "function") {
           callback(response);
         }
-        writeLog("Deleted " + kind.slice(0, -1) + ": " + nameForEntry);
+        writeLog(`Deleted ${kind.slice(0, -1)}: ${NAME_OF_ENTRY}`);
       },
-      error: function (jqXHR, textStatus, errorThrown) {
+      error: (jqXHR, textStatus, errorThrown) => {
         writeLog(
           "Deletion of " +
             kind.slice(0, -1) +
-            " failed for: " +
-            nameForEntry +
-            " due to error: " +
-            errorThrown
+            ` failed for: ${NAME_OF_ENTRY} due to error: ${errorThrown}`
         );
       },
     });
-  }
+  };
 
-  function clearAllLabels() {
-    $("#form-labels").text("");
+  const clearAllEntries = (kind) => {
+    $(`#form-${kind}`).text("");
     $("#commit-to-target-repo").text("Commit changes");
     $("#commit-to-target-repo").attr("disabled", true);
     $("#commit-to-target-repo").removeClass("btn-success");
     $("#commit-to-target-repo").addClass("btn-outline-success");
-  }
+  };
 
-  function createNewLabelEntry(label, mode) {
+  const createNewLabelEntry = (label, mode) => {
     let todo = ' data-todo="none" ';
     let uncommittedSignClass = "";
 
     if (mode === "copy" || mode === "new") {
-      todo = ' data-todo="create" new="true" ';
+      todo = ` data-todo="create" new="true" `;
       uncommittedSignClass = " uncommitted ";
     }
 
@@ -337,12 +329,11 @@ $(document).ready(function () {
       };
     }
 
-    let origNameVal = ` data-orig-val="${label.name}"`;
-    let origColorVal = ` data-orig-val="${label.color}"`;
-    let origDescriptionVal = ` data-orig-val="${label.description}"`;
+    const origNameVal = ` data-orig-val="${label.name}"`;
+    const origColorVal = ` data-orig-val="${label.color}"`;
+    const origDescriptionVal = ` data-orig-val="${label.description}"`;
 
-    let newElementEntry = $(
-      `\
+    const newElementEntry = $(`
       <div class="label-entry ${uncommittedSignClass}" ${todo}>\
         <div class="card">\
           <div class="card-body">\
@@ -365,16 +356,15 @@ $(document).ready(function () {
         <button type="button" class="btn btn-success hidden recover-button">\
           <i class="fas fa-history"></i>\
         </button>\
-      <div>\
-    `
-    );
+      <div>
+    `);
 
     newElementEntry
       .find(".color-box")
-      .css("background-color", "#" + label.color);
+      .css("background-color", `#${label.color}`);
 
     newElementEntry.find(":input[data-orig-val]").blur(function () {
-      let $entry = $(this).closest(".label-entry");
+      const $entry = $(this).closest(".label-entry");
 
       if ($(this).val() === $(this).attr("data-orig-val")) {
         // If this is unchanged
@@ -395,11 +385,11 @@ $(document).ready(function () {
     });
 
     newElementEntry.find('input[name="name"]').blur(function () {
-      let $entry = $(this).closest(".label-entry");
-      let currentVal = $(this).val();
-      let originalVal = $(this).attr("data-orig-val");
+      const $entry = $(this).closest(".label-entry");
+      const currentVal = $(this).val();
+      const originalVal = $(this).attr("data-orig-val");
 
-      if (setOfLabelNames.has(currentVal) && currentVal !== originalVal) {
+      if (LABEL_SET.has(currentVal) && currentVal !== originalVal) {
         $entry.addClass("duplicate-entry");
         $(this).addClass("red-alert-background");
         alert("This label name has already been taken!");
@@ -435,7 +425,7 @@ $(document).ready(function () {
       $(this).siblings(".delete-button").removeClass("hidden");
       $(this).addClass("hidden");
 
-      let $entry = $(this).closest(".label-entry");
+      const $entry = $(this).closest(".label-entry");
 
       if (
         $entry.find('[name="name"]').attr("data-orig-val") ===
@@ -459,10 +449,10 @@ $(document).ready(function () {
         //activate color picker on color-box field
         //http://www.eyecon.ro/colorpicker
         color: label.color,
-        onSubmit: function (hsb, hex, rgb, el) {
+        onSubmit: (hsb, hex, rgb, el) => {
           $(el).val(hex.toUpperCase());
           $(el).ColorPickerHide();
-          $(el).css("background-color", "#" + hex);
+          $(el).css("background-color", `#${hex}`);
 
           //-----------------------------
           //well here goes the copy-paste because normal binding to 'change' doesn't work
@@ -491,52 +481,44 @@ $(document).ready(function () {
       })
       .bind("keyup", function () {
         $(this).ColorPickerSetColor(this.value);
-        $(this).css("background-color", "#" + this.value);
+        $(this).css("background-color", `#${this.value}`);
       });
 
     $("#form-labels").prepend(newElementEntry);
-  }
+  };
 
-  $("#add-new-label-entry").click(function () {
+  $("#add-new-label-entry").click(() => {
     createNewLabelEntry(null, "new");
   });
 
-  function clearAllMilestones() {
-    $("#form-milestones").text("");
-    $("#commit-to-target-repo").text("Commit changes");
-    $("#commit-to-target-repo").attr("disabled", true);
-    $("#commit-to-target-repo").removeClass("btn-success");
-    $("#commit-to-target-repo").addClass("btn-outline-success");
-  }
+  const createNewMilestoneEntry = (milestone, mode) => {
+    const parseDate = (raw) => {
+      if (raw === null || raw === "") {
+        return ["", ""];
+      } else {
+        const parsedDatetime = new Date(raw);
+        const dt = {
+          year: parsedDatetime.getFullYear(),
+          month: parsedDatetime.getMonth() + 1,
+          dayOfMonth: parsedDatetime.getDate(),
+          hour: parsedDatetime.getHours(),
+          minute: parsedDatetime.getMinutes(),
+          second: parsedDatetime.getSeconds(),
+        };
 
-  function parseDate(raw) {
-    if (raw === null || raw === "") {
-      return ["", ""];
-    } else {
-      let parsedDatetime = new Date(raw);
-      let dt = {
-        year: parsedDatetime.getFullYear(),
-        month: parsedDatetime.getMonth() + 1,
-        dayOfMonth: parsedDatetime.getDate(),
-        hour: parsedDatetime.getHours(),
-        minute: parsedDatetime.getMinutes(),
-        second: parsedDatetime.getSeconds(),
-      };
+        Object.keys(dt).forEach((k) => {
+          if (dt[k] < 10) {
+            dt[k] = "0" + dt[k].toString();
+          }
+        });
 
-      Object.keys(dt).forEach((k) => {
-        if (dt[k] < 10) {
-          dt[k] = "0" + dt[k].toString();
-        }
-      });
+        return [
+          `${dt.year}-${dt.month}-${dt.dayOfMonth}`,
+          `${dt.hour}:${dt.minute}:${dt.second}`,
+        ];
+      }
+    };
 
-      return [
-        `${dt.year}-${dt.month}-${dt.dayOfMonth}`,
-        `${dt.hour}:${dt.minute}:${dt.second}`,
-      ];
-    }
-  }
-
-  function createNewMilestoneEntry(milestone, mode) {
     if (milestone === undefined || milestone === null) {
       milestone = {
         title: "",
@@ -547,6 +529,10 @@ $(document).ready(function () {
       };
     }
 
+    if (mode === "copy") {
+      milestone.number = null;
+    }
+
     let todo = ' data-todo="none"';
     let uncommittedSignClass = "";
 
@@ -555,21 +541,19 @@ $(document).ready(function () {
       uncommittedSignClass = " uncommitted ";
     }
 
-    if (mode === "copy") {
-      milestone.number = null;
-    }
+    const origTitleVal = ` data-orig-val="${milestone.title}"`;
+    const origStateVal = ` data-orig-val="${milestone.state}"`;
+    const origDescriptionVal = ` data-orig-val="${milestone.description}"`;
+    const [parsedDueDate, parsedDueTime] = parseDate(milestone.due_on);
+    const origDueDate = ` data-orig-val="${parsedDueDate}"`;
+    const origDueTime = ` data-orig-time="${parsedDueTime}"`;
+    const number = milestone.number;
 
-    let origTitleVal = ` data-orig-val="${milestone.title}"`;
-    let origStateVal = ` data-orig-val="${milestone.state}"`;
-    let origDescriptionVal = ` data-orig-val="${milestone.description}"`;
-    let [parsedDueDate, parsedDueTime] = parseDate(milestone.due_on);
-    let origDueDate = ` data-orig-val="${parsedDueDate}"`;
-    let origDueTime = ` data-orig-time="${parsedDueTime}"`;
-    let number = milestone.number;
-
-    let newElementEntry = $(
-      `\
-      <div class="milestone-entry ${uncommittedSignClass}" ${todo} data-number="${number}" data-state="${milestone.state}" data-due-on="${milestone.due_on}">\
+    const newElementEntry = $(
+      `
+      <div class="milestone-entry ${uncommittedSignClass}" ${todo} \
+        data-number="${number}" data-state="${milestone.state}" \
+        data-due-on="${milestone.due_on}">\
         <div class="card">\
           <div class="card-body">\
             <div class="flexbox-container">\
@@ -577,17 +561,23 @@ $(document).ready(function () {
               class="form-control title-fitting" placeholder="Title" \
               value="${milestone.title}" ${origTitleVal}>\
               <input name="description" type="text" \
-              class="form-control description-fitting" \
-              placeholder="Description" value="${milestone.description}" ${origDescriptionVal}>\
+                class="form-control description-fitting" \
+                placeholder="Description" value="${milestone.description}" \
+                ${origDescriptionVal}>\
               <label>Due Date: \
                 <input name="due-date" type="date" \
                 class="form-control due-date-fitting pl-1" \
                 value="${parsedDueDate}" ${origDueDate} ${origDueTime}>\
               </label>\
               <label>Status: \
-                <select name="state" class="form-control state-fitting pl-2" ${origStateVal}>\
-                  <option value="open">open</option>\
-                  <option value="closed">closed</option>\
+                <select name="state" class="form-control state-fitting pl-2" \
+                  ${origStateVal}>\
+                  <option value="open">\
+                    open\
+                  </option>\
+                  <option value="closed">\
+                    closed\
+                  </option>\
                 </select>\
               </label>\
             </div>\
@@ -599,8 +589,8 @@ $(document).ready(function () {
         <button type="button" class="btn btn-success hidden recover-button">\
           <i class="fas fa-history"></i>\
         </button>\
-      </div>\
-    `
+      </div>
+      `
     );
 
     newElementEntry
@@ -613,7 +603,7 @@ $(document).ready(function () {
       });
 
     newElementEntry.find(":input[data-orig-val]").blur(function () {
-      let $entry = $(this).closest(".milestone-entry");
+      const $entry = $(this).closest(".milestone-entry");
 
       if ($(this).val() === $(this).attr("data-orig-val")) {
         //unchanged
@@ -634,11 +624,11 @@ $(document).ready(function () {
     });
 
     newElementEntry.find('input[name="title"]').blur(function () {
-      let $entry = $(this).closest(".milestone-entry");
-      let currentVal = $(this).val();
-      let originalVal = $(this).attr("data-orig-val");
+      const $entry = $(this).closest(".milestone-entry");
+      const currentVal = $(this).val();
+      const originalVal = $(this).attr("data-orig-val");
 
-      if (setOfMilestoneTitles.has(currentVal) && currentVal !== originalVal) {
+      if (MILESTONE_SET.has(currentVal) && currentVal !== originalVal) {
         $entry.addClass("duplicate-entry");
         $(this).addClass("red-alert-background");
         alert("This milestone title has already been taken!");
@@ -673,7 +663,7 @@ $(document).ready(function () {
       $(this).siblings(".delete-button").removeClass("hidden");
       $(this).addClass("hidden");
 
-      let $entry = $(this).closest(".milestone-entry");
+      const $entry = $(this).closest(".milestone-entry");
 
       if (
         $entry.find('[name="title"]').attr("data-orig-val") ===
@@ -694,76 +684,66 @@ $(document).ready(function () {
     });
 
     $("#form-milestones").prepend(newElementEntry);
-  }
+  };
 
-  $("#add-new-milestone-entry").click(function () {
+  $("#add-new-milestone-entry").click(() => {
     createNewMilestoneEntry(null, "new");
   });
 
-  function clickToListAllEntries(kind) {
-    let login = getLoginInfo();
+  const clickToListAllEntries = (kind) => {
+    const LOGIN_INFO = getLoginInfo();
 
-    if (login.targetOwner && login.targetRepo) {
+    if (LOGIN_INFO.targetOwner && LOGIN_INFO.targetRepo) {
       if (kind === "labels") {
-        clearAllLabels();
+        clearAllEntries("labels");
       }
       if (kind === "milestones") {
-        clearAllMilestones();
+        clearAllEntries("milestones");
       }
 
       apiCallGetEntries(
-        login.targetOwner,
-        login.targetRepo,
+        LOGIN_INFO.targetOwner,
+        LOGIN_INFO.targetRepo,
         kind,
-        "list",
-        () => {
-          $(this).button("reset");
-        }
+        "list"
       );
-      $("#" + kind + "-tab").tab("show");
+      $(`#${kind}-tab`).tab("show");
     } else {
-      alert("Please enter the repo owner and the repo");
-      $(this).button("reset");
+      alert("Please enter the repo owner and the repo.");
     }
-  }
+  };
 
-  $("#list-all-labels").click(function () {
+  $("#list-all-labels").click(() => {
     clickToListAllEntries("labels");
   });
 
-  $("#list-all-milestones").click(function () {
+  $("#list-all-milestones").click(() => {
     clickToListAllEntries("milestones");
   });
 
-  $("#revert-labels-to-original").click(function () {
-    clearAllLabels();
-    let login = getLoginInfo();
+  $("#revert-labels-to-original").click(() => {
+    clearAllEntries("labels");
+    const LOGIN_INFO = getLoginInfo();
     apiCallGetEntries(
-      login.targetOwner,
-      login.targetRepo,
+      LOGIN_INFO.targetOwner,
+      LOGIN_INFO.targetRepo,
       "labels",
-      "list",
-      () => {
-        $(this).button("reset");
-      }
+      "list"
     );
   });
 
-  $("#revert-milestones-to-original").click(function () {
-    clearAllMilestones();
-    let login = getLoginInfo();
+  $("#revert-milestones-to-original").click(() => {
+    clearAllEntries("milestones");
+    const LOGIN_INFO = getLoginInfo();
     apiCallGetEntries(
-      login.targetOwner,
-      login.targetRepo,
+      LOGIN_INFO.targetOwner,
+      LOGIN_INFO.targetRepo,
       "milestones",
-      "list",
-      () => {
-        $(this).button("reset");
-      }
+      "list"
     );
   });
 
-  function clickToDeleteAllEntries(selector) {
+  const clickToDeleteAllEntries = (selector) => {
     $(selector)
       .children()
       .each(function () {
@@ -778,99 +758,94 @@ $(document).ready(function () {
         }
       });
     checkIfAnyEntryModified();
-  }
+  };
 
-  $("#delete-all-labels").click(function () {
+  $("#delete-all-labels").click(() => {
     clickToDeleteAllEntries("#form-labels");
   });
 
-  $("#delete-all-milestones").click(function () {
+  $("#delete-all-milestones").click(() => {
     clickToDeleteAllEntries("#form-milestones");
   });
 
-  function clickToCopyEntriesFrom(kind) {
-    let login = getLoginInfo();
+  const clickToCopyEntriesFrom = (kind) => {
+    const LOGIN_INFO = getLoginInfo();
 
-    if (login.copyFromOwner && login.copyFromRepo) {
+    if (LOGIN_INFO.copyFromOwner && LOGIN_INFO.copyFromRepo) {
       apiCallGetEntries(
-        login.copyFromOwner,
-        login.copyFromRepo,
+        LOGIN_INFO.copyFromOwner,
+        LOGIN_INFO.copyFromRepo,
         kind,
-        "copy",
-        function () {
-          $(this).button("reset");
-        }
+        "copy"
       );
       //set adduncommitted to true because those are coming from another repo
 
-      $("#" + kind + "-tab").tab("show");
+      $(`#${kind}-tab`).tab("show");
     } else {
       alert("Please enter the repo owner and the repo you want to copy from.");
-      $(this).button("reset");
     }
     checkIfAnyEntryModified();
-  }
+  };
 
-  $("#copy-labels-from").click(function () {
+  $("#copy-labels-from").click(() => {
     clickToCopyEntriesFrom("labels");
   });
 
-  $("#copy-milestones-from").click(function () {
+  $("#copy-milestones-from").click(() => {
     clickToCopyEntriesFrom("milestones");
   });
 
-  $("#delete-and-copy-labels-from").click(function () {
+  $("#delete-and-copy-labels-from").click(() => {
     $("#delete-all-labels").click();
     $("#copy-labels-from").click();
   });
 
-  $("#delete-and-copy-milestones-from").click(function () {
+  $("#delete-and-copy-milestones-from").click(() => {
     $("#delete-all-milestones").click();
     $("#copy-milestones-from").click();
   });
 
-  $("#commit-to-target-repo").click(function () {
-    let login = getLoginInfo();
+  $("#commit-to-target-repo").click(() => {
+    const LOGIN_INFO = getLoginInfo();
 
-    if (login.personalAccessToken === "") {
+    if (!LOGIN_INFO.personalAccessToken) {
       alert(
-        `You need to enter your personal access token for repo ${login.targetRepo} in order to commit changes.`
+        `You need to enter your personal access token for repo ${LOGIN_INFO.targetRepo} in order to commit changes.`
       );
-      $(this).button("reset");
       return;
     }
 
     commit();
   });
 
-  function formatDate(dateInput) {
-    let date = dateInput.val();
-    let time = dateInput.attr("data-orig-time");
+  const serializeEntries = (jObjectEntry, kind) => {
+    const formatDate = (dateInput) => {
+      const date = dateInput.val();
+      const time = dateInput.attr("data-orig-time");
 
-    if (!date) {
-      return null;
-    }
+      if (!date) {
+        return null;
+      }
 
-    let dt = {};
-    [dt.year, dt.month, dt.dayOfMonth] = date.split("-");
-    [dt.hour, dt.minute, dt.second] = time ? time.split(":") : [0, 0, 0];
+      const dt = {};
+      [dt.year, dt.month, dt.dayOfMonth] = date.split("-");
+      [dt.hour, dt.minute, dt.second] = time ? time.split(":") : [0, 0, 0];
 
-    Object.keys(dt).forEach((k) => {
-      dt[k] = Number(dt[k]);
-    });
+      Object.keys(dt).forEach((k) => {
+        dt[k] = Number(dt[k]);
+      });
 
-    let dateObject = new Date(
-      dt.year,
-      dt.month - 1,
-      dt.dayOfMonth,
-      dt.hour,
-      dt.minute,
-      dt.second
-    );
-    return JSON.stringify(dateObject).replace(".000Z", "Z");
-  }
+      const dateObject = new Date(
+        dt.year,
+        dt.month - 1,
+        dt.dayOfMonth,
+        dt.hour,
+        dt.minute,
+        dt.second
+      );
+      return JSON.stringify(dateObject).replace(".000Z", "Z");
+    };
 
-  function serializeEntries(jObjectEntry, kind) {
     if (kind === "labels") {
       return {
         name: jObjectEntry.find('[name="name"]').val(),
@@ -888,7 +863,7 @@ $(document).ready(function () {
           number: parseInt(jObjectEntry.attr("data-number")),
         };
       } else {
-        if (jObjectEntry.find('[name="due-date"]').val() !== "") {
+        if (!jObjectEntry.find('[name="due-date"]').val()) {
           return {
             title: jObjectEntry.find('[name="title"]').val(),
             state: jObjectEntry.find('[name="state"]').val(),
@@ -906,28 +881,29 @@ $(document).ready(function () {
     } else {
       console.log("Bug in function serializeEntries!");
     }
-  }
+  };
 
-  function checkIfAnyEntryModified() {
+  const checkIfAnyEntryModified = () => {
     // returns true if any change has been made and activates or disactivates commit button accordingly
 
-    function enableCommitButton() {
+    const enableCommitButton = () => {
       $("#commit-to-target-repo").removeAttr("disabled");
       $("#commit-to-target-repo").removeClass("btn-outline-success");
       $("#commit-to-target-repo").addClass("btn-success");
-    }
+    };
 
-    function disableCommitButton() {
+    const disableCommitButton = () => {
       $("#commit-to-target-repo").attr("disabled", true);
       $("#commit-to-target-repo").removeClass("btn-success");
       $("#commit-to-target-repo").addClass("btn-outline-success");
-    }
+    };
 
-    let labelsModified = $('.label-entry:not([data-todo="none"])').length > 0;
-    let milestonesModified =
+    const labelsModified = $('.label-entry:not([data-todo="none"])').length > 0;
+    const milestonesModified =
       $('.milestone-entry:not([data-todo="none"])').length > 0;
-    let labelsDuplicated = $(".label-entry.duplicate-entry").length > 0;
-    let milestonesDuplicated = $(".milestone-entry.duplicate-entry").length > 0;
+    const labelsDuplicated = $(".label-entry.duplicate-entry").length > 0;
+    const milestonesDuplicated =
+      $(".milestone-entry.duplicate-entry").length > 0;
 
     if (labelsModified) {
       $("#revert-labels-to-original").removeAttr("disabled");
@@ -956,9 +932,9 @@ $(document).ready(function () {
         disableCommitButton();
       }
     }
-  }
+  };
 
-  function commit() {
+  const commit = () => {
     //freeze the world
     $("#loadingModal").modal({
       keyboard: false,
@@ -968,43 +944,43 @@ $(document).ready(function () {
 
     //To be deleted
     $('.label-entry[data-todo="delete"]').each(function () {
-      let entryObject = serializeEntries($(this), "labels");
+      const entryObject = serializeEntries($(this), "labels");
       apiCallDeleteEntries(entryObject, "labels");
     });
 
     $('.milestone-entry[data-todo="delete"]').each(function () {
-      let entryObject = serializeEntries($(this), "milestones");
+      const entryObject = serializeEntries($(this), "milestones");
       apiCallDeleteEntries(entryObject, "milestones");
     });
 
     //To be updated
     $('.label-entry[data-todo="update"]').each(function () {
-      let entryObject = serializeEntries($(this), "labels");
+      const entryObject = serializeEntries($(this), "labels");
       apiCallUpdateEntries(entryObject, "labels");
     });
 
     $('.milestone-entry[data-todo="update"]').each(function () {
-      let entryObject = serializeEntries($(this), "milestones");
+      const entryObject = serializeEntries($(this), "milestones");
       apiCallUpdateEntries(entryObject, "milestones");
     });
 
     //To be created
     $('.label-entry[data-todo="create"]').each(function () {
-      let entryObject = serializeEntries($(this), "labels");
+      const entryObject = serializeEntries($(this), "labels");
       apiCallCreateEntries(entryObject, "labels");
     });
 
     $('.milestone-entry[data-todo="create"]').each(function () {
-      let entryObject = serializeEntries($(this), "milestones");
+      const entryObject = serializeEntries($(this), "milestones");
       apiCallCreateEntries(entryObject, "milestones");
     });
-  }
+  };
 
-  function writeLog(string) {
-    $("#loadingModal .modal-body").append(string + "<br>");
-  }
+  const writeLog = (string) => {
+    $("#loadingModal .modal-body").append(`${string}<br />`);
+  };
 
-  $("#loadingModal").on("hidden.bs.modal", function () {
+  $("#loadingModal").on("hidden.bs.modal", () => {
     isLoadingShown = false;
 
     //reset modal
@@ -1013,20 +989,28 @@ $(document).ready(function () {
     $("#loadingModal .modal-footer").remove();
 
     //reload labels after changes
-    clearAllLabels();
-    clearAllMilestones();
-    let login = getLoginInfo();
-    apiCallGetEntries(login.targetOwner, login.targetRepo, "labels", "list");
+    clearAllEntries("labels");
+    clearAllEntries("milestones");
+
+    const LOGIN_INFO = getLoginInfo();
+
     apiCallGetEntries(
-      login.targetOwner,
-      login.targetRepo,
+      LOGIN_INFO.targetOwner,
+      LOGIN_INFO.targetRepo,
+      "labels",
+      "list"
+    );
+
+    apiCallGetEntries(
+      LOGIN_INFO.targetOwner,
+      LOGIN_INFO.targetRepo,
       "milestones",
       "list"
     );
   });
 
   /* ========== The rest is BASE64 STUFF ========== */
-  let Base64 = {
+  const BASE64 = {
     // http://stackoverflow.com/a/246813
     // private property
     _keyStr:
@@ -1035,10 +1019,16 @@ $(document).ready(function () {
     // public method for encoding
     encode: function (input) {
       let output = "";
-      let chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+      let chr1;
+      let chr2;
+      let chr3;
+      let enc1;
+      let enc2;
+      let enc3;
+      let enc4;
       let i = 0;
 
-      input = Base64._utf8_encode(input);
+      input = BASE64._utf8_encode(input);
 
       while (i < input.length) {
         chr1 = input.charCodeAt(i++);
@@ -1070,8 +1060,13 @@ $(document).ready(function () {
     // public method for decoding
     decode: function (input) {
       let output = "";
-      let chr1, chr2, chr3;
-      let enc1, enc2, enc3, enc4;
+      let chr1;
+      let chr2;
+      let chr3;
+      let enc1;
+      let enc2;
+      let enc3;
+      let enc4;
       let i = 0;
 
       input = input.replace(/[^A-Za-z0-9+/=]/g, "");
@@ -1096,13 +1091,13 @@ $(document).ready(function () {
         }
       }
 
-      output = Base64._utf8_decode(output);
+      output = BASE64._utf8_decode(output);
 
       return output;
     },
 
     // private method for UTF-8 encoding
-    _utf8_encode: function (string) {
+    _utf8_encode: (string) => {
       string = string.replace(/\r\n/g, "\n");
       let utftext = "";
 
@@ -1125,7 +1120,7 @@ $(document).ready(function () {
     },
 
     // private method for UTF-8 decoding
-    _utf8_decode: function (utftext) {
+    _utf8_decode: (utftext) => {
       let string = "";
       let i = 0;
       let [c1, c2, c3] = [0, 0, 0];
@@ -1152,5 +1147,5 @@ $(document).ready(function () {
 
       return string;
     },
-  }; //end of Base64
+  }; //end of BASE64
 }); //end of doc ready

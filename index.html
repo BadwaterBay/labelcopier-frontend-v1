@@ -79,7 +79,7 @@
             <form>
               <div class="form-group">
                 <label for="targetOwner" class="bmd-label-floating">
-                  Repo owner
+                  Repo&nbsp;owner
                 </label>
                 <input
                   type="text"
@@ -112,7 +112,7 @@
               </div>
               <div class="form-group">
                 <label class="bmd-label-floating" for="targetUsername">
-                  Username for authentication
+                  Username&nbsp;for&nbsp;authentication
                 </label>
                 <input
                   type="text"
@@ -126,7 +126,7 @@
               </div>
               <div class="form-group">
                 <label for="personal-access-token" class="bmd-label-floating">
-                  Personal access token
+                  Personal&nbsp;access&nbsp;token
                 </label>
                 <input
                   type="password"
@@ -161,7 +161,7 @@
               disabled
               data-loading-text="Commiting..."
             >
-              Commit changes
+              Commit&nbsp;changes
             </button>
           </div>
 
@@ -179,7 +179,7 @@
               <form>
                 <div class="form-group">
                   <label for="targetOwner" class="bmd-label-floating">
-                    Repo owner
+                    Repo&nbsp;owner
                   </label>
                   <input
                     type="text"
@@ -206,7 +206,7 @@
                 class="btn btn-outline-info btn-block"
                 data-loading-text="Adding..."
               >
-                Copy labels
+                Copy&nbsp;labels
               </button>
               <button
                 id="copy-milestones-from"
@@ -214,7 +214,7 @@
                 class="btn btn-outline-info btn-block"
                 data-loading-text="Adding..."
               >
-                Copy milestones
+                Copy&nbsp;milestones
               </button>
               <button
                 id="delete-and-copy-labels-from"
@@ -424,19 +424,17 @@
     ></script>
     <script defer src="js/app.js"></script>
     <script>
-      function copyToUsername(f) {
-        if (f.checkOwnerOfRepo.checked === true) {
-          f.targetUsername.value = f.targetOwner.value;
-          f.targetUsername.disabled = true;
-        } else {
-          f.targetUsername.value = "";
-          f.targetUsername.disabled = false;
-        }
-      }
-    </script>
-    <script>
       $(document).ready(function () {
         $("body").bootstrapMaterialDesign();
+        function copyToUsername(f) {
+          if (f.checkOwnerOfRepo.checked === true) {
+            f.targetUsername.value = f.targetOwner.value;
+            f.targetUsername.disabled = true;
+          } else {
+            f.targetUsername.value = "";
+            f.targetUsername.disabled = false;
+          }
+        }
       });
     </script>
 
@@ -444,7 +442,9 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Please wait...</h5>
+            <h5 class="modal-title">
+              Please&nbsp;wait...
+            </h5>
             <button
               type="button"
               class="close"
@@ -455,10 +455,13 @@
             </button>
           </div>
           <div class="modal-body">
-            <p>Commiting...</p>
+            <p>
+              Commiting...
+            </p>
           </div>
         </div>
       </div>
     </div>
+    <!-- #loadingModal -->
   </body>
 </html>
