@@ -66,7 +66,12 @@ $(document).ready(function () {
         writeLog("All operations are done.");
 
         $("#loadingModal .modal-content").append(
-          '<div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button></div>'
+          `<div class="modal-footer">
+            <button type="button" class="btn btn-secondary" \
+            data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">Close</span>
+            </button>
+          </div>`
         );
       }
     },
@@ -342,9 +347,15 @@ $(document).ready(function () {
         <div class="card">\
           <div class="card-body">\
             <div class="flexbox-container">\
-              <input name="name" type="text" class="form-control label-fitting" placeholder="Name" value="${label.name}" ${origNameVal}>\
-              <input name="color" type="text" class="form-control color-fitting color-box" placeholder="Color" value="${label.color}" ${origColorVal}>\
-              <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="${label.description}" ${origDescriptionVal}>\
+              <input name="name" type="text" \
+              class="form-control label-fitting" \
+              placeholder="Name" value="${label.name}" ${origNameVal}>\
+              <input name="color" type="text" \
+              class="form-control color-fitting color-box" \
+              placeholder="Color" value="${label.color}" ${origColorVal}>\
+              <input name="description" type="text" \
+              class="form-control description-fitting" \
+              placeholder="Description" value="${label.description}" ${origDescriptionVal}>\
             </div>\
           </div>\
         </div>\
@@ -562,10 +573,16 @@ $(document).ready(function () {
         <div class="card">\
           <div class="card-body">\
             <div class="flexbox-container">\
-              <input name="title" type="text" class="form-control title-fitting" placeholder="Title" value="${milestone.title}" ${origTitleVal}>\
-              <input name="description" type="text" class="form-control description-fitting" placeholder="Description" value="${milestone.description}" ${origDescriptionVal}>\
+              <input name="title" type="text" \
+              class="form-control title-fitting" placeholder="Title" \
+              value="${milestone.title}" ${origTitleVal}>\
+              <input name="description" type="text" \
+              class="form-control description-fitting" \
+              placeholder="Description" value="${milestone.description}" ${origDescriptionVal}>\
               <label>Due Date: \
-                <input name="due-date" type="date" class="form-control due-date-fitting pl-1" value="${parsedDueDate}" ${origDueDate} ${origDueTime}>\
+                <input name="due-date" type="date" \
+                class="form-control due-date-fitting pl-1" \
+                value="${parsedDueDate}" ${origDueDate} ${origDueTime}>\
               </label>\
               <label>Status: \
                 <select name="state" class="form-control state-fitting pl-2" ${origStateVal}>\
