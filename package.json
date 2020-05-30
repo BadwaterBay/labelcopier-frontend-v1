@@ -37,12 +37,11 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "pretty-quick --staged && lint-staged"
     }
   },
   "lint-staged": {
     "*": [
-      "pretty-quick --staged",
       "npx prettier --write",
       "eslint ."
     ]
