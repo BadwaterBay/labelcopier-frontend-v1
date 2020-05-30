@@ -1,3 +1,4 @@
 // The following files will be ignored by Prettier
 
 *.min.*
+*.*ignore
