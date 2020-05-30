@@ -507,9 +507,7 @@ $(document).ready(function () {
         };
 
         Object.keys(dt).forEach((k) => {
-          if (dt[k] < 10) {
-            dt[k] = "0" + dt[k].toString();
-          }
+          dt[k] = dt[k] < 10 ? "0" + dt[k] : "" + dt[k];
         });
 
         return [
@@ -968,7 +966,6 @@ $(document).ready(function () {
 
     $('.milestone-entry[data-todo="create"]').each(function () {
       const entryObject = serializeEntries($(this), "milestones");
-      console.log(entryObject);
       apiCallCreateEntries(entryObject, "milestones");
     });
   };
