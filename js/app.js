@@ -110,12 +110,12 @@ $(document).ready(function () {
       $.ajax({
         type: "GET",
         url: (function (owner, repo, kind, pageNum) {
-        let queryURL = `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`;
-        if (kind === "milestones") {
-          queryURL += `&state=all`;
-        }
-        return queryURL;
-      })(owner, repo, kind, pageNum), // IIFE
+          let queryURL = `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`;
+          if (kind === "milestones") {
+            queryURL += `&state=all`;
+          }
+          return queryURL;
+        })(owner, repo, kind, pageNum), // IIFE
         success: function (response) {
           if (response) {
             if (response.length === 0) {
@@ -625,7 +625,6 @@ $(document).ready(function () {
           $entry.attr("action", "create");
         } else {
           $entry.attr("action", "update");
-          console.log($entry.attr("action"));
         }
         $entry.addClass("uncommitted");
       }
@@ -847,11 +846,8 @@ $(document).ready(function () {
   function formatDate(dateInput) {
     let date = dateInput.val();
     let time = dateInput.attr("data-orig-time");
-    console.log(dateInput.val());
-    console.log(time);
 
     if (!date) {
-      console.log("NULL");
       return null;
     }
 
