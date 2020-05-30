@@ -78,24 +78,24 @@
             </div>
             <form>
               <div class="form-group">
-                <label for="targetOwner" class="bmd-label-floating">
+                <label for="target-owner" class="bmd-label-floating">
                   Repo&nbsp;owner
                 </label>
                 <input
                   type="text"
                   class="form-control"
-                  id="targetOwner"
-                  name="targetOwner"
+                  id="target-owner"
+                  name="target-owner"
                 />
                 <span class="bmd-help">
                   Such as: Badwater-Apps
                 </span>
               </div>
               <div class="form-group">
-                <label for="targetRepo" class="bmd-label-floating">
+                <label for="target-repo" class="bmd-label-floating">
                   Repo
                 </label>
-                <input type="text" class="form-control" id="targetRepo" />
+                <input type="text" class="form-control" id="target-repo" />
                 <span class="bmd-help">
                   Such as: template-for-label-and-milestone-1
                 </span>
@@ -104,21 +104,21 @@
                 <label>
                   <input
                     type="checkbox"
+                    id="copy-to-username"
                     name="checkOwnerOfRepo"
-                    onclick="copyToUsername(this.form)"
                   />
                   I'm the owner of the repo
                 </label>
               </div>
               <div class="form-group">
-                <label class="bmd-label-floating" for="targetUsername">
+                <label class="bmd-label-floating" for="target-username">
                   Username&nbsp;for&nbsp;authentication
                 </label>
                 <input
                   type="text"
                   class="form-control"
-                  id="targetUsername"
-                  name="targetUsername"
+                  id="target-username"
+                  name="target-username"
                 />
                 <span class="bmd-help">
                   You can manage repos you own or have access to
@@ -178,7 +178,7 @@
             <div>
               <form>
                 <div class="form-group">
-                  <label for="targetOwner" class="bmd-label-floating">
+                  <label for="target-owner" class="bmd-label-floating">
                     Repo&nbsp;owner
                   </label>
                   <input
@@ -191,7 +191,7 @@
                   </span>
                 </div>
                 <div class="form-group">
-                  <label for="targetRepo" class="bmd-label-floating">
+                  <label for="target-repo" class="bmd-label-floating">
                     Repo
                   </label>
                   <input type="text" class="form-control" id="copy-from-repo" />
@@ -415,7 +415,7 @@
     <script
       src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js"
       integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U"
-      crossorigin="anonymous"
+      crossorigin="anymous"
     ></script>
     <script
       src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js"
@@ -423,21 +423,6 @@
       crossorigin="anonymous"
     ></script>
     <script defer src="js/app.js"></script>
-    <script>
-      $(document).ready(function () {
-        $('body').bootstrapMaterialDesign();
-
-        function copyToUsername(f) {
-          if (f.checkOwnerOfRepo.checked === true) {
-            f.targetUsername.value = f.targetOwner.value;
-            f.targetUsername.disabled = true;
-          } else {
-            f.targetUsername.value = '';
-            f.targetUsername.disabled = false;
-          }
-        }
-      });
-    </script>
 
     <div id="loadingModal" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">

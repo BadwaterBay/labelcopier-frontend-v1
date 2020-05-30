@@ -16,6 +16,8 @@
 'use strict';
 
 $(document).ready(function () {
+  $('body').bootstrapMaterialDesign();
+
   let isLoadingShown = false;
 
   const loadingSemaphore = (() => {
@@ -40,11 +42,29 @@ $(document).ready(function () {
     };
   })();
 
+  $('#copy-to-username').click(function () {
+    $('#target-username').val(() =>
+      $(this).prop('checked') ? $('#target-owner').val() : '',
+    );
+  });
+
+  $('#target-owner').keyup(() => {
+    if ($('#copy-to-username').prop('checked')) {
+      $('#target-username').val($('#target-owner').val());
+    }
+  });
+
+  $('#target-username').keyup(function () {
+    $('#copy-to-username').prop('checked', () => {
+      return $(this).val() === $('#target-owner').val();
+    });
+  });
+
   const getLoginInfo = () => {
     return {
-      targetOwner: $('#targetOwner').val().trim(),
-      targetRepo: $('#targetRepo').val().trim(),
-      targetUsername: $('#targetUsername').val().trim(),
+      targetOwner: $('#target-owner').val().trim(),
+      targetRepo: $('#target-repo').val().trim(),
+      targetUsername: $('#target-username').val().trim(),
       personalAccessToken: $('#personal-access-token').val().trim(),
       copyFromOwner: $('#copy-from-owner').val().trim(),
       copyFromRepo: $('#copy-from-repo').val().trim(),
