@@ -42,12 +42,17 @@ Questions are welcome.
 
 - Install Node with the package manager of your choice and npm.
 - Clone this repository.
-- Change directory to the project's root directory, run command `npm ci` to install all node dependencies in your local environment.
+- Change directory to the project's root directory, use command `npm ci` to install all node dependencies in your local environment.
 
 ### Tools
 
-- Eslint: run command `npm run lint`
-- Formatting using Prettier: automatically runs when committing or manually run command `npm run format`
+- Linting using Eslint:
+  - Use `npm run lint` to see issues without writing to files. It runs `eslint . --fix-dry-run`
+  - Use `npm run lint-fix` to let Eslint fix problems and write to files. It runs `eslint . --fix`
+  - When you git-commit, it will automatically trigger `npm run lint`
+- Formatting using Prettier:
+  - Use `npm run format` to automatically format all files and save changes to them
+  - When you git-commit, it will automatically trigger `npm run format`
 
 ---
 
