@@ -828,12 +828,8 @@ $(document).ready(function () {
       }
 
       const dt = {};
-      [dt.year, dt.month, dt.dayOfMonth] = date.split("-");
+      [dt.year, dt.month, dt.dayOfMonth] = date.split("-").map((e) => +e);
       [dt.hour, dt.minute, dt.second] = time ? time.split(":") : [0, 0, 0];
-
-      Object.keys(dt).forEach((k) => {
-        dt[k] = Number(dt[k]);
-      });
 
       const dateObject = new Date(
         dt.year,
@@ -843,7 +839,7 @@ $(document).ready(function () {
         dt.minute,
         dt.second
       );
-      return JSON.stringify(dateObject).replace(".000Z", "Z");
+      return dateObject.toISOString().replace(".000Z", "Z");
     };
 
     if (kind === "labels") {
@@ -860,10 +856,10 @@ $(document).ready(function () {
           state: jObjectEntry.find('[name="state"]').val(),
           description: jObjectEntry.find('[name="description"]').val(),
           due_on: formatDate(jObjectEntry.find('[name="due-date"]')),
-          number: parseInt(jObjectEntry.attr("data-number")),
+          number: +jObjectEntry.attr("data-number"),
         };
       } else {
-        if (!jObjectEntry.find('[name="due-date"]').val()) {
+        if (jObjectEntry.find('[name="due-date"]').val() !== "") {
           return {
             title: jObjectEntry.find('[name="title"]').val(),
             state: jObjectEntry.find('[name="state"]').val(),
@@ -972,6 +968,7 @@ $(document).ready(function () {
 
     $('.milestone-entry[data-todo="create"]').each(function () {
       const entryObject = serializeEntries($(this), "milestones");
+      console.log(entryObject);
       apiCallCreateEntries(entryObject, "milestones");
     });
   };
