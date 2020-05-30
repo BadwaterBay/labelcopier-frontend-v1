@@ -496,23 +496,6 @@ $(document).ready(function () {
     $("#commit-to-target-repo").addClass("btn-outline-success");
   }
 
-  // function today() {
-  //   let today = new Date();
-  //   let todayObj = {
-  //     year: today.getFullYear(),
-  //     month: today.getMonth() + 1,
-  //     dayOfMonth: today.getDate(),
-  //   };
-
-  //   Object.keys(todayObj).forEach((k) => {
-  //     if (todayObj[k] < 10) {
-  //       todayObj[k] = "0" + todayObj[k].toString();
-  //     }
-  //   });
-
-  //   return `${todayObj.year}-${todayObj.month}-${todayObj.dayOfMonth}`;
-  // }
-
   function parseDate(raw) {
     if (raw === null || raw === "") {
       return ["", ""];
@@ -600,8 +583,6 @@ $(document).ready(function () {
       </div>\
     `
     );
-
-    // newElementEntry.find(':input[name="due-date"]').attr("min", today());
 
     newElementEntry
       .find(".state-fitting")
