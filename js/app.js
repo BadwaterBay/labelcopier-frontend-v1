@@ -66,7 +66,12 @@ $(document).ready(function () {
         writeLog("All operations are done.");
 
         $("#loadingModal .modal-content").append(
-          '<div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button></div>'
+          `<div class="modal-footer">
+            <button type="button" class="btn btn-secondary" \
+            data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">Close</span>
+            </button>
+          </div>`
         );
       }
     },
@@ -98,6 +103,14 @@ $(document).ready(function () {
   let setOfLabelNames = new Set();
   let setOfMilestoneTitles = new Set();
 
+  function apiCallGetUrl(owner, repo, kind, pageNum) {
+    let queryURL = `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`;
+    if (kind === "milestones") {
+      queryURL += `&state=all`;
+    }
+    return queryURL;
+  }
+
   function apiCallGetEntries(owner, repo, kind, mode, callback) {
     function apiCallGetEntriesRecursive(
       owner,
@@ -109,7 +122,7 @@ $(document).ready(function () {
     ) {
       $.ajax({
         type: "GET",
-        url: `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`,
+        url: apiCallGetUrl(owner, repo, kind, pageNum),
         success: function (response) {
           if (response) {
             if (response.length === 0) {
@@ -324,41 +337,25 @@ $(document).ready(function () {
       };
     }
 
-    let origNameVal = ' data-orig-val="' + label.name + '"';
-    let origColorVal = ' data-orig-val="' + label.color + '"';
-    let origDescriptionVal = ' data-orig-val="' + label.description + '"';
+    let origNameVal = ` data-orig-val="${label.name}"`;
+    let origColorVal = ` data-orig-val="${label.color}"`;
+    let origDescriptionVal = ` data-orig-val="${label.description}"`;
 
     let newElementEntry = $(
-      '\
-      <div class="label-entry ' +
-        uncommittedSignClass +
-        '" ' +
-        action +
-        '>\
+      `\
+      <div class="label-entry ${uncommittedSignClass}" ${action}>\
         <div class="card">\
           <div class="card-body">\
             <div class="flexbox-container">\
               <input name="name" type="text" \
-                class="form-control label-fitting" \
-                placeholder="Name" value="' +
-        label.name +
-        '" ' +
-        origNameVal +
-        '>\
+              class="form-control label-fitting" \
+              placeholder="Name" value="${label.name}" ${origNameVal}>\
               <input name="color" type="text" \
-                class="form-control color-fitting color-box" \
-                placeholder="Color"  value="' +
-        label.color +
-        '" ' +
-        origColorVal +
-        '>\
+              class="form-control color-fitting color-box" \
+              placeholder="Color" value="${label.color}" ${origColorVal}>\
               <input name="description" type="text" \
-                class="form-control description-fitting" \
-                placeholder="Description" value="' +
-        label.description +
-        '" ' +
-        origDescriptionVal +
-        '>\
+              class="form-control description-fitting" \
+              placeholder="Description" value="${label.description}" ${origDescriptionVal}>\
             </div>\
           </div>\
         </div>\
@@ -369,7 +366,7 @@ $(document).ready(function () {
           <i class="fas fa-history"></i>\
         </button>\
       <div>\
-    '
+    `
     );
 
     newElementEntry
@@ -512,6 +509,33 @@ $(document).ready(function () {
     $("#commit-to-target-repo").addClass("btn-outline-success");
   }
 
+  function parseDate(raw) {
+    if (raw === null || raw === "") {
+      return ["", ""];
+    } else {
+      let parsedDatetime = new Date(raw);
+      let dt = {
+        year: parsedDatetime.getFullYear(),
+        month: parsedDatetime.getMonth() + 1,
+        dayOfMonth: parsedDatetime.getDate(),
+        hour: parsedDatetime.getHours(),
+        minute: parsedDatetime.getMinutes(),
+        second: parsedDatetime.getSeconds(),
+      };
+
+      Object.keys(dt).forEach((k) => {
+        if (dt[k] < 10) {
+          dt[k] = "0" + dt[k].toString();
+        }
+      });
+
+      return [
+        `${dt.year}-${dt.month}-${dt.dayOfMonth}`,
+        `${dt.hour}:${dt.minute}:${dt.second}`,
+      ];
+    }
+  }
+
   function createNewMilestoneEntry(milestone, mode) {
     if (milestone === undefined || milestone === null) {
       milestone = {
@@ -523,7 +547,7 @@ $(document).ready(function () {
       };
     }
 
-    let action = ' action="none" ';
+    let action = ' action="none"';
     let uncommittedSignClass = "";
 
     if (mode === "copy" || mode === "new") {
@@ -535,42 +559,37 @@ $(document).ready(function () {
       milestone.number = null;
     }
 
-    let origTitleVal = ' data-orig-val="' + milestone.title + '"';
-    let state = milestone.state;
-    let origDescriptionVal = ' data-orig-val="' + milestone.description + '"';
-    let due_on = milestone.due_on;
+    let origTitleVal = ` data-orig-val="${milestone.title}"`;
+    let origStateVal = ` data-orig-val="${milestone.state}"`;
+    let origDescriptionVal = ` data-orig-val="${milestone.description}"`;
+    let [parsedDueDate, parsedDueTime] = parseDate(milestone.due_on);
+    let origDueDate = ` data-orig-val="${parsedDueDate}"`;
+    let origDueTime = ` data-orig-time="${parsedDueTime}"`;
     let number = milestone.number;
 
     let newElementEntry = $(
-      '\
-      <div class="milestone-entry ' +
-        uncommittedSignClass +
-        '" ' +
-        action +
-        ' data-number="' +
-        number +
-        '" data-state="' +
-        state +
-        '" data-due_on="' +
-        due_on +
-        '">\
+      `\
+      <div class="milestone-entry ${uncommittedSignClass}" ${action} data-number="${number}" data-state="${milestone.state}" data-due-on="${milestone.due_on}">\
         <div class="card">\
           <div class="card-body">\
             <div class="flexbox-container">\
               <input name="title" type="text" \
-                class="form-control title-fitting" \
-                placeholder="Title" value="' +
-        milestone.title +
-        '" ' +
-        origTitleVal +
-        '>\
+              class="form-control title-fitting" placeholder="Title" \
+              value="${milestone.title}" ${origTitleVal}>\
               <input name="description" type="text" \
-                class="form-control description-fitting" \
-                placeholder="Description" value="' +
-        milestone.description +
-        '" ' +
-        origDescriptionVal +
-        '>\
+              class="form-control description-fitting" \
+              placeholder="Description" value="${milestone.description}" ${origDescriptionVal}>\
+              <label>Due Date: \
+                <input name="due-date" type="date" \
+                class="form-control due-date-fitting pl-1" \
+                value="${parsedDueDate}" ${origDueDate} ${origDueTime}>\
+              </label>\
+              <label>Status: \
+                <select name="state" class="form-control state-fitting pl-2" ${origStateVal}>\
+                  <option value="open">open</option>\
+                  <option value="closed">closed</option>\
+                </select>\
+              </label>\
             </div>\
           </div>\
         </div>\
@@ -581,8 +600,17 @@ $(document).ready(function () {
           <i class="fas fa-history"></i>\
         </button>\
       </div>\
-    '
+    `
     );
+
+    newElementEntry
+      .find(".state-fitting")
+      .children()
+      .each(function () {
+        if (milestone.state === $(this).attr("value")) {
+          $(this).attr("selected", true);
+        }
+      });
 
     newElementEntry.find(":input[data-orig-val]").blur(function () {
       let $entry = $(this).closest(".milestone-entry");
@@ -597,7 +625,6 @@ $(document).ready(function () {
           $entry.attr("action", "create");
         } else {
           $entry.attr("action", "update");
-          console.log($entry.attr("action"));
         }
         $entry.addClass("uncommitted");
       }
@@ -652,7 +679,11 @@ $(document).ready(function () {
         $entry.find('[name="title"]').attr("data-orig-val") ===
           $entry.find('[name="title"]').val() &&
         $entry.find('[name="description"]').attr("data-orig-val") ===
-          $entry.find('[name="description"]').val()
+          $entry.find('[name="description"]').val() &&
+        $entry.find('[name="due-date"]').attr("data-orig-val") ===
+          $entry.find('[name="due-date"]').val() &&
+        $entry.find('[name="state"]').attr("data-orig-val") ===
+          $entry.find('[name="state"]').val()
       ) {
         $entry.attr("action", "none");
       } else {
@@ -812,6 +843,33 @@ $(document).ready(function () {
     commit();
   });
 
+  function formatDate(dateInput) {
+    let date = dateInput.val();
+    let time = dateInput.attr("data-orig-time");
+
+    if (!date) {
+      return null;
+    }
+
+    let dt = {};
+    [dt.year, dt.month, dt.dayOfMonth] = date.split("-");
+    [dt.hour, dt.minute, dt.second] = time ? time.split(":") : [0, 0, 0];
+
+    Object.keys(dt).forEach((k) => {
+      dt[k] = Number(dt[k]);
+    });
+
+    let dateObject = new Date(
+      dt.year,
+      dt.month - 1,
+      dt.dayOfMonth,
+      dt.hour,
+      dt.minute,
+      dt.second
+    );
+    return JSON.stringify(dateObject).replace(".000Z", "Z");
+  }
+
   function serializeEntries(jObjectEntry, kind) {
     if (kind === "labels") {
       return {
@@ -824,18 +882,26 @@ $(document).ready(function () {
       if (jObjectEntry.attr("data-number") !== "null") {
         return {
           title: jObjectEntry.find('[name="title"]').val(),
-          // state: jObjectEntry.attr('data-state'),
+          state: jObjectEntry.find('[name="state"]').val(),
           description: jObjectEntry.find('[name="description"]').val(),
-          // due_on: jObjectEntry.attr('data-due_on'),
+          due_on: formatDate(jObjectEntry.find('[name="due-date"]')),
           number: parseInt(jObjectEntry.attr("data-number")),
         };
       } else {
-        return {
-          title: jObjectEntry.find('[name="title"]').val(),
-          // state: jObjectEntry.attr('data-state'),
-          description: jObjectEntry.find('[name="description"]').val(),
-          // due_on: jObjectEntry.attr('data-due_on')
-        };
+        if (jObjectEntry.find('[name="due-date"]').val() !== "") {
+          return {
+            title: jObjectEntry.find('[name="title"]').val(),
+            state: jObjectEntry.find('[name="state"]').val(),
+            description: jObjectEntry.find('[name="description"]').val(),
+            due_on: formatDate(jObjectEntry.find('[name="due-date"]')),
+          };
+        } else {
+          return {
+            title: jObjectEntry.find('[name="title"]').val(),
+            state: jObjectEntry.find('[name="state"]').val(),
+            description: jObjectEntry.find('[name="description"]').val(),
+          };
+        }
       }
     } else {
       console.log("Bug in function serializeEntries!");
