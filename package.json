@@ -42,6 +42,7 @@
   },
   "lint-staged": {
     "*": [
+      "pretty-quick --staged",
       "npx prettier --write",
       "eslint ."
     ]
