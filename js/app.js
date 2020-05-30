@@ -92,7 +92,13 @@ $(document).ready(function () {
     let login = getLoginInfo();
     $.ajax({
       type: "GET",
-      url: `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`,
+      url: (function (owner, repo, kind, pageNum) {
+        let queryURL = `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`;
+        if (kind === "milestones") {
+          queryURL += `&state=all`;
+        }
+        return queryURL;
+      })(owner, repo, kind, pageNum), // IIFE
       success: function (response) {
         if (response) {
           response.forEach((e) => {
@@ -525,7 +531,12 @@ $(document).ready(function () {
               <label>Due Date: \
                 <input name="due-date" type="date" class="form-control due-date-fitting pl-1" value="${parsedDueDate}" ${origDueDate} ${origDueTime}>\
               </label>\
-              <input name="state" type="text" class="form-control state-fitting" placeholder="State" value="${milestone.state}" ${origStateVal}>\
+              <label>Status: \
+                <select name="state" class="form-control state-fitting pl-2" ${origStateVal}>\
+                  <option value="open">open</option>\
+                  <option value="closed">closed</option>\
+                </select>\
+              </label>\
             </div>\
           </div>\
         </div>\
@@ -538,6 +549,15 @@ $(document).ready(function () {
       </div>\
     `
     );
+
+    newElementEntry
+      .find(".state-fitting")
+      .children()
+      .each(function () {
+        if (milestone.state === $(this).attr("value")) {
+          $(this).attr("selected", true);
+        }
+      });
 
     newElementEntry.find(":input[data-orig-val]").blur(function () {
       let $entry = $(this).closest(".milestone-entry");
