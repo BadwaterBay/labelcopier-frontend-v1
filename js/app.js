@@ -170,16 +170,15 @@ $(document).ready(function () {
           }
           if (typeof callback === 'function') {
             callback(response);
-          } else {
-            apiCallGetEntriesRecursive(
-              owner,
-              repo,
-              kind,
-              mode,
-              callback,
-              ++pageNum,
-            );
           }
+          apiCallGetEntriesRecursive(
+            owner,
+            repo,
+            kind,
+            mode,
+            callback,
+            ++pageNum,
+          );
         },
         error: (response) => {
           if (response.status === 404) {
@@ -245,22 +244,22 @@ $(document).ready(function () {
     });
   };
 
-  const assignAPICallSign4Update = (entryObject, kind) => {
-    let apiCallSign = '';
-    if (kind === 'labels') {
-      apiCallSign = entryObject.originalName;
-      delete entryObject.originalName;
-    } else if (kind === 'milestones') {
-      apiCallSign = entryObject.number;
-    } else {
-      apiCallSign = "There's a bug in function assignAPICallSign4Update!";
-    }
-    return apiCallSign;
-  };
-
   const apiCallUpdateEntries = (entryObject, kind, callback) => {
+    const API_CALL_SIGN = (entryObject, kind) => {
+      let apiCallSign = '';
+      if (kind === 'labels') {
+        apiCallSign = entryObject.originalName;
+        delete entryObject.originalName;
+      } else if (kind === 'milestones') {
+        apiCallSign = entryObject.number;
+      } else {
+        apiCallSign = "There's a bug in function assignAPICallSign4Update!";
+      }
+      return apiCallSign;
+    };
+
+    // const API_CALL_SIGN = assignAPICallSign4Update(entryObject, kind);
     const LOGIN_INFO = getLoginInfo();
-    const API_CALL_SIGN = assignAPICallSign4Update(entryObject, kind);
     const NAME_OF_ENTRY = assignNameForEntry(entryObject, kind);
 
     $.ajax({
@@ -287,21 +286,21 @@ $(document).ready(function () {
     });
   };
 
-  const assignAPICallSign4Delete = (entryObject, kind) => {
-    let apiCallSign = '';
-    if (kind === 'labels') {
-      apiCallSign = entryObject.name;
-    } else if (kind === 'milestones') {
-      apiCallSign = entryObject.number;
-    } else {
-      apiCallSign = "There's a bug in function assignAPICallSign4Delete!";
-    }
-    return apiCallSign;
-  };
-
   const apiCallDeleteEntries = (entryObject, kind, callback) => {
+    const API_CALL_SIGN = (entryObject, kind) => {
+      let apiCallSign = '';
+      if (kind === 'labels') {
+        apiCallSign = entryObject.name;
+      } else if (kind === 'milestones') {
+        apiCallSign = entryObject.number;
+      } else {
+        apiCallSign = "There's a bug in function assignAPICallSign4Delete!";
+      }
+      return apiCallSign;
+    };
+
     const LOGIN_INFO = getLoginInfo();
-    const API_CALL_SIGN = assignAPICallSign4Delete(entryObject, kind);
+    // const API_CALL_SIGN = assignAPICallSign4Delete(entryObject, kind);
     const NAME_OF_ENTRY = assignNameForEntry(entryObject, kind);
 
     $.ajax({
