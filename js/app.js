@@ -28,7 +28,7 @@ $(document).ready(function () {
       },
       release: () => {
         if (count <= 0) {
-          throw 'Semaphore inconsistency';
+          throw new Error('Semaphore inconsistency');
         }
 
         --count;
