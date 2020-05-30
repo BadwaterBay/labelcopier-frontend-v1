@@ -66,6 +66,10 @@ body {
     }
   }
 
+  .red-alert-background {
+    background-color: #ffcccb;
+  }
+
   .hidden {
     display: none;
   }
@@ -77,6 +81,14 @@ body {
 
   .uncommitted:before {
     content: "* ";
+    font-size: 1rem;
+    margin-left: -12px;
+    float: left;
+  }
+
+  .uncommitted.duplicate-entry:before {
+    content: "! ";
+    font-size: 1rem;
     margin-left: -12px;
     float: left;
   }

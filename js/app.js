@@ -81,86 +81,101 @@ $(document).ready(function () {
     },
   });
 
-  function apiCallGetEntriesRecursive(
-    owner,
-    repo,
-    kind,
-    mode,
-    callback,
-    pageNum
-  ) {
+  function setWhichRepoInUseText() {
     let login = getLoginInfo();
-    $.ajax({
-      type: "GET",
-      url: (function (owner, repo, kind, pageNum) {
+    $("#which-repo-in-use").html(`
+      <p>
+        <strong>Repo owner:</strong> ${login.targetOwner}
+      </p>
+      <p> 
+        <strong>Repo:</strong> ${login.targetRepo}
+      </p>
+      <p>
+        <strong>Username:</strong> ${login.targetUsername}
+      </p>`);
+  }
+
+  let setOfLabelNames = new Set();
+  let setOfMilestoneTitles = new Set();
+
+  function apiCallGetEntries(owner, repo, kind, mode, callback) {
+    function apiCallGetEntriesRecursive(
+      owner,
+      repo,
+      kind,
+      mode,
+      callback,
+      pageNum
+    ) {
+      $.ajax({
+        type: "GET",
+        url: (function (owner, repo, kind, pageNum) {
         let queryURL = `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`;
         if (kind === "milestones") {
           queryURL += `&state=all`;
         }
         return queryURL;
       })(owner, repo, kind, pageNum), // IIFE
-      success: function (response) {
-        if (response) {
-          response.forEach((e) => {
+        success: function (response) {
+          if (response) {
+            if (response.length === 0) {
+              if (pageNum === 1) {
+                alert("No " + kind + " exist within this repo!");
+              }
+              return;
+            }
             if (kind === "labels") {
-              e.color = e.color.toUpperCase();
-              createNewLabelEntry(e, mode);
+              response.forEach((e) => {
+                e.color = e.color.toUpperCase();
+                createNewLabelEntry(e, mode);
+                setOfLabelNames.add(e.name);
+              });
             } else if (kind === "milestones") {
-              createNewMilestoneEntry(e, mode);
+              response.forEach((e) => {
+                createNewMilestoneEntry(e, mode);
+                setOfMilestoneTitles.add(e.title);
+              });
             } else {
               console.log("Bug in function apiCallGetEntriesRecursive!");
             }
-            //sets target indicator text
-            $("#which-repo-in-use").html(`
-              <p>
-                <strong>Repo owner:</strong> ${login.targetOwner}
-              </p>
-              <p> 
-                <strong>Repo:</strong> ${login.targetRepo}
-              </p>
-              <p>
-                <strong>Username:</strong> ${login.targetUsername}
-              </p>`);
-          });
-        }
-        //if
-
-        if (typeof callback === "function") {
-          callback(response);
-        }
-
-        if (response.length === 0) {
-          if (pageNum === 1) {
-            alert("No " + kind + " exist within this repo!");
           }
-          return;
-        } else {
-          apiCallGetEntriesRecursive(
-            owner,
-            repo,
-            kind,
-            mode,
-            callback,
-            ++pageNum
-          );
-        }
-      },
-      error: function (response) {
-        if (response.status === 404) {
-          alert(
-            "Not found! If this is a private repo make sure you provide a personal access token."
-          );
-        }
+          if (typeof callback === "function") {
+            callback(response);
+          } else {
+            apiCallGetEntriesRecursive(
+              owner,
+              repo,
+              kind,
+              mode,
+              callback,
+              ++pageNum
+            );
+          }
+        },
+        error: function (response) {
+          if (response.status === 404) {
+            alert(
+              "Not found! If this is a private repo, make sure you provide a personal access token."
+            );
+          }
+          if (typeof callback === "function") {
+            callback(response);
+          }
+        },
+      });
+      checkIfAnyEntryModified();
+    }
 
-        if (typeof callback === "function") {
-          callback(response);
-        }
-      },
-    });
-    checkIfAnyModifications();
-  }
+    setWhichRepoInUseText();
 
-  function apiCallGetEntries(owner, repo, kind, mode, callback) {
+    if (kind === "labels") {
+      setOfLabelNames.clear();
+    } else if (kind === "milestones") {
+      setOfMilestoneTitles.clear();
+    } else {
+      console.log("Bug in function apiCallGetEntries!");
+    }
+
     apiCallGetEntriesRecursive(owner, repo, kind, mode, callback, 1);
   }
 
@@ -362,7 +377,26 @@ $(document).ready(function () {
         $entry.addClass("uncommitted");
       }
 
-      checkIfAnyModifications();
+      checkIfAnyEntryModified();
+      return;
+    });
+
+    newElementEntry.find('input[name="name"]').blur(function () {
+      let $entry = $(this).closest(".label-entry");
+      let currentVal = $(this).val();
+      let originalVal = $(this).attr("data-orig-val");
+
+      if (setOfLabelNames.has(currentVal) && currentVal !== originalVal) {
+        $entry.addClass("duplicate-entry");
+        $(this).addClass("red-alert-background");
+        alert("This label name has already been taken!");
+        // In the future, we might use a popup instead of an alert
+      } else {
+        $entry.removeClass("duplicate-entry");
+        $(this).removeClass("red-alert-background");
+      }
+
+      checkIfAnyEntryModified();
       return;
     });
 
@@ -379,7 +413,7 @@ $(document).ready(function () {
 
       $(this).siblings(".recover-button").removeClass("hidden");
 
-      checkIfAnyModifications();
+      checkIfAnyEntryModified();
       return;
     });
 
@@ -403,7 +437,7 @@ $(document).ready(function () {
         $entry.attr("action", "update");
       }
 
-      checkIfAnyModifications();
+      checkIfAnyEntryModified();
     });
 
     newElementEntry
@@ -434,7 +468,7 @@ $(document).ready(function () {
           //   }
           //   // $(el).closest('label-entry').addClass('uncommitted');
           // }
-          // checkIfAnyModifications();
+          // checkIfAnyEntryModified();
           return;
           //-----------------------------
         },
@@ -596,7 +630,26 @@ $(document).ready(function () {
         $entry.addClass("uncommitted");
       }
 
-      checkIfAnyModifications();
+      checkIfAnyEntryModified();
+      return;
+    });
+
+    newElementEntry.find('input[name="title"]').blur(function () {
+      let $entry = $(this).closest(".milestone-entry");
+      let currentVal = $(this).val();
+      let originalVal = $(this).attr("data-orig-val");
+
+      if (setOfMilestoneTitles.has(currentVal) && currentVal !== originalVal) {
+        $entry.addClass("duplicate-entry");
+        $(this).addClass("red-alert-background");
+        alert("This milestone title has already been taken!");
+        // In the future, we might use a popup instead of an alert
+      } else {
+        $entry.removeClass("duplicate-entry");
+        $(this).removeClass("red-alert-background");
+      }
+
+      checkIfAnyEntryModified();
       return;
     });
 
@@ -612,7 +665,7 @@ $(document).ready(function () {
 
       $(this).siblings(".recover-button").removeClass("hidden");
 
-      checkIfAnyModifications();
+      checkIfAnyEntryModified();
       return;
     });
 
@@ -638,7 +691,7 @@ $(document).ready(function () {
         $entry.attr("action", "update");
       }
 
-      checkIfAnyModifications();
+      checkIfAnyEntryModified();
     });
 
     $("#form-milestones").prepend(newElementEntry);
@@ -725,7 +778,7 @@ $(document).ready(function () {
           $(this).attr("action", "delete");
         }
       });
-    checkIfAnyModifications();
+    checkIfAnyEntryModified();
   }
 
   $("#delete-all-labels").click(function () {
@@ -756,7 +809,7 @@ $(document).ready(function () {
       alert("Please enter the repo owner and the repo you want to copy from.");
       $(this).button("reset");
     }
-    checkIfAnyModifications();
+    checkIfAnyEntryModified();
   }
 
   $("#copy-labels-from").click(function () {
@@ -859,12 +912,26 @@ $(document).ready(function () {
     }
   }
 
-  function checkIfAnyModifications() {
+  function checkIfAnyEntryModified() {
     // returns true if any change has been made and activates or disactivates commit button accordingly
+
+    function enableCommitButton() {
+      $("#commit-to-target-repo").removeAttr("disabled");
+      $("#commit-to-target-repo").removeClass("btn-outline-success");
+      $("#commit-to-target-repo").addClass("btn-success");
+    }
+
+    function disableCommitButton() {
+      $("#commit-to-target-repo").attr("disabled", true);
+      $("#commit-to-target-repo").removeClass("btn-success");
+      $("#commit-to-target-repo").addClass("btn-outline-success");
+    }
 
     let labelsModified = $('.label-entry:not([action="none"])').length > 0;
     let milestonesModified =
       $('.milestone-entry:not([action="none"])').length > 0;
+    let labelsDuplicated = $(".label-entry.duplicate-entry").length > 0;
+    let milestonesDuplicated = $(".milestone-entry.duplicate-entry").length > 0;
 
     if (labelsModified) {
       $("#revert-labels-to-original").removeAttr("disabled");
@@ -878,14 +945,20 @@ $(document).ready(function () {
       $("#revert-milestones-to-original").attr("disabled", true);
     }
 
-    if (labelsModified || milestonesModified) {
-      $("#commit-to-target-repo").removeAttr("disabled");
-      $("#commit-to-target-repo").removeClass("btn-outline-success");
-      $("#commit-to-target-repo").addClass("btn-success");
+    if (labelsDuplicated || milestonesDuplicated) {
+      // if (labelsDuplicated) {
+      //   alert("Please resolve duplicated label names before committing.");
+      // }
+      // if (milestonesDuplicated) {
+      //   alert("Please resolve duplicated milestone titles before committing.");
+      // }
+      disableCommitButton();
     } else {
-      $("#commit-to-target-repo").attr("disabled", true);
-      $("#commit-to-target-repo").removeClass("btn-success");
-      $("#commit-to-target-repo").addClass("btn-outline-success");
+      if (labelsModified || milestonesModified) {
+        enableCommitButton();
+      } else {
+        disableCommitButton();
+      }
     }
   }
 

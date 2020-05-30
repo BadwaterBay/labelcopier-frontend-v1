@@ -4,7 +4,8 @@
   "description": "A web app that help you manage GitHub labels and milestones",
   "main": "index.html",
   "scripts": {
-    "lint": "eslint .; exit 0",
+    "lint": "echo \"==> Start running eslint\" eslint . && echo \"==> Finished running eslint\" && exit 0",
+    "format": "npx prettier@2.0.5 . --write",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,6 +19,14 @@
   },
   "homepage": "https://github.com/Badwater-Apps/github-label-manager-2#readme",
   "devDependencies": {
-    "eslint": "^7.1.0"
+    "eslint": "^7.1.0",
+    "husky": "^4.2.5",
+    "prettier": "2.0.5",
+    "pretty-quick": "^2.0.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && pretty-quick --staged"
+    }
   }
 }
