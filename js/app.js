@@ -317,7 +317,7 @@ $(document).ready(function () {
     let uncommittedSignClass = "";
 
     if (mode === "copy" || mode === "new") {
-      todo = ` data-todo="create" new="true" `;
+      todo = ' data-todo="create" new="true" ';
       uncommittedSignClass = " uncommitted ";
     }
 
