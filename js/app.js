@@ -87,10 +87,10 @@ $(document).ready(function () {
    */
   const checkInputChanges = (el) => {
     let noChanges = true;
-    if (el.val() !== el.attr('data-orig-val')) {
-      noChanges = false;
-    }
-    el.siblings().each(
+    // if (el.val() !== el.attr('data-orig-val')) {
+    //   noChanges = false;
+    // }
+    el.find(':input[data-orig-val]').each(
       /** @this HTMLElement */
       function () {
         if ($(this).val() !== $(this).attr('data-orig-val')) {
@@ -624,7 +624,7 @@ $(document).ready(function () {
         const $entry = $(this).closest('.label-entry');
 
         /** @this HTMLElement */
-        if (checkInputChanges($(this))) {
+        if (checkInputChanges($entry)) {
           // If this is unchanged
           $entry.attr('data-todo', 'none');
           $entry.removeClass('uncommitted');
