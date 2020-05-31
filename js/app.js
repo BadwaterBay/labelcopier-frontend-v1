@@ -623,7 +623,7 @@ $(document).ready(function () {
       },
     );
 
-    newElementEntry.find('input[name="name"]').blur(
+    newElementEntry.find('input[name="name"]').keyup(
       /** @this HTMLElement */
       function () {
         const $entry = $(this).closest('.label-entry');
@@ -858,7 +858,7 @@ $(document).ready(function () {
         },
       );
 
-    newElementEntry.find(':input[data-orig-val]').blur(
+    newElementEntry.find(':input[data-orig-val]').keyup(
       /** @this HTMLElement */
       function () {
         const $entry = $(this).closest('.milestone-entry');
@@ -882,7 +882,7 @@ $(document).ready(function () {
       },
     );
 
-    newElementEntry.find('input[name="title"]').blur(
+    newElementEntry.find('input[name="title"]').keyup(
       /** @this HTMLElement */
       function () {
         const $entry = $(this).closest('.milestone-entry');
