@@ -87,9 +87,7 @@ $(document).ready(function () {
    */
   const checkInputChanges = (el) => {
     let noChanges = true;
-    // if (el.val() !== el.attr('data-orig-val')) {
-    //   noChanges = false;
-    // }
+
     el.find(':input[data-orig-val]').each(
       /** @this HTMLElement */
       function () {
