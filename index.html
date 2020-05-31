@@ -69,7 +69,7 @@
 
     <div id="content" class="container">
       <div class="row">
-        <div class="col-12 col-lg-5">
+        <div class="col-12">
           <div class="card bg-light card-body mb-3">
             <div class="card-header">
               <h3>
@@ -77,29 +77,40 @@
               </h3>
             </div>
             <form>
-              <div class="form-group">
-                <label for="target-owner" class="bmd-label-floating">
-                  Repo&nbsp;owner
-                </label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="target-owner"
-                  name="target-owner"
-                />
-                <span class="bmd-help">
-                  Such as: Badwater-Apps
-                </span>
+              <div class="row">
+                <div class="col-12 col-md-6">
+                  <div class="form-group">
+                    <label for="target-owner" class="bmd-label-floating">
+                      Repo&nbsp;owner
+                    </label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="target-owner"
+                      name="target-owner"
+                    />
+                    <span class="bmd-help">
+                      Such as: Badwater-Apps
+                    </span>
+                  </div>
+                  <!-- form-group -->
+                </div>
+                <!-- col -->
+                <div class="col-12 col-md-6">
+                  <div class="form-group">
+                    <label for="target-repo" class="bmd-label-floating">
+                      Repo
+                    </label>
+                    <input type="text" class="form-control" id="target-repo" />
+                    <span class="bmd-help">
+                      Such as: template-for-label-and-milestone-1
+                    </span>
+                  </div>
+                  <!-- form-group -->
+                </div>
+                <!-- col -->
               </div>
-              <div class="form-group">
-                <label for="target-repo" class="bmd-label-floating">
-                  Repo
-                </label>
-                <input type="text" class="form-control" id="target-repo" />
-                <span class="bmd-help">
-                  Such as: template-for-label-and-milestone-1
-                </span>
-              </div>
+              <!-- row -->
               <div class="checkbox">
                 <label>
                   <input
@@ -234,11 +245,7 @@
               </button>
             </div>
           </div>
-        </div>
-        <!-- col -->
-
-        <div class="col-12 col-lg-7">
-          <div class="card bg-light card-body mb-3">
+          <!-- <div class="card bg-light card-body mb-3">
             <div class="card-header">
               <h3>
                 Which repo is in use?
@@ -247,7 +254,7 @@
             <div id="which-repo-in-use" class="form-text text-muted">
               Not using any yet
             </div>
-          </div>
+          </div> -->
           <div class="card bg-light card-body mb-3">
             <ul class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
               <li class="nav-item">

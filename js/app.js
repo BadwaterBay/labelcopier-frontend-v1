@@ -67,19 +67,19 @@ $(document).ready(function () {
     $('#loadingModal .modal-body').append(`${string}<br />`);
   };
 
-  const setWhichRepoInUseText = () => {
-    const LOGIN_INFO = getLoginInfo();
-    $('#which-repo-in-use').html(`
-      <p>
-        <strong>Repo owner:</strong> ${LOGIN_INFO.targetOwner}
-      </p>
-      <p> 
-        <strong>Repo:</strong> ${LOGIN_INFO.targetRepo}
-      </p>
-      <p>
-        <strong>Username:</strong> ${LOGIN_INFO.targetUsername}
-      </p>`);
-  };
+  // const setWhichRepoInUseText = () => {
+  //   const LOGIN_INFO = getLoginInfo();
+  //   $('#which-repo-in-use').html(`
+  //     <p>
+  //       <strong>Repo owner:</strong> ${LOGIN_INFO.targetOwner}
+  //     </p>
+  //     <p>
+  //       <strong>Repo:</strong> ${LOGIN_INFO.targetRepo}
+  //     </p>
+  //     <p>
+  //       <strong>Username:</strong> ${LOGIN_INFO.targetUsername}
+  //     </p>`);
+  // };
 
   /**
    * @param {Object} el
