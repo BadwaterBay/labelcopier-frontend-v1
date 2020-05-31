@@ -725,7 +725,7 @@ $(document).ready(function () {
           $(el).css('background-color', `#${hex}`);
           const $entry = $(el).closest('.label-entry');
 
-          if (checkInputChanges($(el))) {
+          if (checkInputChanges($(el).closest('.label-entry'))) {
             $entry.attr('data-todo', 'none');
             $entry.removeClass('uncommitted');
           } else {
@@ -879,8 +879,9 @@ $(document).ready(function () {
       /** @this HTMLElement */
       function () {
         const $entry = $(this).closest('.milestone-entry');
+        console.log($entry.find('.due-date-fitting').val());
 
-        if ($(this).val() === $(this).attr('data-orig-val')) {
+        if (checkInputChanges($entry)) {
           // unchanged
           $entry.attr('data-todo', 'none');
           $entry.removeClass('uncommitted');
