@@ -81,6 +81,26 @@ $(document).ready(function () {
       </p>`);
   };
 
+  /**
+   * @param {Object} el
+   * @return {boolean}
+   */
+  const checkInputChanges = (el) => {
+    let noChanges = true;
+    if (el.val() !== el.attr('data-orig-val')) {
+      noChanges = false;
+    }
+    el.siblings().each(
+      /** @this HTMLElement */
+      function () {
+        if ($(this).val() !== $(this).attr('data-orig-val')) {
+          noChanges = false;
+        }
+      },
+    );
+    return noChanges;
+  };
+
   const checkIfAnyEntryModified = () => {
     // returns true if any change has been made and activates or
     // disactivates commit button accordingly
@@ -566,26 +586,6 @@ $(document).ready(function () {
     const origNameVal = ` data-orig-val="${label.name}"`;
     const origColorVal = ` data-orig-val="${label.color}"`;
     const origDescriptionVal = ` data-orig-val="${label.description}"`;
-
-    /**
-     * @param {Object} el
-     * @return {boolean}
-     */
-    const checkInputChanges = (el) => {
-      let noChanges = true;
-      if (el.val() !== el.attr('data-orig-val')) {
-        noChanges = false;
-      }
-      el.siblings().each(
-        /** @this HTMLElement */
-        function () {
-          if ($(this).val() !== $(this).attr('data-orig-val')) {
-            noChanges = false;
-          }
-        },
-      );
-      return noChanges;
-    };
 
     const newElementEntry = $(`
       <div class="label-entry ${uncommittedSignClass}" ${todo}>\
