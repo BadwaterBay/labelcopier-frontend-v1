@@ -711,7 +711,7 @@ $(document).ready(function () {
         // http://www.eyecon.ro/colorpicker
         color: label.color,
         onSubmit: (hsb, hex, rgb, el) => {
-          $(el).val(hex.toUpperCase());
+          $(el).val('#' + hex.toUpperCase());
           $(el).ColorPickerHide();
           $(el).css('background-color', `#${hex}`);
           const $entry = $(el).closest('.label-entry');
