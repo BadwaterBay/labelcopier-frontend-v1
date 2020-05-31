@@ -415,7 +415,7 @@ $(document).ready(function () {
             }
             if (kind === 'labels') {
               response.forEach((e) => {
-                e.color = '#' + e.color.toUpperCase();
+                e.color = `#${e.color.toUpperCase()}`;
                 createNewLabelEntry(e, mode);
                 LABEL_SET.add(e.name);
               });
