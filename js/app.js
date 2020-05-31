@@ -879,7 +879,6 @@ $(document).ready(function () {
       /** @this HTMLElement */
       function () {
         const $entry = $(this).closest('.milestone-entry');
-        console.log($entry.find('.due-date-fitting').val());
 
         if (checkInputChanges($entry)) {
           // unchanged
@@ -899,6 +898,33 @@ $(document).ready(function () {
         return;
       },
     );
+
+    newElementEntry
+      .find('label')
+      .children()
+      .change(
+        /** @this HTMLElement */
+        function () {
+          const $entry = $(this).closest('.milestone-entry');
+
+          if (checkInputChanges($entry)) {
+            // unchanged
+            $entry.attr('data-todo', 'none');
+            $entry.removeClass('uncommitted');
+          } else {
+            // changed
+            if ($entry.attr('new') === 'true') {
+              $entry.attr('data-todo', 'create');
+            } else {
+              $entry.attr('data-todo', 'update');
+            }
+            $entry.addClass('uncommitted');
+          }
+
+          checkIfAnyEntryModified();
+          return;
+        },
+      );
 
     newElementEntry.find('input[name="title"]').keyup(
       /** @this HTMLElement */
