@@ -1145,7 +1145,7 @@ $(document).ready(function () {
     if (kind === 'labels') {
       return {
         name: jObjectEntry.find('[name="name"]').val(),
-        color: jObjectEntry.find('[name="color"]').val(),
+        color: jObjectEntry.find('[name="color"]').val().slice(1),
         description: jObjectEntry.find('[name="description"]').val(),
         originalName: jObjectEntry.find('[name="name"]').attr('data-orig-val'),
       };
