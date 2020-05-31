@@ -711,7 +711,7 @@ $(document).ready(function () {
         // http://www.eyecon.ro/colorpicker
         color: label.color,
         onSubmit: (hsb, hex, rgb, el) => {
-          $(el).val('#' + hex.toUpperCase());
+          $(el).val(`#${hex.toUpperCase()}`);
           $(el).ColorPickerHide();
           $(el).css('background-color', `#${hex}`);
           const $entry = $(el).closest('.label-entry');
@@ -731,15 +731,19 @@ $(document).ready(function () {
           return;
         },
         onBeforeShow: function () {
-          $(this).ColorPickerSetColor(this.value);
+          $(this).ColorPickerSetColor(this.value.replace('#', ''));
         },
       })
       .bind(
         'keyup',
         /** @this HTMLElement */
         function () {
-          $(this).ColorPickerSetColor(this.value);
-          $(this).css('background-color', `#${this.value}`);
+          const displayColorCode = this.value.startsWith('#')
+            ? `${this.value}`
+            : `#${this.value}`;
+          $(this).ColorPickerSetColor(displayColorCode.replace('#', ''));
+          $(this).val(displayColorCode.toUpperCase());
+          $(this).css('background-color', displayColorCode);
         },
       );
 
