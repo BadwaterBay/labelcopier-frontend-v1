@@ -693,14 +693,7 @@ $(document).ready(function () {
 
         const $entry = $(this).closest('.label-entry');
 
-        if (
-          $entry.find('[name="name"]').attr('data-orig-val') ===
-            $entry.find('[name="name"]').val() &&
-          $entry.find('[name="color"]').attr('data-orig-val') ===
-            $entry.find('[name="color"]').val() &&
-          $entry.find('[name="description"]').attr('data-orig-val') ===
-            $entry.find('[name="description"]').val()
-        ) {
+        if (checkInputChanges($entry)) {
           $entry.attr('data-todo', 'none');
         } else {
           $entry.attr('data-todo', 'update');
@@ -974,16 +967,7 @@ $(document).ready(function () {
 
         const $entry = $(this).closest('.milestone-entry');
 
-        if (
-          $entry.find('[name="title"]').attr('data-orig-val') ===
-            $entry.find('[name="title"]').val() &&
-          $entry.find('[name="description"]').attr('data-orig-val') ===
-            $entry.find('[name="description"]').val() &&
-          $entry.find('[name="due-date"]').attr('data-orig-val') ===
-            $entry.find('[name="due-date"]').val() &&
-          $entry.find('[name="state"]').attr('data-orig-val') ===
-            $entry.find('[name="state"]').val()
-        ) {
+        if (checkInputChanges($entry)) {
           $entry.attr('data-todo', 'none');
         } else {
           $entry.attr('data-todo', 'update');
