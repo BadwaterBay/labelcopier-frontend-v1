@@ -81,6 +81,24 @@ $(document).ready(function () {
       </p>`);
   };
 
+  /**
+   * @param {Object} el
+   * @return {boolean}
+   */
+  const checkInputChanges = (el) => {
+    let noChanges = true;
+
+    el.find(':input[data-orig-val]').each(
+      /** @this HTMLElement */
+      function () {
+        if ($(this).val() !== $(this).attr('data-orig-val')) {
+          noChanges = false;
+        }
+      },
+    );
+    return noChanges;
+  };
+
   const checkIfAnyEntryModified = () => {
     // returns true if any change has been made and activates or
     // disactivates commit button accordingly
@@ -598,13 +616,13 @@ $(document).ready(function () {
       .find('.color-box')
       .css('background-color', `#${label.color}`);
 
-    newElementEntry.find(':input[data-orig-val]').blur(
+    newElementEntry.find(':input[data-orig-val]').keyup(
       /** @this HTMLElement */
       function () {
         const $entry = $(this).closest('.label-entry');
 
         /** @this HTMLElement */
-        if ($(this).val() === $(this).attr('data-orig-val')) {
+        if (checkInputChanges($entry)) {
           // If this is unchanged
           $entry.attr('data-todo', 'none');
           $entry.removeClass('uncommitted');
@@ -623,7 +641,7 @@ $(document).ready(function () {
       },
     );
 
-    newElementEntry.find('input[name="name"]').blur(
+    newElementEntry.find('input[name="name"]').keyup(
       /** @this HTMLElement */
       function () {
         const $entry = $(this).closest('.label-entry');
@@ -675,14 +693,7 @@ $(document).ready(function () {
 
         const $entry = $(this).closest('.label-entry');
 
-        if (
-          $entry.find('[name="name"]').attr('data-orig-val') ===
-            $entry.find('[name="name"]').val() &&
-          $entry.find('[name="color"]').attr('data-orig-val') ===
-            $entry.find('[name="color"]').val() &&
-          $entry.find('[name="description"]').attr('data-orig-val') ===
-            $entry.find('[name="description"]').val()
-        ) {
+        if (checkInputChanges($entry)) {
           $entry.attr('data-todo', 'none');
         } else {
           $entry.attr('data-todo', 'update');
@@ -703,24 +714,21 @@ $(document).ready(function () {
           $(el).val(hex.toUpperCase());
           $(el).ColorPickerHide();
           $(el).css('background-color', `#${hex}`);
+          const $entry = $(el).closest('.label-entry');
 
-          // -----------------------------
-          // if ($(el).val() === $(el).attr('data-orig-val')) {
-          //   $(el).parent().attr('data-todo', 'none');
-          //   $(el).parent().removeClass('uncommitted');
-          // }
-          // else {
-          //   if ($(el).parent().attr('new') === 'true') {
-          //     $(el).parent().attr('data-todo', 'create');
-          //   }
-          //   else {
-          //     $(el).parent().attr('data-todo', 'update');
-          //   }
-          //   // $(el).closest('label-entry').addClass('uncommitted');
-          // }
-          // checkIfAnyEntryModified();
+          if (checkInputChanges($entry)) {
+            $entry.attr('data-todo', 'none');
+            $entry.removeClass('uncommitted');
+          } else {
+            if ($entry.attr('new') === 'true') {
+              $entry.attr('data-todo', 'create');
+            } else {
+              $entry.attr('data-todo', 'update');
+            }
+            $entry.addClass('uncommitted');
+          }
+          checkIfAnyEntryModified();
           return;
-          // -----------------------------
         },
         onBeforeShow: function () {
           $(this).ColorPickerSetColor(this.value);
@@ -858,12 +866,12 @@ $(document).ready(function () {
         },
       );
 
-    newElementEntry.find(':input[data-orig-val]').blur(
+    newElementEntry.find(':input[data-orig-val]').keyup(
       /** @this HTMLElement */
       function () {
         const $entry = $(this).closest('.milestone-entry');
 
-        if ($(this).val() === $(this).attr('data-orig-val')) {
+        if (checkInputChanges($entry)) {
           // unchanged
           $entry.attr('data-todo', 'none');
           $entry.removeClass('uncommitted');
@@ -882,7 +890,34 @@ $(document).ready(function () {
       },
     );
 
-    newElementEntry.find('input[name="title"]').blur(
+    newElementEntry
+      .find('label')
+      .children()
+      .change(
+        /** @this HTMLElement */
+        function () {
+          const $entry = $(this).closest('.milestone-entry');
+
+          if (checkInputChanges($entry)) {
+            // unchanged
+            $entry.attr('data-todo', 'none');
+            $entry.removeClass('uncommitted');
+          } else {
+            // changed
+            if ($entry.attr('new') === 'true') {
+              $entry.attr('data-todo', 'create');
+            } else {
+              $entry.attr('data-todo', 'update');
+            }
+            $entry.addClass('uncommitted');
+          }
+
+          checkIfAnyEntryModified();
+          return;
+        },
+      );
+
+    newElementEntry.find('input[name="title"]').keyup(
       /** @this HTMLElement */
       function () {
         const $entry = $(this).closest('.milestone-entry');
@@ -932,16 +967,7 @@ $(document).ready(function () {
 
         const $entry = $(this).closest('.milestone-entry');
 
-        if (
-          $entry.find('[name="title"]').attr('data-orig-val') ===
-            $entry.find('[name="title"]').val() &&
-          $entry.find('[name="description"]').attr('data-orig-val') ===
-            $entry.find('[name="description"]').val() &&
-          $entry.find('[name="due-date"]').attr('data-orig-val') ===
-            $entry.find('[name="due-date"]').val() &&
-          $entry.find('[name="state"]').attr('data-orig-val') ===
-            $entry.find('[name="state"]').val()
-        ) {
+        if (checkInputChanges($entry)) {
           $entry.attr('data-todo', 'none');
         } else {
           $entry.attr('data-todo', 'update');
