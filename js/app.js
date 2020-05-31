@@ -1,4 +1,4 @@
-/*
+/**
   github-label-manager-2 is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
@@ -16,19 +16,22 @@
 'use strict';
 
 $(document).ready(function () {
-  /* === START: INSTANTIATE BOOTSTRAP-MATERIAL-DESIGN === */
+  /** === START: INSTANTIATE BOOTSTRAP-MATERIAL-DESIGN === */
 
   $('body').bootstrapMaterialDesign();
 
-  /* === END: INSTANTIATE BOOTSTRAP-MATERIAL-DESIGN === */
+  /** === END: INSTANTIATE BOOTSTRAP-MATERIAL-DESIGN === */
 
-  /* === START: COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES === */
+  /** === START: COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES === */
 
-  $('#copy-to-username').click(function () {
-    $('#target-username').val(() =>
-      $(this).prop('checked') ? $('#target-owner').val() : '',
-    );
-  });
+  $('#copy-to-username').click(
+    /** @this HTMLElement */
+    function () {
+      $('#target-username').val(() =>
+        $(this).prop('checked') ? $('#target-owner').val() : '',
+      );
+    },
+  );
 
   $('#target-owner').keyup(() => {
     if ($('#copy-to-username').prop('checked')) {
@@ -36,15 +39,18 @@ $(document).ready(function () {
     }
   });
 
-  $('#target-username').keyup(function () {
-    $('#copy-to-username').prop('checked', () => {
-      return $(this).val() === $('#target-owner').val();
-    });
-  });
+  $('#target-username').keyup(
+    /** @this HTMLElement */
+    function () {
+      $('#copy-to-username').prop('checked', () => {
+        return $(this).val() === $('#target-owner').val();
+      });
+    },
+  );
 
-  /* === END: COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES === */
+  /** === END: COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES === */
 
-  /* === START: PREP WORK BEFORE MAKING API CALLS === */
+  /** === START: PREP WORK BEFORE MAKING API CALLS === */
 
   const getLoginInfo = () => {
     return {
@@ -128,9 +134,9 @@ $(document).ready(function () {
     }
   };
 
-  /* === END: PREP WORK BEFORE MAKING API CALLS === */
+  /** === END: PREP WORK BEFORE MAKING API CALLS === */
 
-  /* === START: BASE64 FOR API CALLS === */
+  /** === START: BASE64 FOR API CALLS === */
 
   const BASE64 = {
     // http://stackoverflow.com/a/246813
@@ -168,6 +174,7 @@ $(document).ready(function () {
           enc4 = 64;
         }
 
+        /** @this BASE64 */
         output =
           output +
           this._keyStr.charAt(enc1) +
@@ -193,6 +200,7 @@ $(document).ready(function () {
 
       input = input.replace(/[^A-Za-z0-9+/=]/g, '');
 
+      /** @this BASE64 */
       while (i < input.length) {
         enc1 = this._keyStr.indexOf(input.charAt(i++));
         enc2 = this._keyStr.indexOf(input.charAt(i++));
@@ -271,9 +279,9 @@ $(document).ready(function () {
     },
   };
 
-  /* === END: BASE64 FOR API CALLS=== */
+  /** === END: BASE64 FOR API CALLS=== */
 
-  /* === START: API CALL FUNCTIONALITIES === */
+  /** === START: API CALL FUNCTIONALITIES === */
 
   let isLoadingShown = false;
 
@@ -534,9 +542,9 @@ $(document).ready(function () {
     });
   };
 
-  /* === END: API CALL FUNCTIONALITIES === */
+  /** === END: API CALL FUNCTIONALITIES === */
 
-  /* === START: CREATE NEW LABEL ENTRIES === */
+  /** === START: CREATE NEW LABEL ENTRIES === */
 
   const createNewLabelEntry = (label, mode) => {
     let todo = ' data-todo="none" ';
@@ -590,86 +598,101 @@ $(document).ready(function () {
       .find('.color-box')
       .css('background-color', `#${label.color}`);
 
-    newElementEntry.find(':input[data-orig-val]').blur(function () {
-      const $entry = $(this).closest('.label-entry');
+    newElementEntry.find(':input[data-orig-val]').blur(
+      /** @this HTMLElement */
+      function () {
+        const $entry = $(this).closest('.label-entry');
 
-      if ($(this).val() === $(this).attr('data-orig-val')) {
-        // If this is unchanged
-        $entry.attr('data-todo', 'none');
-        $entry.removeClass('uncommitted');
-      } else {
-        // If this is changed
-        if ($entry.attr('new') === 'true') {
-          $entry.attr('data-todo', 'create');
+        /** @this HTMLElement */
+        if ($(this).val() === $(this).attr('data-orig-val')) {
+          // If this is unchanged
+          $entry.attr('data-todo', 'none');
+          $entry.removeClass('uncommitted');
+        } else {
+          // If this is changed
+          if ($entry.attr('new') === 'true') {
+            $entry.attr('data-todo', 'create');
+          } else {
+            $entry.attr('data-todo', 'update');
+          }
+          $entry.addClass('uncommitted');
+        }
+
+        checkIfAnyEntryModified();
+        return;
+      },
+    );
+
+    newElementEntry.find('input[name="name"]').blur(
+      /** @this HTMLElement */
+      function () {
+        const $entry = $(this).closest('.label-entry');
+        const currentVal = $(this).val();
+        const originalVal = $(this).attr('data-orig-val');
+
+        /** @this HTMLElement */
+        if (LABEL_SET.has(currentVal) && currentVal !== originalVal) {
+          $entry.addClass('duplicate-entry');
+          $(this).addClass('red-alert-background');
+          alert('This label name has already been taken!');
+          // In the future, we might use a popup instead of an alert
+        } else {
+          $entry.removeClass('duplicate-entry');
+          $(this).removeClass('red-alert-background');
+        }
+
+        checkIfAnyEntryModified();
+        return;
+      },
+    );
+
+    // Delete button
+    newElementEntry.children('.delete-button').click(
+      /** @this HTMLElement */
+      function () {
+        if ($(this).parent().attr('new') === 'true') {
+          $(this).parent().remove();
+        } else {
+          $(this).siblings('.card').addClass('deleted-card');
+          $(this).siblings('.recover-button').removeAttr('disabled');
+          $(this).addClass('hidden');
+          $(this).parent().attr('data-todo', 'delete');
+        }
+
+        $(this).siblings('.recover-button').removeClass('hidden');
+
+        checkIfAnyEntryModified();
+        return;
+      },
+    );
+
+    newElementEntry.children('.recover-button').click(
+      /** @this HTMLElement */
+      function () {
+        $(this).siblings('.card').removeClass('deleted-card');
+        $(this).siblings('.delete-button').removeClass('hidden');
+        $(this).addClass('hidden');
+
+        const $entry = $(this).closest('.label-entry');
+
+        if (
+          $entry.find('[name="name"]').attr('data-orig-val') ===
+            $entry.find('[name="name"]').val() &&
+          $entry.find('[name="color"]').attr('data-orig-val') ===
+            $entry.find('[name="color"]').val() &&
+          $entry.find('[name="description"]').attr('data-orig-val') ===
+            $entry.find('[name="description"]').val()
+        ) {
+          $entry.attr('data-todo', 'none');
         } else {
           $entry.attr('data-todo', 'update');
         }
-        $entry.addClass('uncommitted');
-      }
 
-      checkIfAnyEntryModified();
-      return;
-    });
+        checkIfAnyEntryModified();
+      },
+    );
 
-    newElementEntry.find('input[name="name"]').blur(function () {
-      const $entry = $(this).closest('.label-entry');
-      const currentVal = $(this).val();
-      const originalVal = $(this).attr('data-orig-val');
-
-      if (LABEL_SET.has(currentVal) && currentVal !== originalVal) {
-        $entry.addClass('duplicate-entry');
-        $(this).addClass('red-alert-background');
-        alert('This label name has already been taken!');
-        // In the future, we might use a popup instead of an alert
-      } else {
-        $entry.removeClass('duplicate-entry');
-        $(this).removeClass('red-alert-background');
-      }
-
-      checkIfAnyEntryModified();
-      return;
-    });
-
-    // Delete button
-    newElementEntry.children('.delete-button').click(function () {
-      if ($(this).parent().attr('new') === 'true') {
-        $(this).parent().remove();
-      } else {
-        $(this).siblings('.card').addClass('deleted-card');
-        $(this).siblings('.recover-button').removeAttr('disabled');
-        $(this).addClass('hidden');
-        $(this).parent().attr('data-todo', 'delete');
-      }
-
-      $(this).siblings('.recover-button').removeClass('hidden');
-
-      checkIfAnyEntryModified();
-      return;
-    });
-
-    newElementEntry.children('.recover-button').click(function () {
-      $(this).siblings('.card').removeClass('deleted-card');
-      $(this).siblings('.delete-button').removeClass('hidden');
-      $(this).addClass('hidden');
-
-      const $entry = $(this).closest('.label-entry');
-
-      if (
-        $entry.find('[name="name"]').attr('data-orig-val') ===
-          $entry.find('[name="name"]').val() &&
-        $entry.find('[name="color"]').attr('data-orig-val') ===
-          $entry.find('[name="color"]').val() &&
-        $entry.find('[name="description"]').attr('data-orig-val') ===
-          $entry.find('[name="description"]').val()
-      ) {
-        $entry.attr('data-todo', 'none');
-      } else {
-        $entry.attr('data-todo', 'update');
-      }
-
-      checkIfAnyEntryModified();
-    });
-
+    /** @this HTMLElement */
     newElementEntry
       .find('.color-box')
       .ColorPicker({
@@ -703,10 +726,14 @@ $(document).ready(function () {
           $(this).ColorPickerSetColor(this.value);
         },
       })
-      .bind('keyup', function () {
-        $(this).ColorPickerSetColor(this.value);
-        $(this).css('background-color', `#${this.value}`);
-      });
+      .bind(
+        'keyup',
+        /** @this HTMLElement */
+        function () {
+          $(this).ColorPickerSetColor(this.value);
+          $(this).css('background-color', `#${this.value}`);
+        },
+      );
 
     $('#form-labels').prepend(newElementEntry);
   };
@@ -715,9 +742,9 @@ $(document).ready(function () {
     createNewLabelEntry(null, 'new');
   });
 
-  /* === END: CREATE NEW LABEL ENTRIES === */
+  /** === END: CREATE NEW LABEL ENTRIES === */
 
-  /* === START: CREATE NEW MILESTONE ENTRIES === */
+  /** === START: CREATE NEW MILESTONE ENTRIES === */
 
   const createNewMilestoneEntry = (milestone, mode) => {
     const parseDate = (raw) => {
@@ -822,92 +849,107 @@ $(document).ready(function () {
     newElementEntry
       .find('.state-fitting')
       .children()
-      .each(function () {
-        if (milestone.state === $(this).attr('value')) {
-          $(this).attr('selected', true);
+      .each(
+        /** @this HTMLElement */
+        function () {
+          if (milestone.state === $(this).attr('value')) {
+            $(this).attr('selected', true);
+          }
+        },
+      );
+
+    newElementEntry.find(':input[data-orig-val]').blur(
+      /** @this HTMLElement */
+      function () {
+        const $entry = $(this).closest('.milestone-entry');
+
+        if ($(this).val() === $(this).attr('data-orig-val')) {
+          // unchanged
+          $entry.attr('data-todo', 'none');
+          $entry.removeClass('uncommitted');
+        } else {
+          // changed
+          if ($entry.attr('new') === 'true') {
+            $entry.attr('data-todo', 'create');
+          } else {
+            $entry.attr('data-todo', 'update');
+          }
+          $entry.addClass('uncommitted');
         }
-      });
 
-    newElementEntry.find(':input[data-orig-val]').blur(function () {
-      const $entry = $(this).closest('.milestone-entry');
+        checkIfAnyEntryModified();
+        return;
+      },
+    );
 
-      if ($(this).val() === $(this).attr('data-orig-val')) {
-        // unchanged
-        $entry.attr('data-todo', 'none');
-        $entry.removeClass('uncommitted');
-      } else {
-        // changed
-        if ($entry.attr('new') === 'true') {
-          $entry.attr('data-todo', 'create');
+    newElementEntry.find('input[name="title"]').blur(
+      /** @this HTMLElement */
+      function () {
+        const $entry = $(this).closest('.milestone-entry');
+        const currentVal = $(this).val();
+        const originalVal = $(this).attr('data-orig-val');
+
+        if (MILESTONE_SET.has(currentVal) && currentVal !== originalVal) {
+          $entry.addClass('duplicate-entry');
+          $(this).addClass('red-alert-background');
+          alert('This milestone title has already been taken!');
+          // In the future, we might use a popup instead of an alert
+        } else {
+          $entry.removeClass('duplicate-entry');
+          $(this).removeClass('red-alert-background');
+        }
+
+        checkIfAnyEntryModified();
+        return;
+      },
+    );
+
+    newElementEntry.children('.delete-button').click(
+      /** @this HTMLElement */
+      function () {
+        if ($(this).parent().attr('new') === 'true') {
+          $(this).parent().remove();
+        } else {
+          $(this).siblings('.card').addClass('deleted-card');
+          $(this).siblings('.recover-button').removeAttr('disabled');
+          $(this).addClass('hidden');
+          $(this).parent().attr('data-todo', 'delete');
+        }
+
+        $(this).siblings('.recover-button').removeClass('hidden');
+
+        checkIfAnyEntryModified();
+        return;
+      },
+    );
+
+    newElementEntry.children('.recover-button').click(
+      /** @this HTMLElement */
+      function () {
+        $(this).siblings('.card').removeClass('deleted-card');
+        $(this).siblings('.delete-button').removeClass('hidden');
+        $(this).addClass('hidden');
+
+        const $entry = $(this).closest('.milestone-entry');
+
+        if (
+          $entry.find('[name="title"]').attr('data-orig-val') ===
+            $entry.find('[name="title"]').val() &&
+          $entry.find('[name="description"]').attr('data-orig-val') ===
+            $entry.find('[name="description"]').val() &&
+          $entry.find('[name="due-date"]').attr('data-orig-val') ===
+            $entry.find('[name="due-date"]').val() &&
+          $entry.find('[name="state"]').attr('data-orig-val') ===
+            $entry.find('[name="state"]').val()
+        ) {
+          $entry.attr('data-todo', 'none');
         } else {
           $entry.attr('data-todo', 'update');
         }
-        $entry.addClass('uncommitted');
-      }
 
-      checkIfAnyEntryModified();
-      return;
-    });
-
-    newElementEntry.find('input[name="title"]').blur(function () {
-      const $entry = $(this).closest('.milestone-entry');
-      const currentVal = $(this).val();
-      const originalVal = $(this).attr('data-orig-val');
-
-      if (MILESTONE_SET.has(currentVal) && currentVal !== originalVal) {
-        $entry.addClass('duplicate-entry');
-        $(this).addClass('red-alert-background');
-        alert('This milestone title has already been taken!');
-        // In the future, we might use a popup instead of an alert
-      } else {
-        $entry.removeClass('duplicate-entry');
-        $(this).removeClass('red-alert-background');
-      }
-
-      checkIfAnyEntryModified();
-      return;
-    });
-
-    newElementEntry.children('.delete-button').click(function () {
-      if ($(this).parent().attr('new') === 'true') {
-        $(this).parent().remove();
-      } else {
-        $(this).siblings('.card').addClass('deleted-card');
-        $(this).siblings('.recover-button').removeAttr('disabled');
-        $(this).addClass('hidden');
-        $(this).parent().attr('data-todo', 'delete');
-      }
-
-      $(this).siblings('.recover-button').removeClass('hidden');
-
-      checkIfAnyEntryModified();
-      return;
-    });
-
-    newElementEntry.children('.recover-button').click(function () {
-      $(this).siblings('.card').removeClass('deleted-card');
-      $(this).siblings('.delete-button').removeClass('hidden');
-      $(this).addClass('hidden');
-
-      const $entry = $(this).closest('.milestone-entry');
-
-      if (
-        $entry.find('[name="title"]').attr('data-orig-val') ===
-          $entry.find('[name="title"]').val() &&
-        $entry.find('[name="description"]').attr('data-orig-val') ===
-          $entry.find('[name="description"]').val() &&
-        $entry.find('[name="due-date"]').attr('data-orig-val') ===
-          $entry.find('[name="due-date"]').val() &&
-        $entry.find('[name="state"]').attr('data-orig-val') ===
-          $entry.find('[name="state"]').val()
-      ) {
-        $entry.attr('data-todo', 'none');
-      } else {
-        $entry.attr('data-todo', 'update');
-      }
-
-      checkIfAnyEntryModified();
-    });
+        checkIfAnyEntryModified();
+      },
+    );
 
     $('#form-milestones').prepend(newElementEntry);
   };
@@ -916,9 +958,9 @@ $(document).ready(function () {
     createNewMilestoneEntry(null, 'new');
   });
 
-  /* === END: CREATE NEW MILESTONE ENTRIES === */
+  /** === END: CREATE NEW MILESTONE ENTRIES === */
 
-  /* === START: LIST, DELETE, CLEAR, AND COPY ENTRIES === */
+  /** === START: LIST, DELETE, CLEAR, AND COPY ENTRIES === */
 
   const clearAllEntries = (kind) => {
     $(`#form-${kind}`).text('');
@@ -984,17 +1026,20 @@ $(document).ready(function () {
   const clickToDeleteAllEntries = (selector) => {
     $(selector)
       .children()
-      .each(function () {
-        if ($(this).attr('new') === 'true') {
-          $(this).remove();
-        } else {
-          $(this).children('.card').addClass('deleted-card');
-          $(this).children('.recover-button').removeAttr('disabled');
-          $(this).children('.delete-button').addClass('hidden');
-          $(this).children('.recover-button').removeClass('hidden');
-          $(this).attr('data-todo', 'delete');
-        }
-      });
+      .each(
+        /** @this HTMLElement */
+        function () {
+          if ($(this).attr('new') === 'true') {
+            $(this).remove();
+          } else {
+            $(this).children('.card').addClass('deleted-card');
+            $(this).children('.recover-button').removeAttr('disabled');
+            $(this).children('.delete-button').addClass('hidden');
+            $(this).children('.recover-button').removeClass('hidden');
+            $(this).attr('data-todo', 'delete');
+          }
+        },
+      );
     checkIfAnyEntryModified();
   };
 
@@ -1043,9 +1088,9 @@ $(document).ready(function () {
     $('#copy-milestones-from').click();
   });
 
-  /* === END: LIST, DELETE, CLEAR, AND COPY ENTRIES === */
+  /** === END: LIST, DELETE, CLEAR, AND COPY ENTRIES === */
 
-  /* === START: COMMIT FUNCTION COMPONENTS === */
+  /** === START: COMMIT FUNCTION COMPONENTS === */
 
   const serializeEntries = (jObjectEntry, kind) => {
     const formatDate = (dateInput) => {
@@ -1117,37 +1162,55 @@ $(document).ready(function () {
     isLoadingShown = true;
 
     // To be deleted
-    $('.label-entry[data-todo="delete"]').each(function () {
-      const entryObject = serializeEntries($(this), 'labels');
-      apiCallDeleteEntries(entryObject, 'labels');
-    });
+    $('.label-entry[data-todo="delete"]').each(
+      /** @this HTMLElement */
+      function () {
+        const entryObject = serializeEntries($(this), 'labels');
+        apiCallDeleteEntries(entryObject, 'labels');
+      },
+    );
 
-    $('.milestone-entry[data-todo="delete"]').each(function () {
-      const entryObject = serializeEntries($(this), 'milestones');
-      apiCallDeleteEntries(entryObject, 'milestones');
-    });
+    $('.milestone-entry[data-todo="delete"]').each(
+      /** @this HTMLElement */
+      function () {
+        const entryObject = serializeEntries($(this), 'milestones');
+        apiCallDeleteEntries(entryObject, 'milestones');
+      },
+    );
 
     // To be updated
-    $('.label-entry[data-todo="update"]').each(function () {
-      const entryObject = serializeEntries($(this), 'labels');
-      apiCallUpdateEntries(entryObject, 'labels');
-    });
+    $('.label-entry[data-todo="update"]').each(
+      /** @this HTMLElement */
+      function () {
+        const entryObject = serializeEntries($(this), 'labels');
+        apiCallUpdateEntries(entryObject, 'labels');
+      },
+    );
 
-    $('.milestone-entry[data-todo="update"]').each(function () {
-      const entryObject = serializeEntries($(this), 'milestones');
-      apiCallUpdateEntries(entryObject, 'milestones');
-    });
+    $('.milestone-entry[data-todo="update"]').each(
+      /** @this HTMLElement */
+      function () {
+        const entryObject = serializeEntries($(this), 'milestones');
+        apiCallUpdateEntries(entryObject, 'milestones');
+      },
+    );
 
     // To be created
-    $('.label-entry[data-todo="create"]').each(function () {
-      const entryObject = serializeEntries($(this), 'labels');
-      apiCallCreateEntries(entryObject, 'labels');
-    });
+    $('.label-entry[data-todo="create"]').each(
+      /** @this HTMLElement */
+      function () {
+        const entryObject = serializeEntries($(this), 'labels');
+        apiCallCreateEntries(entryObject, 'labels');
+      },
+    );
 
-    $('.milestone-entry[data-todo="create"]').each(function () {
-      const entryObject = serializeEntries($(this), 'milestones');
-      apiCallCreateEntries(entryObject, 'milestones');
-    });
+    $('.milestone-entry[data-todo="create"]').each(
+      /** @this HTMLElement */
+      function () {
+        const entryObject = serializeEntries($(this), 'milestones');
+        apiCallCreateEntries(entryObject, 'milestones');
+      },
+    );
   };
 
   $('#commit-to-target-repo').click(() => {
@@ -1193,5 +1256,5 @@ $(document).ready(function () {
     );
   });
 
-  /* === END: COMMIT FUNCTION COMPONENTS === */
+  /** === END: COMMIT FUNCTION COMPONENTS === */
 });
