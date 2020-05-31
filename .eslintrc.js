@@ -20,7 +20,6 @@ module.exports = {
   },
   rules: {
     'prettier/prettier': 'error',
-    'no-invalid-this': 1,
     'new-cap': 1,
   },
   plugins: ['prettier', 'html', 'jquery', 'css-modules', 'markdown'],
