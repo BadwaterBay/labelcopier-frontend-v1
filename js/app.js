@@ -459,7 +459,7 @@ $(document).ready(function () {
   };
 
   const apiCallUpdateEntries = (entryObject, kind, callback) => {
-    const API_CALL_SIGN = (entryObject, kind) => {
+    const API_CALL_SIGN = ((entryObject, kind) => {
       let apiCallSign = '';
       if (kind === 'labels') {
         apiCallSign = entryObject.originalName;
@@ -470,7 +470,7 @@ $(document).ready(function () {
         apiCallSign = "There's a bug in function assignAPICallSign4Update!";
       }
       return apiCallSign;
-    };
+    })(entryObject, kind);
 
     const LOGIN_INFO = getLoginInfo();
     const NAME_OF_ENTRY = assignNameForEntry(entryObject, kind);
@@ -500,7 +500,9 @@ $(document).ready(function () {
   };
 
   const apiCallDeleteEntries = (entryObject, kind, callback) => {
-    const API_CALL_SIGN = (entryObject, kind) => {
+    const API_CALL_SIGN = ((entryObject, kind) => {
+      console.log(`entry is: ${entryObject}`);
+      console.log(`kind is: ${kind}`);
       let apiCallSign = '';
       if (kind === 'labels') {
         apiCallSign = entryObject.name;
@@ -510,7 +512,7 @@ $(document).ready(function () {
         apiCallSign = "There's a bug in function assignAPICallSign4Delete!";
       }
       return apiCallSign;
-    };
+    })(entryObject, kind);
 
     const LOGIN_INFO = getLoginInfo();
     const NAME_OF_ENTRY = assignNameForEntry(entryObject, kind);
