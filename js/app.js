@@ -415,7 +415,7 @@ $(document).ready(function () {
             }
             if (kind === 'labels') {
               response.forEach((e) => {
-                e.color = e.color.toUpperCase();
+                e.color = '#' + e.color.toUpperCase();
                 createNewLabelEntry(e, mode);
                 LABEL_SET.add(e.name);
               });
@@ -634,7 +634,7 @@ $(document).ready(function () {
 
     newElementEntry
       .find('.color-box')
-      .css('background-color', `#${label.color}`);
+      .css('background-color', `${label.color}`);
 
     newElementEntry.find(':input[data-orig-val]').keyup(
       /** @this HTMLElement */
