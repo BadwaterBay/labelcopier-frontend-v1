@@ -509,11 +509,9 @@ $(document).ready(function () {
 
   const apiCallDeleteEntries = (entryObject, kind, callback) => {
     const API_CALL_SIGN = ((entryObject, kind) => {
-      console.log(`entry is: ${entryObject}`);
-      console.log(`kind is: ${kind}`);
       let apiCallSign = '';
       if (kind === 'labels') {
-        apiCallSign = entryObject.name;
+        apiCallSign = entryObject.originalName;
       } else if (kind === 'milestones') {
         apiCallSign = entryObject.number;
       } else {
