@@ -598,13 +598,13 @@ $(document).ready(function () {
       .find('.color-box')
       .css('background-color', `#${label.color}`);
 
-    newElementEntry.find(':input[data-orig-val]').blur(
+    newElementEntry.find(':input[data-orig-val]').keyup(
       /** @this HTMLElement */
       function () {
         const $entry = $(this).closest('.label-entry');
 
         /** @this HTMLElement */
-        if ($(this).val() === $(this).attr('data-orig-val')) {
+        if (checkInputChanges($(this))) {
           // If this is unchanged
           $entry.attr('data-todo', 'none');
           $entry.removeClass('uncommitted');
@@ -703,22 +703,20 @@ $(document).ready(function () {
           $(el).val(hex.toUpperCase());
           $(el).ColorPickerHide();
           $(el).css('background-color', `#${hex}`);
+          const $entry = $(el).closest('.label-entry');
 
-          // -----------------------------
-          // if ($(el).val() === $(el).attr('data-orig-val')) {
-          //   $(el).parent().attr('data-todo', 'none');
-          //   $(el).parent().removeClass('uncommitted');
-          // }
-          // else {
-          //   if ($(el).parent().attr('new') === 'true') {
-          //     $(el).parent().attr('data-todo', 'create');
-          //   }
-          //   else {
-          //     $(el).parent().attr('data-todo', 'update');
-          //   }
-          //   // $(el).closest('label-entry').addClass('uncommitted');
-          // }
-          // checkIfAnyEntryModified();
+          if (checkInputChanges($(el))) {
+            $entry.attr('data-todo', 'none');
+            $entry.removeClass('uncommitted');
+          } else {
+            if ($entry.attr('new') === 'true') {
+              $entry.attr('data-todo', 'create');
+            } else {
+              $entry.attr('data-todo', 'update');
+            }
+            $entry.addClass('uncommitted');
+          }
+          checkIfAnyEntryModified();
           return;
           // -----------------------------
         },
