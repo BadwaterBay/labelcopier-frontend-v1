@@ -716,7 +716,7 @@ $(document).ready(function () {
           $(el).css('background-color', `#${hex}`);
           const $entry = $(el).closest('.label-entry');
 
-          if (checkInputChanges($(el).closest('.label-entry'))) {
+          if (checkInputChanges($entry)) {
             $entry.attr('data-todo', 'none');
             $entry.removeClass('uncommitted');
           } else {
