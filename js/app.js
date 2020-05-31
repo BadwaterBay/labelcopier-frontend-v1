@@ -738,7 +738,6 @@ $(document).ready(function () {
           }
           checkIfAnyEntryModified();
           return;
-          // -----------------------------
         },
         onBeforeShow: function () {
           $(this).ColorPickerSetColor(this.value);
