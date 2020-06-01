@@ -768,7 +768,6 @@ $(document).ready(function () {
         /** @this HTMLElement */
         function () {
           let displayColorCode = `#${this.value.replace(/#/g, '')}`;
-          $(this).val(displayColorCode);
           if (/^#([0-9A-F]{3}){1,2}$/i.test(displayColorCode)) {
             if (displayColorCode.length === 4) {
               displayColorCode = displayColorCode.replace(
