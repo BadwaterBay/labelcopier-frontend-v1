@@ -758,12 +758,16 @@ $(document).ready(function () {
         'keyup',
         /** @this HTMLElement */
         function () {
-          const displayColorCode = this.value.startsWith('#')
-            ? `${this.value}`
-            : `#${this.value}`;
-          $(this).ColorPickerSetColor(displayColorCode.replace('#', ''));
-          $(this).val(displayColorCode.toUpperCase());
-          $(this).css('background-color', displayColorCode);
+          const setColorCode = `#${this.value.replace(/#/gi, '')}`;
+          $(this).ColorPickerSetColor(setColorCode.replace('#', ''));
+          $(this).css('background-color', setColorCode);
+        },
+      )
+      .blur(
+        /** @this HTMLElement */
+        function () {
+          const displayColorCode = 'placeholder';
+          $(this).val(displayColorCode);
         },
       );
 
