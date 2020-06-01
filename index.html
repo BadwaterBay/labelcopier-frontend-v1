@@ -98,7 +98,6 @@
                   </div>
                   <!-- form-group -->
                 </div>
-                <!-- col -->
                 <div class="col-12 col-md-6">
                   <div class="form-group">
                     <label for="target-repository" class="bmd-label-floating">
@@ -116,18 +115,26 @@
                   <!-- form-group -->
                 </div>
                 <!-- col -->
+
+                <!-- <div class="row"> -->
+                <div class="col-12">
+                  <div class="checkbox">
+                    <label>
+                      <input
+                        type="checkbox"
+                        id="copy-to-username"
+                        name="checkOwnerOfRepository"
+                        value=""
+                        checked
+                      />
+                      I'm the owner of the repository
+                    </label>
+                  </div>
+                </div>
+                <!-- col -->
+                <!-- </div> -->
               </div>
               <!-- row -->
-              <!-- <div class="row">
-              <div class="col-12">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" id="copy-to-username" name="checkOwnerOfRepository" value="" checked />
-                    I'm the owner of the repository
-                  </label>
-                </div>
-              </div>
-            </div> -->
               <div class="row">
                 <div class="col-12 col-md-6">
                   <div class="form-group">
@@ -169,7 +176,7 @@
               <!-- row -->
             </form>
             <div class="row">
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-4">
                 <button
                   id="list-all-labels"
                   type="button"
@@ -180,7 +187,7 @@
                 </button>
               </div>
               <!-- col -->
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-4">
                 <button
                   id="list-all-milestones"
                   type="button"
@@ -191,10 +198,10 @@
                 </button>
               </div>
               <!-- col -->
-            </div>
-            <!-- row -->
-            <div class="row">
-              <div class="col-12">
+              <!-- </div> -->
+              <!-- row -->
+              <!-- <div class="row"> -->
+              <div class="col-12 col-md-4">
                 <button
                   id="commit-to-target-repository"
                   type="button"
@@ -216,10 +223,10 @@
                 Optional: Copy labels or milestones from an existing repository
               </h3>
             </div>
-            <div class="form-text text-muted">
-              You can copy labels from any repository and modify them before
-              committing to your repository.
-            </div>
+            <!-- <div class="form-text text-muted">
+            You can copy labels from any repository and modify them before
+            committing to your repository.
+          </div> -->
             <div>
               <form>
                 <div class="row">
@@ -356,7 +363,7 @@
                     class="btn btn-outline-danger btn-block"
                     data-loading-text="Deleting..."
                   >
-                    Delete all labels
+                    Delete all
                   </button>
                   <button
                     id="revert-labels-to-original"

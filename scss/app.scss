@@ -9,12 +9,24 @@ body {
     margin-bottom: 1.5rem;
   }
 
+  // .checkbox {
+  //   padding-top: 35px;
+  // }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
   .color-box input[type='text'] {
     color: whitesmoke;
   }
 
   #nav-tab a {
-    font-size: 1.05rem;
+    font-size: 1.2rem;
+
+    .active {
+      font-weight: 800;
+    }
   }
 
   .label-entry,
