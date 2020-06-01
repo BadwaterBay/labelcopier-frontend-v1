@@ -775,7 +775,7 @@ $(document).ready(function () {
         /** @this HTMLElement */
         function () {
           let displayColorCode = `#${this.value.replace(/#|\s/g, '')}`;
-          if (this.value.length === 0) {
+          if (this.value === '') {
             $(this).val(this.value);
             $(this).siblings('.invalid-color-input').addClass('hidden');
           } else if (/^#([0-9A-F]{3}){1,2}$/i.test(displayColorCode)) {
