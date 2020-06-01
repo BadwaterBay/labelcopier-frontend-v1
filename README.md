@@ -1,6 +1,6 @@
 # Github Label Manager 2
 
-[![CodeFactor](https://www.codefactor.io/repository/github/BadwaterBay/github-label-manager-2/badge)](https://www.codefactor.io/repository/github/BadwaterBay/github-label-manager-2)
+[![CodeFactor](https://www.codefactor.io/repository/github/badwaterbay/github-label-manager-2/badge)](https://www.codefactor.io/repository/github/badwaterbay/github-label-manager-2)
 [![DeepScan grade](https://deepscan.io/api/teams/9440/projects/11965/branches/179826/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=9440&pid=11965&bid=179826)
 [![GitHub contributors](https://img.shields.io/github/contributors/BadwaterBay/github-label-manager-2.svg)](https://GitHub.com/BadwaterBay/github-label-manager-2/graphs/contributors/)
 [![Open Source Love svg2](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
