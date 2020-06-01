@@ -13,7 +13,7 @@
   along with github-label-manager-2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// 'use strict';
+'use strict';
 
 const app = () => {
   return $(document).ready(function () {
