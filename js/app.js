@@ -24,46 +24,49 @@ $(document).ready(function () {
 
   /** === START: COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES === */
 
-  let copyToUsernameBool = true;
+  (() => {
+    $('#copy-to-username').click(
+      /** @this HTMLElement */
+      function () {
+        $('#target-username').val(() =>
+          $(this).prop('checked') ? $('#target-owner').val() : '',
+        );
+      },
+    );
 
-  $('#target-username').keyup(
-    /** @this HTMLElement */
-    function () {
-      copyToUsernameBool = $(this).val() === $('#target-owner').val();
-    },
-  );
+    $('#target-owner').keyup(() => {
+      $('#copy-to-username').prop('checked') &&
+        $('#target-username').val($('#target-owner').val());
+    });
 
-  $('#target-owner').keyup(() => {
-    copyToUsernameBool && $('#target-username').val($('#target-owner').val());
-  });
+    $('#target-username').keyup(
+      /** @this HTMLElement */
+      function () {
+        $('#copy-to-username').prop('checked', () => {
+          return $(this).val() === $('#target-owner').val();
+        });
+      },
+    );
+  })();
 
-  /** The following section of code is commented out because we removed the
-   * "I'm the owner of the repository" checkbox for now
+  /** The following section of code is to be used if we remove
+   * the "I'm the owner of the repository" checkbox
    */
 
-  // $('#copy-to-username').click(
-  //   /** @this HTMLElement */
-  //   function () {
-  //     $('#target-username').val(() =>
-  //       $(this).prop('checked') ? $('#target-owner').val() : '',
-  //     );
-  //   },
-  // );
+  // (() => {
+  //   let copyToUsernameBool = true;
 
-  // $('#target-owner').keyup(() => {
-  //   if ($('#copy-to-username').prop('checked')) {
-  //     $('#target-username').val($('#target-owner').val());
-  //   }
-  // });
+  //   $('#target-username').keyup(
+  //     /** @this HTMLElement */
+  //     function () {
+  //       copyToUsernameBool = $(this).val() === $('#target-owner').val();
+  //     },
+  //   );
 
-  // $('#target-username').keyup(
-  //   /** @this HTMLElement */
-  //   function () {
-  //     $('#copy-to-username').prop('checked', () => {
-  //       return $(this).val() === $('#target-owner').val();
-  //     });
-  //   },
-  // );
+  //   $('#target-owner').keyup(() => {
+  //     copyToUsernameBool && $('#target-username').val($('#target-owner').val());
+  //   });
+  // })();
 
   /** === END: COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES === */
 

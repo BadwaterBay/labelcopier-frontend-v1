@@ -72,16 +72,16 @@
 
     <div id="content" class="container">
       <div class="row">
-        <div class="col-12">
+        <div class="col-12 col-lg-4">
           <div class="card bg-light card-body mb-3">
             <div class="card-header">
               <h3>
-                Manage your Github labels and milestones
+                Manage your repository
               </h3>
             </div>
             <form>
               <div class="row">
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6 col-lg-12">
                   <div class="form-group">
                     <label for="target-owner" class="bmd-label-floating">
                       Repository&nbsp;owner
@@ -98,7 +98,7 @@
                   </div>
                   <!-- form-group -->
                 </div>
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6 col-lg-12">
                   <div class="form-group">
                     <label for="target-repository" class="bmd-label-floating">
                       Repository
@@ -136,7 +136,7 @@
               </div>
               <!-- row -->
               <div class="row">
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6 col-lg-12">
                   <div class="form-group">
                     <label class="bmd-label-floating" for="target-username">
                       Username&nbsp;for&nbsp;authentication
@@ -153,7 +153,7 @@
                   </div>
                 </div>
                 <!-- col -->
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6 col-lg-12">
                   <div class="form-group">
                     <label
                       for="personal-access-token"
@@ -176,7 +176,7 @@
               <!-- row -->
             </form>
             <div class="row">
-              <div class="col-12 col-md-4">
+              <div class="col-12 col-md-4 col-lg-12">
                 <button
                   id="list-all-labels"
                   type="button"
@@ -187,7 +187,7 @@
                 </button>
               </div>
               <!-- col -->
-              <div class="col-12 col-md-4">
+              <div class="col-12 col-md-4 col-lg-12">
                 <button
                   id="list-all-milestones"
                   type="button"
@@ -201,7 +201,7 @@
               <!-- </div> -->
               <!-- row -->
               <!-- <div class="row"> -->
-              <div class="col-12 col-md-4">
+              <div class="col-12 col-md-4 col-lg-12">
                 <button
                   id="commit-to-target-repository"
                   type="button"
@@ -216,11 +216,12 @@
             </div>
             <!-- row -->
           </div>
-
+        </div>
+        <div class="col-12 col-lg-8">
           <div class="card bg-light card-body mb-3">
             <div class="card-header">
               <h3>
-                Optional: Copy labels or milestones from an existing repository
+                Optional: Copy from an existing repository
               </h3>
             </div>
             <!-- <div class="form-text text-muted">
@@ -241,7 +242,7 @@
                         id="copy-from-owner"
                       />
                       <span class="bmd-help">
-                        Such as: Badwater-Apps
+                        Such as: Badwater-Bay
                       </span>
                     </div>
                   </div>
@@ -321,7 +322,8 @@
                   role="tab"
                   aria-controls="labels-form"
                   aria-selected="true"
-                  >Labels
+                >
+                  Labels
                 </a>
               </li>
               <li class="nav-item">
@@ -333,7 +335,8 @@
                   role="tab"
                   aria-controls="milestones-form"
                   aria-selected="false"
-                  >Milestones
+                >
+                  Milestones
                 </a>
               </li>
               <li class="nav-item">
@@ -345,8 +348,9 @@
                   role="tab"
                   aria-controls="faq-form"
                   aria-selected="false"
-                  >FAQ</a
                 >
+                  FAQ
+                </a>
               </li>
             </ul>
             <div class="card-body">
@@ -357,30 +361,39 @@
                   role="tabpanel"
                   aria-labelledby="labels-tab"
                 >
-                  <button
-                    id="delete-all-labels"
-                    type="button"
-                    class="btn btn-outline-danger btn-block"
-                    data-loading-text="Deleting..."
-                  >
-                    Delete all
-                  </button>
-                  <button
-                    id="revert-labels-to-original"
-                    type="button"
-                    class="btn btn-outline-warning btn-block"
-                    disabled
-                    data-loading-text="Resetting..."
-                  >
-                    Revert labels to original
-                  </button>
-                  <button
-                    id="add-new-label-entry"
-                    type="button"
-                    class="btn btn-outline-success btn-block mb-3"
-                  >
-                    Add a new label
-                  </button>
+                  <div class="row">
+                    <div class="col-12 col-md-4">
+                      <button
+                        id="delete-all-labels"
+                        type="button"
+                        class="btn btn-outline-danger btn-block"
+                        data-loading-text="Deleting..."
+                      >
+                        Delete all
+                      </button>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <button
+                        id="revert-labels-to-original"
+                        type="button"
+                        class="btn btn-outline-warning btn-block"
+                        disabled
+                        data-loading-text="Resetting..."
+                      >
+                        Undo all
+                      </button>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <button
+                        id="add-new-label-entry"
+                        type="button"
+                        class="btn btn-outline-success btn-block mb-3"
+                      >
+                        New label
+                      </button>
+                    </div>
+                  </div>
+                  <!-- row -->
                   <form id="form-labels" class="form-inline"></form>
                 </div>
                 <div
@@ -389,30 +402,39 @@
                   role="tabpanel"
                   aria-labelledby="milestones-tab"
                 >
-                  <button
-                    id="delete-all-milestones"
-                    type="button"
-                    class="btn btn-outline-danger btn-block"
-                    data-loading-text="Deleting..."
-                  >
-                    Delete all milestones
-                  </button>
-                  <button
-                    id="revert-milestones-to-original"
-                    type="button"
-                    class="btn btn-outline-warning btn-block"
-                    disabled
-                    data-loading-text="Resetting..."
-                  >
-                    Revert milestones to original
-                  </button>
-                  <button
-                    id="add-new-milestone-entry"
-                    type="button"
-                    class="btn btn-outline-success btn-block mb-3"
-                  >
-                    Add a new milestone
-                  </button>
+                  <div class="row">
+                    <div class="col-12 col-md-4">
+                      <button
+                        id="delete-all-milestones"
+                        type="button"
+                        class="btn btn-outline-danger btn-block"
+                        data-loading-text="Deleting..."
+                      >
+                        Delete all
+                      </button>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <button
+                        id="revert-milestones-to-original"
+                        type="button"
+                        class="btn btn-outline-warning btn-block"
+                        disabled
+                        data-loading-text="Resetting..."
+                      >
+                        Undo all
+                      </button>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <button
+                        id="add-new-milestone-entry"
+                        type="button"
+                        class="btn btn-outline-success btn-block mb-3"
+                      >
+                        New milestone
+                      </button>
+                    </div>
+                  </div>
+                  <!-- row -->
                   <form id="form-milestones" class="form-inline"></form>
                 </div>
                 <div

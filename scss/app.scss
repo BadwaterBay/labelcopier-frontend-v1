@@ -9,23 +9,26 @@ body {
     margin-bottom: 1.5rem;
   }
 
-  // .checkbox {
-  //   padding-top: 35px;
-  // }
+  .checkbox {
+    padding-top: 8px;
+  }
 
   h3 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 
   .color-box input[type='text'] {
     color: whitesmoke;
   }
 
-  #nav-tab a {
-    font-size: 1.2rem;
+  #nav-tab li.nav-item {
+    .nav-link {
+      font-size: 1.1rem;
+      padding: 0.75rem 1rem;
 
-    .active {
-      font-weight: 800;
+      &.active {
+        border-color: #f5f5f5 #f5f5f5 #6b6b6b;
+      }
     }
   }
 
