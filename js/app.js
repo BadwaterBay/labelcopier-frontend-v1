@@ -415,7 +415,7 @@ $(document).ready(function () {
             }
             if (kind === 'labels') {
               response.forEach((e) => {
-                e.color = e.color.toUpperCase();
+                e.color = `#${e.color.toUpperCase()}`;
                 createNewLabelEntry(e, mode);
                 LABEL_SET.add(e.name);
               });
@@ -608,19 +608,20 @@ $(document).ready(function () {
     const newElementEntry = $(`
       <div class="label-entry ${uncommittedSignClass}" ${todo}>\
         <div class="card">\
-          <div class="card-body">\
-            <div class="flexbox-container">\
-              <input name="name" type="text" \
-              class="form-control label-fitting" \
-              placeholder="Name" value="${label.name}" ${origNameVal}>\
-              <input name="color" type="text" \
-              class="form-control color-fitting color-box" \
-              placeholder="Color" value="${label.color}" ${origColorVal}>\
-              <input name="description" type="text" \
-              class="form-control description-fitting" \
-              placeholder="Description" value="${label.description}" \
-              ${origDescriptionVal}>\
+          <div class="card-body" id="label-grid">\
+            <input name="name" type="text" \
+            class="form-control label-fitting" \
+            placeholder="Name" value="${label.name}" ${origNameVal}>\
+            <input name="color" type="text" \
+            class="form-control color-fitting color-box" \
+            placeholder="Color" value="${label.color}" ${origColorVal}>\
+            <div class="invalid-color-input hidden">\
+              Invalid hex code.\
             </div>\
+            <input name="description" type="text" \
+            class="form-control description-fitting" \
+            placeholder="Description" value="${label.description}" \
+            ${origDescriptionVal}>\
           </div>\
         </div>\
         <button type="button" class="btn btn-danger delete-button">\
@@ -634,7 +635,7 @@ $(document).ready(function () {
 
     newElementEntry
       .find('.color-box')
-      .css('background-color', `#${label.color}`);
+      .css('background-color', `${label.color}`);
 
     newElementEntry.find(':input[data-orig-val]').keyup(
       /** @this HTMLElement */
@@ -731,9 +732,10 @@ $(document).ready(function () {
         // http://www.eyecon.ro/colorpicker
         color: label.color,
         onSubmit: (hsb, hex, rgb, el) => {
-          $(el).val(hex.toUpperCase());
+          $(el).val(`#${hex.toUpperCase()}`);
           $(el).ColorPickerHide();
           $(el).css('background-color', `#${hex}`);
+          $(el).siblings('.invalid-color-input').addClass('hidden');
           const $entry = $(el).closest('.label-entry');
 
           if (checkInputChanges($entry)) {
@@ -751,15 +753,44 @@ $(document).ready(function () {
           return;
         },
         onBeforeShow: function () {
-          $(this).ColorPickerSetColor(this.value);
+          $(this).ColorPickerSetColor(this.value.replace('#', ''));
         },
       })
       .bind(
         'keyup',
         /** @this HTMLElement */
         function () {
-          $(this).ColorPickerSetColor(this.value);
-          $(this).css('background-color', `#${this.value}`);
+          const setColorCode = `#${this.value.replace(/#|\s/g, '')}`;
+          $(this).ColorPickerSetColor(setColorCode.replace('#', ''));
+          $(this).css('background-color', setColorCode);
+
+          if (setColorCode === '#') {
+            $(this).css('background-color', '#FFFFFF');
+          } else if (/^#([0-9A-F]{3}){1,2}$/i.test(setColorCode)) {
+            $(this).siblings('.invalid-color-input').addClass('hidden');
+          }
+        },
+      )
+      .blur(
+        /** @this HTMLElement */
+        function () {
+          let displayColorCode = `#${this.value.replace(/#|\s/g, '')}`;
+          if (this.value === '') {
+            $(this).val(this.value);
+            $(this).siblings('.invalid-color-input').addClass('hidden');
+          } else if (/^#([0-9A-F]{3}){1,2}$/i.test(displayColorCode)) {
+            if (displayColorCode.length === 4) {
+              displayColorCode = displayColorCode.replace(
+                /(\w)(\w)(\w)/,
+                '$1$1$2$2$3$3',
+              );
+            }
+            $(this).val(displayColorCode.toUpperCase());
+            $(this).siblings('.invalid-color-input').addClass('hidden');
+          } else {
+            $(this).val(displayColorCode);
+            $(this).siblings('.invalid-color-input').removeClass('hidden');
+          }
         },
       );
 
@@ -1165,7 +1196,7 @@ $(document).ready(function () {
     if (kind === 'labels') {
       return {
         name: jObjectEntry.find('[name="name"]').val(),
-        color: jObjectEntry.find('[name="color"]').val(),
+        color: jObjectEntry.find('[name="color"]').val().slice(1),
         description: jObjectEntry.find('[name="description"]').val(),
         originalName: jObjectEntry.find('[name="name"]').attr('data-orig-val'),
       };
