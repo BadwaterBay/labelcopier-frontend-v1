@@ -764,7 +764,9 @@ $(document).ready(function () {
           $(this).ColorPickerSetColor(setColorCode.replace('#', ''));
           $(this).css('background-color', setColorCode);
 
-          if (/^#([0-9A-F]{3}){1,2}$/i.test(setColorCode)) {
+          if (setColorCode === '#') {
+            $(this).css('background-color', '#FFFFFF');
+          } else if (/^#([0-9A-F]{3}){1,2}$/i.test(setColorCode)) {
             $(this).siblings('.invalid-color-input').addClass('hidden');
           }
         },
