@@ -455,7 +455,7 @@ $(document).ready(function () {
       checkIfAnyEntryModified();
     };
 
-    setWhichRepoInUseText();
+    // setWhichRepoInUseText();
 
     if (kind === 'labels') {
       LABEL_SET.clear();
