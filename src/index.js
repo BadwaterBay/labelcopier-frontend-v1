@@ -18,10 +18,10 @@ const mainContent = () => {
         </div>
       </div>
     </div><!-- /container -->
+    ${loadingModal()}
   `;
 };
 
 document.getElementById('navbar-anchor').innerHTML += navbar();
 document.getElementById('content-anchor').innerHTML += mainContent();
-document.getElementById('loading-modal-anchor').innerHTML += loadingModal();
 app();
