@@ -1,8 +1,8 @@
 # Github Label Manager 2
 
-[![CodeFactor](https://www.codefactor.io/repository/github/badwater-apps/github-label-manager-2/badge)](https://www.codefactor.io/repository/github/badwater-apps/github-label-manager-2)
+[![CodeFactor](https://www.codefactor.io/repository/github/BadwaterBay/github-label-manager-2/badge)](https://www.codefactor.io/repository/github/BadwaterBay/github-label-manager-2)
 [![DeepScan grade](https://deepscan.io/api/teams/9440/projects/11965/branches/179826/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=9440&pid=11965&bid=179826)
-[![GitHub contributors](https://img.shields.io/github/contributors/Badwater-Apps/github-label-manager-2.svg)](https://GitHub.com/Badwater-Apps/github-label-manager-2/graphs/contributors/)
+[![GitHub contributors](https://img.shields.io/github/contributors/BadwaterBay/github-label-manager-2.svg)](https://GitHub.com/BadwaterBay/github-label-manager-2/graphs/contributors/)
 [![Open Source Love svg2](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
@@ -16,11 +16,11 @@ This project was adopted from [here](https://github.com/destan/github-label-mana
 
 We have made significant improvements since then:
 
-[![GitHub issues](https://img.shields.io/github/issues/Badwater-Apps/github-label-manager-2.svg)](https://GitHub.com/Badwater-Apps/github-label-manager-2/issues/)
-[![GitHub issues-closed](https://img.shields.io/github/issues-closed/Badwater-Apps/github-label-manager-2.svg)](https://GitHub.com/Badwater-Apps/github-label-manager-2/issues?q=is%3Aissue+is%3Aclosed)
+[![GitHub issues](https://img.shields.io/github/issues/BadwaterBay/github-label-manager-2.svg)](https://GitHub.com/BadwaterBay/github-label-manager-2/issues/)
+[![GitHub issues-closed](https://img.shields.io/github/issues-closed/BadwaterBay/github-label-manager-2.svg)](https://GitHub.com/BadwaterBay/github-label-manager-2/issues?q=is%3Aissue+is%3Aclosed)
 
-[![GitHub pull-requests](https://img.shields.io/github/issues-pr/Badwater-Apps/github-label-manager-2.svg)](https://GitHub.com/Badwater-Apps/github-label-manager-2/pull/)
-[![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/Badwater-Apps/github-label-manager-2.svg)](https://GitHub.com/Badwater-Apps/github-label-manager-2/pull/)
+[![GitHub pull-requests](https://img.shields.io/github/issues-pr/BadwaterBay/github-label-manager-2.svg)](https://GitHub.com/BadwaterBay/github-label-manager-2/pull/)
+[![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/BadwaterBay/github-label-manager-2.svg)](https://GitHub.com/BadwaterBay/github-label-manager-2/pull/)
 
 ---
 
@@ -30,7 +30,7 @@ We welcome contributors.
 
 Take on an issue and submit a pull request to resolve the issue.
 
-[Request new feature or report bugs.](https://github.com/Badwater-Apps/github-label-manager-2/issues)
+[Request new feature or report bugs.](https://github.com/BadwaterBay/github-label-manager-2/issues)
 
 Questions are welcome.
 
