@@ -17,163 +17,68 @@
 
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>
+      GitHub Label Manager
+    </title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="github.com/BadwaterBay" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700%7CMaterial+Icons"
+    />
+    <script
+      async
+      src="https://kit.fontawesome.com/8eb33a81c5.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css"
+      integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX"
+      crossorigin="anonymous"
+    />
+    <link href="css/colorpicker.css" rel="stylesheet" />
+    <link href="css/app.min.css" rel="stylesheet" />
+    <link rel="icon" href="#" type="image/x-icon" />
+  </head>
 
-<head>
-  <meta charset="utf-8" />
-  <title>
-    Github Label Manager
-  </title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="author" content="github.com/BadwaterBay" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700%7CMaterial+Icons" />
-  <script async src="https://kit.fontawesome.com/8eb33a81c5.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet"
-    href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css"
-    integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous" />
-  <link href="css/colorpicker.css" rel="stylesheet" />
-  <link href="css/app.min.css" rel="stylesheet" />
-  <link rel="icon" href="#" type="image/x-icon" />
-</head>
-
-<body>
-  <!-- <a href="https://github.com/BadwaterBay/github-label-manager-2" target="_blank">
+  <body>
+    <!-- <a href="https://github.com/BadwaterBay/github-label-manager-2" target="_blank">
     <img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1031;"
       src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub" />
   </a> -->
-  <div class="navbar navbar-expand-md navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand" href="#">
-        Github&nbsp;Label&nbsp;Manager
-      </a>
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="https://github.com/BadwaterBay/github-label-manager-2" target="_blank"
-            rel="noreferrer">
-            <i class="fab fa-github fa-2x"></i>
-          </a>
-        </li>
-      </ul>
+    <div class="navbar navbar-expand-md navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          GitHub&nbsp;Label&nbsp;Manager
+        </a>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="https://github.com/BadwaterBay/github-label-manager-2"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <i class="fab fa-github fa-2x"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
 
-  <div id="content" class="container">
-    <div class="row">
-      <div class="col-12 col-lg-4">
-        <div class="card bg-light card-body mb-3">
-          <div class="card-header">
-            <h3>
-              Manage your repository
-            </h3>
-          </div>
-          <form>
-            <div class="row">
-              <div class="col-12 col-md-6 col-lg-12">
-                <div class="form-group">
-                  <label for="target-owner" class="bmd-label-floating">
-                    Repository&nbsp;owner
-                  </label>
-                  <input type="text" class="form-control" id="target-owner" name="target-owner" />
-                  <span class="bmd-help">
-                    Such as: BadwaterBay
-                  </span>
-                </div>
-                <!-- form-group -->
-              </div>
-              <div class="col-12 col-md-6 col-lg-12">
-                <div class="form-group">
-                  <label for="target-repo" class="bmd-label-floating">
-                    Repository
-                  </label>
-                  <input type="text" class="form-control" id="target-repo" />
-                  <span class="bmd-help">
-                    Such as: template-for-label-and-milestone-1
-                  </span>
-                </div>
-                <!-- form-group -->
-              </div>
-              <!-- col -->
-
-              <!-- <div class="row"> -->
-              <div class="col-12">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" id="copy-to-username" name="checkOwnerOfRepository" value="" checked />
-                    I'm the owner of the repository
-                  </label>
-                </div>
-              </div>
-              <!-- col -->
-              <!-- </div> -->
+    <div id="content" class="container">
+      <div class="row">
+        <div class="col-12 col-lg-4">
+          <div class="card bg-light card-body mb-3">
+            <div class="card-header">
+              <h3>
+                Manage your repository
+              </h3>
             </div>
-            <!-- row -->
-            <div class="row">
-              <div class="col-12 col-md-6 col-lg-12">
-                <div class="form-group">
-                  <label class="bmd-label-floating" for="target-username">
-                    Username&nbsp;for&nbsp;authentication
-                  </label>
-                  <input type="text" class="form-control" id="target-username" name="target-username" />
-                  <span class="bmd-help">
-                    You can manage repositorys you own or have access to
-                  </span>
-                </div>
-              </div>
-              <!-- col -->
-              <div class="col-12 col-md-6 col-lg-12">
-                <div class="form-group">
-                  <label for="personal-access-token" class="bmd-label-floating">
-                    Personal&nbsp;access&nbsp;token
-                  </label>
-                  <input type="password" class="form-control" id="personal-access-token" />
-                  <span class="bmd-help">
-                    We don't store your personal access token
-                  </span>
-                </div>
-              </div>
-              <!-- col -->
-            </div>
-            <!-- row -->
-          </form>
-          <div class="row">
-            <div class="col-12 col-md-4 col-lg-12">
-              <button id="list-all-labels" type="button" class="btn btn-block btn-outline-secondary"
-                data-loading-text="Loading...">
-                List labels
-              </button>
-            </div>
-            <!-- col -->
-            <div class="col-12 col-md-4 col-lg-12">
-              <button id="list-all-milestones" type="button" class="btn btn-block btn-outline-secondary"
-                data-loading-text="Loading...">
-                List milestones
-              </button>
-            </div>
-            <!-- col -->
-            <!-- </div> -->
-            <!-- row -->
-            <!-- <div class="row"> -->
-            <div class="col-12 col-md-4 col-lg-12">
-              <button id="commit-to-target-repo" type="button"
-                class="btn btn-raised btn-outline-success btn-block" disabled data-loading-text="Commiting...">
-                Commit&nbsp;changes
-              </button>
-            </div>
-            <!-- col -->
-          </div>
-          <!-- row -->
-        </div>
-        <div class="card bg-light card-body mb-3">
-          <div class="card-header">
-            <h3>
-              Optional: Copy from an existing repository
-            </h3>
-          </div>
-          <!-- <div class="form-text text-muted">
-            You can copy labels from any repository and modify them before
-            committing to your repository.
-          </div> -->
-          <div>
             <form>
               <div class="row">
                 <div class="col-12 col-md-6 col-lg-12">
@@ -181,21 +86,84 @@
                     <label for="target-owner" class="bmd-label-floating">
                       Repository&nbsp;owner
                     </label>
-                    <input type="text" class="form-control" id="copy-from-owner" />
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="target-owner"
+                      name="target-owner"
+                    />
                     <span class="bmd-help">
-                      Such as: Badwater-Bay
+                      Such as: BadwaterBay
+                    </span>
+                  </div>
+                  <!-- form-group -->
+                </div>
+                <div class="col-12 col-md-6 col-lg-12">
+                  <div class="form-group">
+                    <label for="target-repo" class="bmd-label-floating">
+                      Repository
+                    </label>
+                    <input type="text" class="form-control" id="target-repo" />
+                    <span class="bmd-help">
+                      Such as: template-for-label-and-milestone-1
+                    </span>
+                  </div>
+                  <!-- form-group -->
+                </div>
+                <!-- col -->
+
+                <!-- <div class="row"> -->
+                <div class="col-12">
+                  <div class="checkbox">
+                    <label>
+                      <input
+                        type="checkbox"
+                        id="copy-to-username"
+                        name="checkOwnerOfRepository"
+                        value=""
+                        checked
+                      />
+                      I'm the owner of the repository
+                    </label>
+                  </div>
+                </div>
+                <!-- col -->
+                <!-- </div> -->
+              </div>
+              <!-- row -->
+              <div class="row">
+                <div class="col-12 col-md-6 col-lg-12">
+                  <div class="form-group">
+                    <label class="bmd-label-floating" for="target-username">
+                      Username&nbsp;for&nbsp;authentication
+                    </label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="target-username"
+                      name="target-username"
+                    />
+                    <span class="bmd-help">
+                      You can manage repositories you own or have access to
                     </span>
                   </div>
                 </div>
                 <!-- col -->
                 <div class="col-12 col-md-6 col-lg-12">
                   <div class="form-group">
-                    <label for="target-repo" class="bmd-label-floating">
-                      Repository
+                    <label
+                      for="personal-access-token"
+                      class="bmd-label-floating"
+                    >
+                      Personal&nbsp;access&nbsp;token
                     </label>
-                    <input type="text" class="form-control" id="copy-from-repo" />
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="personal-access-token"
+                    />
                     <span class="bmd-help">
-                      Such as: template-for-label-and-milestone-1
+                      We don't store your GitHub personal access token
                     </span>
                   </div>
                 </div>
@@ -204,23 +172,120 @@
               <!-- row -->
             </form>
             <div class="row">
-              <div class="col-12 col-md-6 col-lg-12">
-                <button id="copy-labels-from" type="button" class="btn btn-outline-info btn-block"
-                  data-loading-text="Adding...">
-                  Copy&nbsp;labels
+              <div class="col-12 col-md-4 col-lg-12">
+                <button
+                  id="list-all-labels"
+                  type="button"
+                  class="btn btn-block btn-outline-secondary"
+                  data-loading-text="Loading..."
+                >
+                  List labels
                 </button>
               </div>
               <!-- col -->
-              <div class="col-12 col-md-6 col-lg-12">
-                <button id="copy-milestones-from" type="button" class="btn btn-outline-info btn-block"
-                  data-loading-text="Adding...">
-                  Copy&nbsp;milestones
+              <div class="col-12 col-md-4 col-lg-12">
+                <button
+                  id="list-all-milestones"
+                  type="button"
+                  class="btn btn-block btn-outline-secondary"
+                  data-loading-text="Loading..."
+                >
+                  List milestones
+                </button>
+              </div>
+              <!-- col -->
+              <!-- </div> -->
+              <!-- row -->
+              <!-- <div class="row"> -->
+              <div class="col-12 col-md-4 col-lg-12">
+                <button
+                  id="commit-to-target-repo"
+                  type="button"
+                  class="btn btn-raised btn-outline-success btn-block"
+                  disabled
+                  data-loading-text="Commiting..."
+                >
+                  Commit&nbsp;changes
                 </button>
               </div>
               <!-- col -->
             </div>
             <!-- row -->
-            <!-- <button id="delete-and-copy-labels-from" type="button" class="btn btn-outline-info btn-block"
+          </div>
+          <div class="card bg-light card-body mb-3">
+            <div class="card-header">
+              <h3>
+                Copy from an existing repository
+              </h3>
+            </div>
+            <div class="form-text text-muted">
+              You can copy labels and milestones from other repositories and
+              modify them before committing to your repository.
+            </div>
+            <div>
+              <form>
+                <div class="row">
+                  <div class="col-12 col-md-6 col-lg-12">
+                    <div class="form-group">
+                      <label for="target-owner" class="bmd-label-floating">
+                        Repository&nbsp;owner
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="copy-from-owner"
+                      />
+                      <span class="bmd-help">
+                        Such as: BadwaterBay
+                      </span>
+                    </div>
+                  </div>
+                  <!-- col -->
+                  <div class="col-12 col-md-6 col-lg-12">
+                    <div class="form-group">
+                      <label for="target-repo" class="bmd-label-floating">
+                        Repository
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="copy-from-repo"
+                      />
+                      <span class="bmd-help">
+                        Such as: template-for-label-and-milestone-1
+                      </span>
+                    </div>
+                  </div>
+                  <!-- col -->
+                </div>
+                <!-- row -->
+              </form>
+              <div class="row">
+                <div class="col-12 col-md-6 col-lg-12">
+                  <button
+                    id="copy-labels-from"
+                    type="button"
+                    class="btn btn-outline-info btn-block"
+                    data-loading-text="Adding..."
+                  >
+                    Copy&nbsp;labels
+                  </button>
+                </div>
+                <!-- col -->
+                <div class="col-12 col-md-6 col-lg-12">
+                  <button
+                    id="copy-milestones-from"
+                    type="button"
+                    class="btn btn-outline-info btn-block"
+                    data-loading-text="Adding..."
+                  >
+                    Copy&nbsp;milestones
+                  </button>
+                </div>
+                <!-- col -->
+              </div>
+              <!-- row -->
+              <!-- <button id="delete-and-copy-labels-from" type="button" class="btn btn-outline-info btn-block"
               data-loading-text="Cloning...">
               Delete all existing labels and copy
             </button>
@@ -228,11 +293,11 @@
               data-loading-text="Cloning...">
               Delete all existing milestones and copy
             </button> -->
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-12 col-lg-8">
-        <!-- <div class="card bg-light card-body mb-3">
+        <div class="col-12 col-lg-8">
+          <!-- <div class="card bg-light card-body mb-3">
             <div class="card-header">
               <h3>
                 Which repository is in use?
@@ -242,114 +307,179 @@
               Not using any yet
             </div>
           </div> -->
-        <div class="card bg-light card-body mb-3">
-          <ul class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" id="labels-tab" data-toggle="tab" href="#labels-form" role="tab"
-                aria-controls="labels-form" aria-selected="true">
-                Labels
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="milestones-tab" data-toggle="tab" href="#milestones-form" role="tab"
-                aria-controls="milestones-form" aria-selected="false">
-                Milestones
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="faq-tab" data-toggle="tab" href="#faq-form" role="tab" aria-controls="faq-form"
-                aria-selected="false">
-                FAQ
-              </a>
-            </li>
-          </ul>
-          <div class="card-body">
-            <div class="tab-content" id="nav-tab-content">
-              <div class="tab-pane active" id="labels-form" role="tabpanel" aria-labelledby="labels-tab">
-                <div class="row">
-                  <div class="col-12 col-md-4">
-                    <button id="delete-all-labels" type="button" class="btn btn-outline-danger btn-block"
-                      data-loading-text="Deleting...">
-                      Delete all
-                    </button>
+          <div class="card bg-light card-body mb-3">
+            <ul class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  id="labels-tab"
+                  data-toggle="tab"
+                  href="#labels-form"
+                  role="tab"
+                  aria-controls="labels-form"
+                  aria-selected="true"
+                >
+                  Labels
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  id="milestones-tab"
+                  data-toggle="tab"
+                  href="#milestones-form"
+                  role="tab"
+                  aria-controls="milestones-form"
+                  aria-selected="false"
+                >
+                  Milestones
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  id="faq-tab"
+                  data-toggle="tab"
+                  href="#faq-form"
+                  role="tab"
+                  aria-controls="faq-form"
+                  aria-selected="false"
+                >
+                  FAQ
+                </a>
+              </li>
+            </ul>
+            <div class="card-body">
+              <div class="tab-content" id="nav-tab-content">
+                <div
+                  class="tab-pane active"
+                  id="labels-form"
+                  role="tabpanel"
+                  aria-labelledby="labels-tab"
+                >
+                  <div class="row">
+                    <div class="col-12 col-md-4">
+                      <button
+                        id="delete-all-labels"
+                        type="button"
+                        class="btn btn-outline-danger btn-block"
+                        data-loading-text="Deleting..."
+                      >
+                        Delete all
+                      </button>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <button
+                        id="revert-labels-to-original"
+                        type="button"
+                        class="btn btn-outline-warning btn-block"
+                        disabled
+                        data-loading-text="Resetting..."
+                      >
+                        Undo all
+                      </button>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <button
+                        id="add-new-label-entry"
+                        type="button"
+                        class="btn btn-outline-success btn-block mb-3"
+                      >
+                        New label
+                      </button>
+                    </div>
                   </div>
-                  <div class="col-12 col-md-4">
-                    <button id="revert-labels-to-original" type="button" class="btn btn-outline-warning btn-block"
-                      disabled data-loading-text="Resetting...">
-                      Undo all
-                    </button>
-                  </div>
-                  <div class="col-12 col-md-4">
-                    <button id="add-new-label-entry" type="button" class="btn btn-outline-success btn-block mb-3">
-                      New label
-                    </button>
-                  </div>
+                  <!-- row -->
+                  <form id="form-labels" class="form-inline"></form>
                 </div>
-                <!-- row -->
-                <form id="form-labels" class="form-inline"></form>
-              </div>
-              <div class="tab-pane" id="milestones-form" role="tabpanel" aria-labelledby="milestones-tab">
-                <div class="row">
-                  <div class="col-12 col-md-4">
-                    <button id="delete-all-milestones" type="button" class="btn btn-outline-danger btn-block"
-                      data-loading-text="Deleting...">
-                      Delete all
-                    </button>
+                <div
+                  class="tab-pane"
+                  id="milestones-form"
+                  role="tabpanel"
+                  aria-labelledby="milestones-tab"
+                >
+                  <div class="row">
+                    <div class="col-12 col-md-4">
+                      <button
+                        id="delete-all-milestones"
+                        type="button"
+                        class="btn btn-outline-danger btn-block"
+                        data-loading-text="Deleting..."
+                      >
+                        Delete all
+                      </button>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <button
+                        id="revert-milestones-to-original"
+                        type="button"
+                        class="btn btn-outline-warning btn-block"
+                        disabled
+                        data-loading-text="Resetting..."
+                      >
+                        Undo all
+                      </button>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <button
+                        id="add-new-milestone-entry"
+                        type="button"
+                        class="btn btn-outline-success btn-block mb-3"
+                      >
+                        New milestone
+                      </button>
+                    </div>
                   </div>
-                  <div class="col-12 col-md-4">
-                    <button id="revert-milestones-to-original" type="button" class="btn btn-outline-warning btn-block"
-                      disabled data-loading-text="Resetting...">
-                      Undo all
-                    </button>
+                  <!-- row -->
+                  <form id="form-milestones" class="form-inline"></form>
+                </div>
+                <div
+                  class="tab-pane"
+                  id="faq-form"
+                  role="tabpanel"
+                  aria-labelledby="faq-tab"
+                >
+                  <div class="card-header">
+                    <h3>
+                      How this web app works?
+                    </h3>
                   </div>
-                  <div class="col-12 col-md-4">
-                    <button id="add-new-milestone-entry" type="button" class="btn btn-outline-success btn-block mb-3">
-                      New milestone
-                    </button>
+                  <div id="collapse-card-token-safety">
+                    <div class="card-body">
+                      <p>
+                        This web app works by making cross-site requests to
+                        GitHub's API. You can also download this website and use
+                        it on your localhost.
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <!-- row -->
-                <form id="form-milestones" class="form-inline"></form>
-              </div>
-              <div class="tab-pane" id="faq-form" role="tabpanel" aria-labelledby="faq-tab">
-                <div class="card-header">
-                  <h3>
-                    How this web app works?
-                  </h3>
-                </div>
-                <div id="collapse-card-token-safety">
-                  <div class="card-body">
-                    <p>
-                      This web app works by making cross-site requests to
-                      Github's API. You can also download this website and use
-                      it on your localhost.
-                    </p>
+                  <div class="card-header">
+                    <h3>
+                      Is my personal access token safe?
+                    </h3>
                   </div>
-                </div>
-                <div class="card-header">
-                  <h3>
-                    Is my personal access token safe?
-                  </h3>
-                </div>
-                <div>
-                  <div class="card-body">
-                    <p>
-                      This web app authenticates to Github API via
-                      <strong>HTTP Basic Authentication</strong>, but all API
-                      calls are done over <strong>SSL</strong>, so your
-                      personal access token is safe.
-                    </p>
-                    <p>
-                      Although you can use your password in lieu of a personal
-                      access token, it is highly encouraged to use a personal
-                      access token.
-                    </p>
-                    <p>
-                      <a href="https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line"
-                        target="_blank">
-                        How to create a personal access token?
-                      </a>
-                    </p>
+                  <div>
+                    <div class="card-body">
+                      <p>
+                        This web app authenticates to GitHub API via
+                        <strong>HTTP Basic Authentication</strong>, but all API
+                        calls are done over <strong>SSL</strong>, so your
+                        personal access token is safe.
+                      </p>
+                      <p>
+                        Although you can use your password in lieu of a personal
+                        access token, it is highly encouraged to use a personal
+                        access token.
+                      </p>
+                      <p>
+                        <a
+                          href="https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line"
+                          target="_blank"
+                        >
+                          How to create a personal access token?
+                        </a>
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -358,38 +488,46 @@
         </div>
       </div>
     </div>
-  </div>
-  <!-- /container -->
+    <!-- /container -->
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="js/colorpicker.js"></script>
-  <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js"
-    integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anymous"></script>
-  <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js"
-    integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9"
-    crossorigin="anonymous"></script>
-  <script defer src="js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/colorpicker.js"></script>
+    <script
+      src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js"
+      integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U"
+      crossorigin="anymous"
+    ></script>
+    <script
+      src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js"
+      integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9"
+      crossorigin="anonymous"
+    ></script>
+    <script defer src="js/app.js"></script>
 
-  <div id="loadingModal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            Please&nbsp;wait...
-          </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p>
-            Commiting...
-          </p>
+    <div id="loadingModal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Please&nbsp;wait...
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Commiting...
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <!-- #loadingModal -->
-</body>
-
+    <!-- #loadingModal -->
+  </body>
 </html>
