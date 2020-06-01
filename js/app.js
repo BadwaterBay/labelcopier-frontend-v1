@@ -24,29 +24,46 @@ $(document).ready(function () {
 
   /** === START: COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES === */
 
-  $('#copy-to-username').click(
-    /** @this HTMLElement */
-    function () {
-      $('#target-username').val(() =>
-        $(this).prop('checked') ? $('#target-owner').val() : '',
-      );
-    },
-  );
-
-  $('#target-owner').keyup(() => {
-    if ($('#copy-to-username').prop('checked')) {
-      $('#target-username').val($('#target-owner').val());
-    }
-  });
+  let copyToUsernameBool = true;
 
   $('#target-username').keyup(
     /** @this HTMLElement */
     function () {
-      $('#copy-to-username').prop('checked', () => {
-        return $(this).val() === $('#target-owner').val();
-      });
+      copyToUsernameBool = $(this).val() === $('#target-owner').val();
     },
   );
+
+  $('#target-owner').keyup(() => {
+    copyToUsernameBool && $('#target-username').val($('#target-owner').val());
+  });
+
+  /** The following section of code is commented out because we removed the
+   * "I'm the owner of the repository" checkbox for now
+   */
+
+  // $('#copy-to-username').click(
+  //   /** @this HTMLElement */
+  //   function () {
+  //     $('#target-username').val(() =>
+  //       $(this).prop('checked') ? $('#target-owner').val() : '',
+  //     );
+  //   },
+  // );
+
+  // $('#target-owner').keyup(() => {
+  //   if ($('#copy-to-username').prop('checked')) {
+  //     $('#target-username').val($('#target-owner').val());
+  //   }
+  // });
+
+  // $('#target-username').keyup(
+  //   /** @this HTMLElement */
+  //   function () {
+  //     $('#copy-to-username').prop('checked', () => {
+  //       return $(this).val() === $('#target-owner').val();
+  //     });
+  //   },
+  // );
 
   /** === END: COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES === */
 
@@ -1104,15 +1121,15 @@ $(document).ready(function () {
     clickToCopyEntriesFrom('milestones');
   });
 
-  $('#delete-and-copy-labels-from').click(() => {
-    $('#delete-all-labels').click();
-    $('#copy-labels-from').click();
-  });
+  // $('#delete-and-copy-labels-from').click(() => {
+  //   $('#delete-all-labels').click();
+  //   $('#copy-labels-from').click();
+  // });
 
-  $('#delete-and-copy-milestones-from').click(() => {
-    $('#delete-all-milestones').click();
-    $('#copy-milestones-from').click();
-  });
+  // $('#delete-and-copy-milestones-from').click(() => {
+  //   $('#delete-all-milestones').click();
+  //   $('#copy-milestones-from').click();
+  // });
 
   /** === END: LIST, DELETE, CLEAR, AND COPY ENTRIES === */
 

@@ -46,23 +46,26 @@
   </head>
 
   <body>
-    <a
-      href="https://github.com/Badwater-Apps/github-label-manager-2"
-      target="_blank"
-    >
-      <img
-        style="position: absolute; top: 0; right: 0; border: 0; z-index: 1031;"
-        src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
-        alt="Fork me on GitHub"
-      />
-    </a>
-    <div class="navbar sticky-top navbar-expand-md navbar-dark bg-dark">
+    <!-- <a href="https://github.com/Badwater-Apps/github-label-manager-2" target="_blank">
+    <img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1031;"
+      src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub" />
+  </a> -->
+    <div class="navbar navbar-expand-md navbar-dark bg-dark">
       <div class="container">
         <a class="navbar-brand" href="#">
           Github&nbsp;Label&nbsp;Manager
         </a>
-        <ul class="navbar-nav mr-auto">
-          <!-- <li class="nav-item"><a class="nav-link" href="">Item</a></li> -->
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="https://github.com/Badwater-Apps/github-label-manager-2"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <i class="fab fa-github fa-2x"></i>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -81,7 +84,7 @@
                 <div class="col-12 col-md-6">
                   <div class="form-group">
                     <label for="target-owner" class="bmd-label-floating">
-                      Repo&nbsp;owner
+                      Repository&nbsp;owner
                     </label>
                     <input
                       type="text"
@@ -98,10 +101,14 @@
                 <!-- col -->
                 <div class="col-12 col-md-6">
                   <div class="form-group">
-                    <label for="target-repo" class="bmd-label-floating">
-                      Repo
+                    <label for="target-repository" class="bmd-label-floating">
+                      Repository
                     </label>
-                    <input type="text" class="form-control" id="target-repo" />
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="target-repository"
+                    />
                     <span class="bmd-help">
                       Such as: template-for-label-and-milestone-1
                     </span>
@@ -111,147 +118,188 @@
                 <!-- col -->
               </div>
               <!-- row -->
-              <div class="checkbox">
-                <label>
-                  <input
-                    type="checkbox"
-                    id="copy-to-username"
-                    name="checkOwnerOfRepo"
-                  />
-                  I'm the owner of the repo
-                </label>
+              <!-- <div class="row">
+              <div class="col-12">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" id="copy-to-username" name="checkOwnerOfRepository" value="" checked />
+                    I'm the owner of the repository
+                  </label>
+                </div>
               </div>
-              <div class="form-group">
-                <label class="bmd-label-floating" for="target-username">
-                  Username&nbsp;for&nbsp;authentication
-                </label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="target-username"
-                  name="target-username"
-                />
-                <span class="bmd-help">
-                  You can manage repos you own or have access to
-                </span>
+            </div> -->
+              <div class="row">
+                <div class="col-12 col-md-6">
+                  <div class="form-group">
+                    <label class="bmd-label-floating" for="target-username">
+                      Username&nbsp;for&nbsp;authentication
+                    </label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="target-username"
+                      name="target-username"
+                    />
+                    <span class="bmd-help">
+                      You can manage repositorys you own or have access to
+                    </span>
+                  </div>
+                </div>
+                <!-- col -->
+                <div class="col-12 col-md-6">
+                  <div class="form-group">
+                    <label
+                      for="personal-access-token"
+                      class="bmd-label-floating"
+                    >
+                      Personal&nbsp;access&nbsp;token
+                    </label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="personal-access-token"
+                    />
+                    <span class="bmd-help">
+                      We don't store your personal access token
+                    </span>
+                  </div>
+                </div>
+                <!-- col -->
               </div>
-              <div class="form-group">
-                <label for="personal-access-token" class="bmd-label-floating">
-                  Personal&nbsp;access&nbsp;token
-                </label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="personal-access-token"
-                />
-                <span class="bmd-help">
-                  We don't store your personal access token
-                </span>
-              </div>
+              <!-- row -->
             </form>
-            <button
-              id="list-all-labels"
-              type="button"
-              class="btn btn-block btn-outline-secondary"
-              data-loading-text="Loading..."
-            >
-              List labels in this repo
-            </button>
-            <button
-              id="list-all-milestones"
-              type="button"
-              class="btn btn-block btn-outline-secondary"
-              data-loading-text="Loading..."
-            >
-              List milestones in this repo
-            </button>
-            <button
-              id="commit-to-target-repo"
-              type="button"
-              class="btn btn-raised btn-outline-success btn-block"
-              disabled
-              data-loading-text="Commiting..."
-            >
-              Commit&nbsp;changes
-            </button>
+            <div class="row">
+              <div class="col-12 col-md-6">
+                <button
+                  id="list-all-labels"
+                  type="button"
+                  class="btn btn-block btn-outline-secondary"
+                  data-loading-text="Loading..."
+                >
+                  List labels
+                </button>
+              </div>
+              <!-- col -->
+              <div class="col-12 col-md-6">
+                <button
+                  id="list-all-milestones"
+                  type="button"
+                  class="btn btn-block btn-outline-secondary"
+                  data-loading-text="Loading..."
+                >
+                  List milestones
+                </button>
+              </div>
+              <!-- col -->
+            </div>
+            <!-- row -->
+            <div class="row">
+              <div class="col-12">
+                <button
+                  id="commit-to-target-repository"
+                  type="button"
+                  class="btn btn-raised btn-outline-success btn-block"
+                  disabled
+                  data-loading-text="Commiting..."
+                >
+                  Commit&nbsp;changes
+                </button>
+              </div>
+              <!-- col -->
+            </div>
+            <!-- row -->
           </div>
 
           <div class="card bg-light card-body mb-3">
             <div class="card-header">
               <h3>
-                Copy from an existing repo's labels (Optional)
+                Optional: Copy labels or milestones from an existing repository
               </h3>
             </div>
             <div class="form-text text-muted">
-              You can copy labels from any repo and modify them before
-              committing to your repo.
+              You can copy labels from any repository and modify them before
+              committing to your repository.
             </div>
             <div>
               <form>
-                <div class="form-group">
-                  <label for="target-owner" class="bmd-label-floating">
-                    Repo&nbsp;owner
-                  </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="copy-from-owner"
-                  />
-                  <span class="bmd-help">
-                    Such as: Badwater-Apps
-                  </span>
+                <div class="row">
+                  <div class="col-12 col-md-6">
+                    <div class="form-group">
+                      <label for="target-owner" class="bmd-label-floating">
+                        Repository&nbsp;owner
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="copy-from-owner"
+                      />
+                      <span class="bmd-help">
+                        Such as: Badwater-Apps
+                      </span>
+                    </div>
+                  </div>
+                  <!-- col -->
+                  <div class="col-12 col-md-6">
+                    <div class="form-group">
+                      <label for="target-repository" class="bmd-label-floating">
+                        Repository
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="copy-from-repository"
+                      />
+                      <span class="bmd-help">
+                        Such as: template-for-label-and-milestone-1
+                      </span>
+                    </div>
+                  </div>
+                  <!-- col -->
                 </div>
-                <div class="form-group">
-                  <label for="target-repo" class="bmd-label-floating">
-                    Repo
-                  </label>
-                  <input type="text" class="form-control" id="copy-from-repo" />
-                  <span class="bmd-help">
-                    Such as: template-for-label-and-milestone-1
-                  </span>
-                </div>
+                <!-- row -->
               </form>
-              <button
-                id="copy-labels-from"
-                type="button"
-                class="btn btn-outline-info btn-block"
-                data-loading-text="Adding..."
-              >
-                Copy&nbsp;labels
-              </button>
-              <button
-                id="copy-milestones-from"
-                type="button"
-                class="btn btn-outline-info btn-block"
-                data-loading-text="Adding..."
-              >
-                Copy&nbsp;milestones
-              </button>
-              <button
-                id="delete-and-copy-labels-from"
-                type="button"
-                class="btn btn-outline-info btn-block"
-                data-loading-text="Cloning..."
-              >
-                Delete all existing labels and copy
-              </button>
-              <button
-                id="delete-and-copy-milestones-from"
-                type="button"
-                class="btn btn-outline-info btn-block"
-                data-loading-text="Cloning..."
-              >
-                Delete all existing milestones and copy
-              </button>
+              <div class="row">
+                <div class="col-12 col-md-6">
+                  <button
+                    id="copy-labels-from"
+                    type="button"
+                    class="btn btn-outline-info btn-block"
+                    data-loading-text="Adding..."
+                  >
+                    Copy&nbsp;labels
+                  </button>
+                </div>
+                <!-- col -->
+                <div class="col-12 col-md-6">
+                  <button
+                    id="copy-milestones-from"
+                    type="button"
+                    class="btn btn-outline-info btn-block"
+                    data-loading-text="Adding..."
+                  >
+                    Copy&nbsp;milestones
+                  </button>
+                </div>
+                <!-- col -->
+              </div>
+              <!-- row -->
+              <!-- <button id="delete-and-copy-labels-from" type="button" class="btn btn-outline-info btn-block"
+              data-loading-text="Cloning...">
+              Delete all existing labels and copy
+            </button>
+            <button id="delete-and-copy-milestones-from" type="button" class="btn btn-outline-info btn-block"
+              data-loading-text="Cloning...">
+              Delete all existing milestones and copy
+            </button> -->
             </div>
           </div>
           <!-- <div class="card bg-light card-body mb-3">
             <div class="card-header">
               <h3>
-                Which repo is in use?
+                Which repository is in use?
               </h3>
             </div>
-            <div id="which-repo-in-use" class="form-text text-muted">
+            <div id="which-repository-in-use" class="form-text text-muted">
               Not using any yet
             </div>
           </div> -->
