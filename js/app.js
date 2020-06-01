@@ -760,7 +760,7 @@ $(document).ready(function () {
         'keyup',
         /** @this HTMLElement */
         function () {
-          const setColorCode = `#${this.value.replace(/#/g, '')}`;
+          const setColorCode = `#${this.value.replace(/#|\s/g, '')}`;
           $(this).ColorPickerSetColor(setColorCode.replace('#', ''));
           $(this).css('background-color', setColorCode);
 
@@ -772,7 +772,7 @@ $(document).ready(function () {
       .blur(
         /** @this HTMLElement */
         function () {
-          let displayColorCode = `#${this.value.replace(/#/g, '')}`;
+          let displayColorCode = `#${this.value.replace(/#|\s/g, '')}`;
           if (/^#([0-9A-F]{3}){1,2}$/i.test(displayColorCode)) {
             if (displayColorCode.length === 4) {
               displayColorCode = displayColorCode.replace(
