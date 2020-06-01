@@ -4,9 +4,9 @@
   "description": "A web app that help you manage GitHub labels and milestones",
   "main": "index.html",
   "scripts": {
-    "lint": "eslint . --fix-dry-run",
-    "lint-fix": "eslint . --fix",
-    "format": "npx prettier . --write",
+    "lint": "eslint ./src/**/*.{js,html} --fix-dry-run",
+    "lint-fix": "eslint ./src/**/*.{js,html} --fix",
+    "format": "npx prettier ./src/**/*.{js,html} --write",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -41,8 +41,8 @@
     }
   },
   "lint-staged": {
-    "*": [
-      "npx prettier --write",
+    "./src/**/*.{js,html}": [
+      "npx prettier . --write",
       "eslint . --fix-dry-run"
     ]
   }
