@@ -773,7 +773,10 @@ $(document).ready(function () {
         /** @this HTMLElement */
         function () {
           let displayColorCode = `#${this.value.replace(/#|\s/g, '')}`;
-          if (/^#([0-9A-F]{3}){1,2}$/i.test(displayColorCode)) {
+          if (this.value.length === 0) {
+            $(this).val(this.value);
+            $(this).siblings('.invalid-color-input').addClass('hidden');
+          } else if (/^#([0-9A-F]{3}){1,2}$/i.test(displayColorCode)) {
             if (displayColorCode.length === 4) {
               displayColorCode = displayColorCode.replace(
                 /(\w)(\w)(\w)/,
