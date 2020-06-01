@@ -735,6 +735,7 @@ $(document).ready(function () {
           $(el).val(`#${hex.toUpperCase()}`);
           $(el).ColorPickerHide();
           $(el).css('background-color', `#${hex}`);
+          $(el).siblings('.invalid-color-input').addClass('hidden');
           const $entry = $(el).closest('.label-entry');
 
           if (checkInputChanges($entry)) {
@@ -762,6 +763,10 @@ $(document).ready(function () {
           const setColorCode = `#${this.value.replace(/#/g, '')}`;
           $(this).ColorPickerSetColor(setColorCode.replace('#', ''));
           $(this).css('background-color', setColorCode);
+
+          if (/^#([0-9A-F]{3}){1,2}$/i.test(setColorCode)) {
+            $(this).siblings('.invalid-color-input').addClass('hidden');
+          }
         },
       )
       .blur(
