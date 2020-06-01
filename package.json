@@ -43,7 +43,7 @@
   "lint-staged": {
     "*": [
       "npx prettier --write",
-      "eslint ."
+      "eslint . --fix-dry-run"
     ]
   }
 }
