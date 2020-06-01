@@ -24,29 +24,49 @@ $(document).ready(function () {
 
   /** === START: COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES === */
 
-  $('#copy-to-username').click(
-    /** @this HTMLElement */
-    function () {
-      $('#target-username').val(() =>
-        $(this).prop('checked') ? $('#target-owner').val() : '',
-      );
-    },
-  );
+  (() => {
+    $('#copy-to-username').click(
+      /** @this HTMLElement */
+      function () {
+        $('#target-username').val(() =>
+          $(this).prop('checked') ? $('#target-owner').val() : '',
+        );
+      },
+    );
 
-  $('#target-owner').keyup(() => {
-    if ($('#copy-to-username').prop('checked')) {
-      $('#target-username').val($('#target-owner').val());
-    }
-  });
+    $('#target-owner').keyup(() => {
+      $('#copy-to-username').prop('checked') &&
+        $('#target-username').val($('#target-owner').val());
+    });
 
-  $('#target-username').keyup(
-    /** @this HTMLElement */
-    function () {
-      $('#copy-to-username').prop('checked', () => {
-        return $(this).val() === $('#target-owner').val();
-      });
-    },
-  );
+    $('#target-username').keyup(
+      /** @this HTMLElement */
+      function () {
+        $('#copy-to-username').prop('checked', () => {
+          return $(this).val() === $('#target-owner').val();
+        });
+      },
+    );
+  })();
+
+  /** The following section of code is to be used if we remove
+   * the "I'm the owner of the repository" checkbox
+   */
+
+  // (() => {
+  //   let copyToUsernameBool = true;
+
+  //   $('#target-username').keyup(
+  //     /** @this HTMLElement */
+  //     function () {
+  //       copyToUsernameBool = $(this).val() === $('#target-owner').val();
+  //     },
+  //   );
+
+  //   $('#target-owner').keyup(() => {
+  //     copyToUsernameBool && $('#target-username').val($('#target-owner').val());
+  //   });
+  // })();
 
   /** === END: COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES === */
 
@@ -67,19 +87,19 @@ $(document).ready(function () {
     $('#loadingModal .modal-body').append(`${string}<br />`);
   };
 
-  const setWhichRepoInUseText = () => {
-    const LOGIN_INFO = getLoginInfo();
-    $('#which-repo-in-use').html(`
-      <p>
-        <strong>Repo owner:</strong> ${LOGIN_INFO.targetOwner}
-      </p>
-      <p> 
-        <strong>Repo:</strong> ${LOGIN_INFO.targetRepo}
-      </p>
-      <p>
-        <strong>Username:</strong> ${LOGIN_INFO.targetUsername}
-      </p>`);
-  };
+  // const setWhichRepoInUseText = () => {
+  //   const LOGIN_INFO = getLoginInfo();
+  //   $('#which-repo-in-use').html(`
+  //     <p>
+  //       <strong>Repo owner:</strong> ${LOGIN_INFO.targetOwner}
+  //     </p>
+  //     <p>
+  //       <strong>Repo:</strong> ${LOGIN_INFO.targetRepo}
+  //     </p>
+  //     <p>
+  //       <strong>Username:</strong> ${LOGIN_INFO.targetUsername}
+  //     </p>`);
+  // };
 
   /**
    * @param {Object} el
@@ -435,7 +455,7 @@ $(document).ready(function () {
       checkIfAnyEntryModified();
     };
 
-    setWhichRepoInUseText();
+    // setWhichRepoInUseText();
 
     if (kind === 'labels') {
       LABEL_SET.clear();
@@ -1108,15 +1128,15 @@ $(document).ready(function () {
     clickToCopyEntriesFrom('milestones');
   });
 
-  $('#delete-and-copy-labels-from').click(() => {
-    $('#delete-all-labels').click();
-    $('#copy-labels-from').click();
-  });
+  // $('#delete-and-copy-labels-from').click(() => {
+  //   $('#delete-all-labels').click();
+  //   $('#copy-labels-from').click();
+  // });
 
-  $('#delete-and-copy-milestones-from').click(() => {
-    $('#delete-all-milestones').click();
-    $('#copy-milestones-from').click();
-  });
+  // $('#delete-and-copy-milestones-from').click(() => {
+  //   $('#delete-all-milestones').click();
+  //   $('#copy-milestones-from').click();
+  // });
 
   /** === END: LIST, DELETE, CLEAR, AND COPY ENTRIES === */
 

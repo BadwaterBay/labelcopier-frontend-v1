@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Badwater-Apps/github-label-manager-2.git"
+    "url": "git+https://github.com/BadwaterBay/github-label-manager-2.git"
   },
-  "author": "Badwater-Apps",
+  "author": "BadwaterBay",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/Badwater-Apps/github-label-manager-2/issues"
+    "url": "https://github.com/BadwaterBay/github-label-manager-2/issues"
   },
-  "homepage": "https://github.com/Badwater-Apps/github-label-manager-2#readme",
+  "homepage": "https://github.com/BadwaterBay/github-label-manager-2#readme",
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
@@ -43,7 +43,7 @@
   "lint-staged": {
     "*": [
       "npx prettier --write",
-      "eslint ."
+      "eslint . --fix-dry-run"
     ]
   }
 }
