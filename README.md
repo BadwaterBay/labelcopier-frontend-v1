@@ -1,4 +1,4 @@
-# Github Label Manager 2
+# GitHub Label Manager 2
 
 [![CodeFactor](https://www.codefactor.io/repository/github/badwaterbay/github-label-manager-2/badge)](https://www.codefactor.io/repository/github/badwaterbay/github-label-manager-2)
 [![DeepScan grade](https://deepscan.io/api/teams/9440/projects/11965/branches/179826/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=9440&pid=11965&bid=179826)
