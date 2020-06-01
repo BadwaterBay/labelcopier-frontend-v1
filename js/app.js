@@ -759,7 +759,7 @@ $(document).ready(function () {
         'keyup',
         /** @this HTMLElement */
         function () {
-          const setColorCode = `#${this.value.replace(/#/gi, '')}`;
+          const setColorCode = `#${this.value.replace(/#/g, '')}`;
           $(this).ColorPickerSetColor(setColorCode.replace('#', ''));
           $(this).css('background-color', setColorCode);
         },
@@ -767,8 +767,21 @@ $(document).ready(function () {
       .blur(
         /** @this HTMLElement */
         function () {
-          const displayColorCode = 'placeholder';
+          let displayColorCode = `#${this.value.replace(/#/g, '')}`;
           $(this).val(displayColorCode);
+          if (/^#([0-9A-F]{3}){1,2}$/i.test(displayColorCode)) {
+            if (displayColorCode.length === 4) {
+              displayColorCode = displayColorCode.replace(
+                /(\w)(\w)(\w)/,
+                '$1$1$2$2$3$3',
+              );
+            }
+            $(this).val(displayColorCode.toUpperCase());
+            $(this).siblings('.invalid-color-input').addClass('hidden');
+          } else {
+            $(this).val(displayColorCode);
+            $(this).siblings('.invalid-color-input').removeClass('hidden');
+          }
         },
       );
 
