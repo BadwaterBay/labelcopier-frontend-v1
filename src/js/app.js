@@ -870,32 +870,30 @@ const app = () => {
         data-number="${number}" data-state="${milestone.state}" \
         data-due-on="${milestone.due_on}">\
         <div class="card">\
-          <div class="card-body">\
-            <div class="flexbox-container">\
-              <input name="title" type="text" \
-              class="form-control title-fitting" placeholder="Title" \
-              value="${milestone.title}" ${origTitleVal}>\
-              <input name="description" type="text" \
-                class="form-control description-fitting" \
-                placeholder="Description" value="${milestone.description}" \
-                ${origDescriptionVal}>\
-              <label>Due Date: \
-                <input name="due-date" type="date" \
-                class="form-control due-date-fitting pl-1" \
-                value="${parsedDueDate}" ${origDueDate} ${origDueTime}>\
-              </label>\
-              <label>Status: \
-                <select name="state" class="form-control state-fitting pl-2" \
-                  ${origStateVal}>\
-                  <option value="open">\
-                    open\
-                  </option>\
-                  <option value="closed">\
-                    closed\
-                  </option>\
-                </select>\
-              </label>\
-            </div>\
+          <div class="card-body" id="milestone-grid">\
+            <input name="title" type="text" \
+            class="form-control title-fitting" placeholder="Title" \
+            value="${milestone.title}" ${origTitleVal}>\
+            <input name="description" type="text" \
+              class="form-control description-fitting" \
+              placeholder="Description" value="${milestone.description}" \
+              ${origDescriptionVal}>\
+            <label class="due-date-fitting">Due Date: \
+              <input name="due-date" type="date" \
+              class="form-control pl-1" \
+              value="${parsedDueDate}" ${origDueDate} ${origDueTime}>\
+            </label>\
+            <label class="state-fitting">Status: \
+              <select name="state" class="form-control pl-2" \
+                ${origStateVal}>\
+                <option value="open">\
+                  open\
+                </option>\
+                <option value="closed">\
+                  closed\
+                </option>\
+              </select>\
+            </label>\
           </div>\
         </div>\
         <button type="button" class="btn btn-danger delete-button">\

@@ -1,6 +1,13 @@
 // Run this command to let sass watch for changes and automatically output
 // sass --watch ./src/scss/app.scss:./src/css/app.min.css --style compressed
 
+%invalid-input {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #f44336;
+}
+
 body {
   background-color: #fcfcfc;
 
@@ -44,11 +51,11 @@ body {
     .card {
       grid-column: 2 / 3;
 
-      .flexbox-container {
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-between;
-      }
+      // .flexbox-container {
+      //   display: flex;
+      //   flex-flow: row wrap;
+      //   justify-content: space-between;
+      // }
 
       #label-grid {
         display: grid;
@@ -72,11 +79,8 @@ body {
         }
 
         .invalid-color-input {
-          width: 100%;
-          margin-top: 0.25rem;
-          font-size: 80%;
+          @extend %invalid-input;
           text-align: right;
-          color: #f44336;
           grid-column: 2 / 4;
           grid-row: 2 / 3;
         }
@@ -88,13 +92,34 @@ body {
         }
       }
 
-      .title-fitting {
-        min-width: 100%;
-        flex-grow: 1;
-      }
+      #milestone-grid {
+        display: grid;
+        grid-template-columns: 0.45fr 0.25fr 0.3fr;
+        grid-template-rows: 1fr 0.1fr 1fr 1fr 0.1fr;
+        justify-content: space-between;
 
-      .description-fitting {
-        min-width: 100%;
+        .title-fitting {
+          min-width: 100%;
+          // flex-grow: 1;
+          grid-column: 1 / -1;
+          grid-row: 1 / 2;
+        }
+
+        .description-fitting {
+          min-width: 100%;
+          grid-column: 1 / -1;
+          grid-row: 3 / 4;
+        }
+
+        .due-date-fitting {
+          grid-column: 1 / 2;
+          grid-row: 4 / 5;
+        }
+
+        .state-fitting {
+          grid-column: 3 / -1;
+          grid-row: 4 / 5;
+        }
       }
     }
 
