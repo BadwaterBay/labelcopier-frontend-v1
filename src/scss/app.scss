@@ -70,6 +70,13 @@ body {
           grid-row: 1 / 2;
         }
 
+        .empty-name-input {
+          @extend %invalid-input;
+          text-align: left;
+          grid-column: 1 / 2;
+          grid-row: 2 / 3;
+        }
+
         .color-fitting {
           // max-width: 17%;
           min-width: 4.5rem;
@@ -78,7 +85,8 @@ body {
           grid-row: 1 / 2;
         }
 
-        .invalid-color-input {
+        .invalid-color-input,
+        .empty-color-input {
           @extend %invalid-input;
           text-align: right;
           grid-column: 2 / 4;

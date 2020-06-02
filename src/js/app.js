@@ -614,11 +614,17 @@ const app = () => {
             <input name="name" type="text" \
             class="form-control label-fitting" \
             placeholder="Name" value="${label.name}" ${origNameVal}>\
+            <div class="empty-name-input hidden">\
+              Label name is required.\
+            </div>\
             <input name="color" type="text" \
             class="form-control color-fitting color-box" \
             placeholder="Color" value="${label.color}" ${origColorVal}>\
             <div class="invalid-color-input hidden">\
               Invalid hex code.\
+            </div>\
+            <div class="empty-color-input hidden">\
+              Label color is required.\
             </div>\
             <input name="description" type="text" \
             class="form-control description-fitting" \
