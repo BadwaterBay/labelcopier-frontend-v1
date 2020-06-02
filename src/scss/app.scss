@@ -94,7 +94,7 @@ body {
 
       #milestone-grid {
         display: grid;
-        grid-template-columns: 0.45fr 0.25fr 0.3fr;
+        grid-template-columns: 0.55fr 0.15fr 0.3fr;
         grid-template-rows: 1fr 0.1fr 1fr 1fr 0.1fr;
         justify-content: space-between;
 
@@ -114,11 +114,46 @@ body {
         .due-date-fitting {
           grid-column: 1 / 2;
           grid-row: 4 / 5;
+          justify-self: start;
         }
 
         .state-fitting {
           grid-column: 3 / -1;
           grid-row: 4 / 5;
+          justify-self: end;
+        }
+      }
+
+      @media (max-width: 767px) {
+        #milestone-grid {
+          display: grid;
+          grid-template-rows: 1fr 0.1fr 1fr 1fr 0.1fr 1fr;
+          grid-template-columns: 0.99fr 0.01fr;
+          justify-content: space-between;
+
+          .title-fitting {
+            min-width: 100%;
+            // flex-grow: 1;
+            grid-row: 1 / 2;
+            grid-column: 1/ -1;
+          }
+
+          .description-fitting {
+            min-width: 100%;
+            grid-row: 3 / 4;
+            grid-column: 1/ -1;
+          }
+
+          .due-date-fitting {
+            grid-column: 1/ -1;
+            grid-row: 4 / 5;
+          }
+
+          .state-fitting {
+            grid-column: 1/ -1;
+            grid-row: 6 / -1;
+            justify-self: start;
+          }
         }
       }
     }
