@@ -95,7 +95,7 @@ body {
       #milestone-grid {
         display: grid;
         grid-template-columns: 0.55fr 0.15fr 0.3fr;
-        grid-template-rows: 1fr 0.1fr 1fr 1fr 0.1fr;
+        grid-template-rows: 1fr 0fr 1fr 1fr 0fr;
         justify-content: space-between;
 
         .title-fitting {
@@ -127,7 +127,7 @@ body {
       @media (max-width: 767px) {
         #milestone-grid {
           display: grid;
-          grid-template-rows: 1fr 0.1fr 1fr 1fr 0.1fr 1fr;
+          grid-template-rows: 1fr 0fr 1fr 1fr 0fr 1fr;
           grid-template-columns: 0.99fr 0.01fr;
           justify-content: space-between;
 
@@ -147,6 +147,7 @@ body {
           .due-date-fitting {
             grid-column: 1/ -1;
             grid-row: 4 / 5;
+            margin-top: 0.25rem;
           }
 
           .state-fitting {
