@@ -120,7 +120,7 @@ const app = () => {
       return noChanges;
     };
 
-    const checkIfAnyEntryModified = () => {
+    const checkIfEnableCommit = () => {
       // returns true if any change has been made and activates or
       // disactivates commit button accordingly
 
@@ -454,7 +454,7 @@ const app = () => {
             }
           },
         });
-        checkIfAnyEntryModified();
+        checkIfEnableCommit();
       };
 
       // setWhichRepoInUseText();
@@ -659,7 +659,7 @@ const app = () => {
             $entry.addClass('uncommitted');
           }
 
-          checkIfAnyEntryModified();
+          checkIfEnableCommit();
           return;
         },
       );
@@ -682,7 +682,7 @@ const app = () => {
             $(this).removeClass('red-alert-background');
           }
 
-          checkIfAnyEntryModified();
+          checkIfEnableCommit();
           return;
         },
       );
@@ -702,7 +702,7 @@ const app = () => {
 
           $(this).siblings('.recover-button').removeClass('hidden');
 
-          checkIfAnyEntryModified();
+          checkIfEnableCommit();
           return;
         },
       );
@@ -722,7 +722,7 @@ const app = () => {
             $entry.attr('data-todo', 'update');
           }
 
-          checkIfAnyEntryModified();
+          checkIfEnableCommit();
         },
       );
 
@@ -751,7 +751,7 @@ const app = () => {
               }
               $entry.addClass('uncommitted');
             }
-            checkIfAnyEntryModified();
+            checkIfEnableCommit();
             return;
           },
           onBeforeShow: function () {
@@ -801,7 +801,7 @@ const app = () => {
 
     $('#add-new-label-entry').click(() => {
       createNewLabelEntry(null, 'new');
-      checkIfAnyEntryModified();
+      checkIfEnableCommit();
     });
 
     /** === END: CREATE NEW LABEL ENTRIES === */
@@ -939,7 +939,7 @@ const app = () => {
             $entry.addClass('uncommitted');
           }
 
-          checkIfAnyEntryModified();
+          checkIfEnableCommit();
           return;
         },
       );
@@ -966,7 +966,7 @@ const app = () => {
               $entry.addClass('uncommitted');
             }
 
-            checkIfAnyEntryModified();
+            checkIfEnableCommit();
             return;
           },
         );
@@ -988,7 +988,7 @@ const app = () => {
             $(this).removeClass('red-alert-background');
           }
 
-          checkIfAnyEntryModified();
+          checkIfEnableCommit();
           return;
         },
       );
@@ -1007,7 +1007,7 @@ const app = () => {
 
           $(this).siblings('.recover-button').removeClass('hidden');
 
-          checkIfAnyEntryModified();
+          checkIfEnableCommit();
           return;
         },
       );
@@ -1027,7 +1027,7 @@ const app = () => {
             $entry.attr('data-todo', 'update');
           }
 
-          checkIfAnyEntryModified();
+          checkIfEnableCommit();
         },
       );
 
@@ -1036,7 +1036,7 @@ const app = () => {
 
     $('#add-new-milestone-entry').click(() => {
       createNewMilestoneEntry(null, 'new');
-      checkIfAnyEntryModified();
+      checkIfEnableCommit();
     });
 
     /** === END: CREATE NEW MILESTONE ENTRIES === */
@@ -1121,7 +1121,7 @@ const app = () => {
             }
           },
         );
-      checkIfAnyEntryModified();
+      checkIfEnableCommit();
     };
 
     $('#delete-all-labels').click(() => {
@@ -1150,7 +1150,7 @@ const app = () => {
           'Please enter the repo owner and the repo you want to copy from.',
         );
       }
-      checkIfAnyEntryModified();
+      checkIfEnableCommit();
     };
 
     $('#copy-labels-from').click(() => {
