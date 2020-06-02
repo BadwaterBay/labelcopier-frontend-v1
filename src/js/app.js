@@ -880,15 +880,21 @@ const app = () => {
             <input name="title" type="text" \
             class="form-control title-fitting" placeholder="Title" \
             value="${milestone.title}" ${origTitleVal}>\
+            <div class="empty-title-input hidden">\
+              Milestone title is required.\
+            </div>\
             <input name="description" type="text" \
               class="form-control description-fitting" \
               placeholder="Description" value="${milestone.description}" \
               ${origDescriptionVal}>\
-            <label class="due-date-fitting">Due Date: \
+            <label class="date-fitting">Due Date: \
               <input name="due-date" type="date" \
               class="form-control pl-1" \
               value="${parsedDueDate}" ${origDueDate} ${origDueTime}>\
             </label>\
+            <div class="invalid-date-input hidden">\
+              Invalid date.\
+            </div>\
             <label class="state-fitting">Status: \
               <select name="state" class="form-control pl-2" \
                 ${origStateVal}>\

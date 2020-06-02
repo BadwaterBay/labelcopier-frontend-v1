@@ -113,16 +113,29 @@ body {
           grid-row: 1 / 2;
         }
 
+        .empty-title-input {
+          @extend %invalid-input;
+          grid-column: 1 / -1;
+          grid-row: 2 / 3;
+        }
+
         .description-fitting {
           min-width: 100%;
           grid-column: 1 / -1;
           grid-row: 3 / 4;
         }
 
-        .due-date-fitting {
+        .date-fitting {
           grid-column: 1 / 2;
           grid-row: 4 / 5;
           justify-self: start;
+        }
+
+        .invalid-date-input {
+          @extend %invalid-input;
+          grid-column: 1 / 2;
+          grid-row: 5 / 6;
+          margin-top: 0;
         }
 
         .state-fitting {
@@ -152,10 +165,14 @@ body {
             grid-column: 1/ -1;
           }
 
-          .due-date-fitting {
+          .date-fitting {
             grid-column: 1/ -1;
             grid-row: 4 / 5;
             margin-top: 0.25rem;
+          }
+
+          .invalid-date-input {
+            grid-column: 1 / -1;
           }
 
           .state-fitting {
