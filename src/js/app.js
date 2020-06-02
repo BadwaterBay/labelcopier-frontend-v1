@@ -801,6 +801,7 @@ const app = () => {
 
     $('#add-new-label-entry').click(() => {
       createNewLabelEntry(null, 'new');
+      checkIfAnyEntryModified();
     });
 
     /** === END: CREATE NEW LABEL ENTRIES === */
@@ -1035,6 +1036,7 @@ const app = () => {
 
     $('#add-new-milestone-entry').click(() => {
       createNewMilestoneEntry(null, 'new');
+      checkIfAnyEntryModified();
     });
 
     /** === END: CREATE NEW MILESTONE ENTRIES === */
