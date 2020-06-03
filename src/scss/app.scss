@@ -51,12 +51,6 @@ body {
     .card {
       grid-column: 2 / 3;
 
-      // .flexbox-container {
-      //   display: flex;
-      //   flex-flow: row wrap;
-      //   justify-content: space-between;
-      // }
-
       #label-grid {
         display: grid;
         grid-template-rows: 1fr 0.2fr 1fr;
@@ -108,7 +102,6 @@ body {
 
         .title-fitting {
           min-width: 100%;
-          // flex-grow: 1;
           grid-column: 1 / -1;
           grid-row: 1 / 2;
         }
@@ -154,7 +147,6 @@ body {
 
           .title-fitting {
             min-width: 100%;
-            // flex-grow: 1;
             grid-row: 1 / 2;
             grid-column: 1/ -1;
           }
