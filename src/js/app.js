@@ -673,6 +673,7 @@ const app = () => {
       newElementEntry.find('input[name="name"]').keyup(
         /** @this HTMLElement */
         function () {
+          $(this).siblings('.empty-name-input').addClass('hidden');
           const $entry = $(this).closest('.label-entry');
           const currentVal = $(this).val();
           const originalVal = $(this).attr('data-orig-val');
@@ -769,6 +770,7 @@ const app = () => {
           'keyup',
           /** @this HTMLElement */
           function () {
+            $(this).siblings('.empty-color-input').addClass('hidden');
             const setColorCode = `#${this.value.replace(/#|\s/g, '')}`;
             $(this).ColorPickerSetColor(setColorCode.replace('#', ''));
             $(this).css('background-color', setColorCode);
@@ -985,6 +987,7 @@ const app = () => {
       newElementEntry.find('input[name="title"]').keyup(
         /** @this HTMLElement */
         function () {
+          $(this).siblings('.empty-title-input').addClass('hidden');
           const $entry = $(this).closest('.milestone-entry');
           const currentVal = $(this).val();
           const originalVal = $(this).attr('data-orig-val');
