@@ -1,5 +1,5 @@
 {
-  "name": "github-label-manager-2",
+  "name": "github-label-manager-plus",
   "version": "1.0.0",
   "description": "A web app that help you manage GitHub labels and milestones",
   "private": true,
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BadwaterBay/github-label-manager-2.git"
+    "url": "git+https://github.com/BadwaterBay/github-label-manager-plus.git"
   },
   "author": "BadwaterBay",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/BadwaterBay/github-label-manager-2/issues"
+    "url": "https://github.com/BadwaterBay/github-label-manager-plus/issues"
   },
-  "homepage": "https://github.com/BadwaterBay/github-label-manager-2#readme",
+  "homepage": "https://github.com/BadwaterBay/github-label-manager-plus#readme",
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
