@@ -614,11 +614,17 @@ const app = () => {
             <input name="name" type="text" \
             class="form-control label-fitting" \
             placeholder="Name" value="${label.name}" ${origNameVal}>\
+            <div class="empty-name-input invalid-input hidden">\
+              Label name is required.\
+            </div>\
             <input name="color" type="text" \
             class="form-control color-fitting color-box" \
             placeholder="Color" value="${label.color}" ${origColorVal}>\
-            <div class="invalid-color-input hidden">\
+            <div class="invalid-color-input invalid-input hidden">\
               Invalid hex code.\
+            </div>\
+            <div class="empty-color-input invalid-input hidden">\
+              Label color is required.\
             </div>\
             <input name="description" type="text" \
             class="form-control description-fitting" \
@@ -645,7 +651,7 @@ const app = () => {
           const $entry = $(this).closest('.label-entry');
 
           /** @this HTMLElement */
-          if (checkInputChanges($entry)) {
+          if (checkInputChanges($entry) && $entry.attr('new') !== 'true') {
             // If this is unchanged
             $entry.attr('data-todo', 'none');
             $entry.removeClass('uncommitted');
@@ -667,6 +673,7 @@ const app = () => {
       newElementEntry.find('input[name="name"]').keyup(
         /** @this HTMLElement */
         function () {
+          $(this).siblings('.empty-name-input').addClass('hidden');
           const $entry = $(this).closest('.label-entry');
           const currentVal = $(this).val();
           const originalVal = $(this).attr('data-orig-val');
@@ -695,6 +702,7 @@ const app = () => {
             $(this).parent().remove();
           } else {
             $(this).siblings('.card').addClass('deleted-card');
+            $(this).parent().find('.invalid-input').addClass('hidden');
             $(this).siblings('.recover-button').removeAttr('disabled');
             $(this).addClass('hidden');
             $(this).parent().attr('data-todo', 'delete');
@@ -762,6 +770,7 @@ const app = () => {
           'keyup',
           /** @this HTMLElement */
           function () {
+            $(this).siblings('.empty-color-input').addClass('hidden');
             const setColorCode = `#${this.value.replace(/#|\s/g, '')}`;
             $(this).ColorPickerSetColor(setColorCode.replace('#', ''));
             $(this).css('background-color', setColorCode);
@@ -870,32 +879,36 @@ const app = () => {
         data-number="${number}" data-state="${milestone.state}" \
         data-due-on="${milestone.due_on}">\
         <div class="card">\
-          <div class="card-body">\
-            <div class="flexbox-container">\
-              <input name="title" type="text" \
-              class="form-control title-fitting" placeholder="Title" \
-              value="${milestone.title}" ${origTitleVal}>\
-              <input name="description" type="text" \
-                class="form-control description-fitting" \
-                placeholder="Description" value="${milestone.description}" \
-                ${origDescriptionVal}>\
-              <label>Due Date: \
-                <input name="due-date" type="date" \
-                class="form-control due-date-fitting pl-1" \
-                value="${parsedDueDate}" ${origDueDate} ${origDueTime}>\
-              </label>\
-              <label>Status: \
-                <select name="state" class="form-control state-fitting pl-2" \
-                  ${origStateVal}>\
-                  <option value="open">\
-                    open\
-                  </option>\
-                  <option value="closed">\
-                    closed\
-                  </option>\
-                </select>\
-              </label>\
+          <div class="card-body" id="milestone-grid">\
+            <input name="title" type="text" \
+            class="form-control title-fitting" placeholder="Title" \
+            value="${milestone.title}" ${origTitleVal}>\
+            <div class="empty-title-input invalid-input hidden">\
+              Milestone title is required.\
             </div>\
+            <input name="description" type="text" \
+              class="form-control description-fitting" \
+              placeholder="Description" value="${milestone.description}" \
+              ${origDescriptionVal}>\
+            <label class="date-fitting">Due Date: \
+              <input name="due-date" type="date" \
+              class="form-control pl-1" \
+              value="${parsedDueDate}" ${origDueDate} ${origDueTime}>\
+            </label>\
+            <div class="invalid-date-input hidden">\
+              Invalid date.\
+            </div>\
+            <label class="state-fitting">Status: \
+              <select name="state" class="form-control pl-2" \
+                ${origStateVal}>\
+                <option value="open">\
+                  open\
+                </option>\
+                <option value="closed">\
+                  closed\
+                </option>\
+              </select>\
+            </label>\
           </div>\
         </div>\
         <button type="button" class="btn btn-danger delete-button">\
@@ -925,7 +938,7 @@ const app = () => {
         function () {
           const $entry = $(this).closest('.milestone-entry');
 
-          if (checkInputChanges($entry)) {
+          if (checkInputChanges($entry) && $entry.attr('new') !== 'true') {
             // unchanged
             $entry.attr('data-todo', 'none');
             $entry.removeClass('uncommitted');
@@ -974,6 +987,7 @@ const app = () => {
       newElementEntry.find('input[name="title"]').keyup(
         /** @this HTMLElement */
         function () {
+          $(this).siblings('.empty-title-input').addClass('hidden');
           const $entry = $(this).closest('.milestone-entry');
           const currentVal = $(this).val();
           const originalVal = $(this).attr('data-orig-val');
@@ -1000,6 +1014,7 @@ const app = () => {
             $(this).parent().remove();
           } else {
             $(this).siblings('.card').addClass('deleted-card');
+            $(this).parent().find('.invalid-input').addClass('hidden');
             $(this).siblings('.recover-button').removeAttr('disabled');
             $(this).addClass('hidden');
             $(this).parent().attr('data-todo', 'delete');
@@ -1114,6 +1129,7 @@ const app = () => {
               $(this).remove();
             } else {
               $(this).children('.card').addClass('deleted-card');
+              $(this).parent().find('.invalid-input').addClass('hidden');
               $(this).children('.recover-button').removeAttr('disabled');
               $(this).children('.delete-button').addClass('hidden');
               $(this).children('.recover-button').removeClass('hidden');
@@ -1174,6 +1190,52 @@ const app = () => {
     /** === END: LIST, DELETE, CLEAR, AND COPY ENTRIES === */
 
     /** === START: COMMIT FUNCTION COMPONENTS === */
+
+    const validateEntries = () => {
+      let labelsErrorCount = 0;
+      let milestonesErrorCount = 0;
+
+      $('#form-labels')
+        .children()
+        .each(
+          /** @this HTMLElement */
+          function () {
+            if ($(this).attr('data-todo') === 'delete') {
+              return;
+            } else {
+              if ($(this).find('.label-fitting').val() === '') {
+                $(this).find('.empty-name-input').removeClass('hidden');
+                labelsErrorCount++;
+              }
+              if (
+                !/^#([0-9A-F]{3}){1,2}$/i.test(
+                  $(this).find('.color-fitting').val(),
+                )
+              ) {
+                labelsErrorCount++;
+                if ($(this).find('.color-fitting').val() === '') {
+                  $(this).find('.empty-color-input').removeClass('hidden');
+                } else {
+                  $(this).find('.invalid-color-input').removeClass('hidden');
+                }
+              }
+            }
+          },
+        );
+
+      $('#form-milestones')
+        .children()
+        .each(
+          /** @this HTMLElement */
+          function () {
+            if ($(this).find('.title-fitting').val() === '') {
+              $(this).find('.empty-title-input').removeClass('hidden');
+              milestonesErrorCount++;
+            }
+          },
+        );
+      return [labelsErrorCount, milestonesErrorCount];
+    };
 
     const serializeEntries = (jObjectEntry, kind) => {
       const formatDate = (dateInput) => {
@@ -1306,6 +1368,18 @@ const app = () => {
           `You need to enter your personal access token for repo \
           ${LOGIN_INFO.targetRepo} in order to commit changes.`,
         );
+        return;
+      }
+
+      const [labelsErrorCount, milestonesErrorCount] = validateEntries();
+      if (labelsErrorCount || milestonesErrorCount) {
+        const labelsAlert = labelsErrorCount
+          ? `${labelsErrorCount} error(s) found in labels!\n`
+          : '';
+        const milestonesAlert = milestonesErrorCount
+          ? `${milestonesErrorCount} error(s) found in milestones!`
+          : '';
+        alert(`${labelsAlert}${milestonesAlert}`);
         return;
       }
 
