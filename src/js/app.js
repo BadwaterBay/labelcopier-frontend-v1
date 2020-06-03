@@ -1257,20 +1257,24 @@ const app = () => {
         .each(
           /** @this HTMLElement */
           function () {
-            if ($(this).find('.label-fitting').val() === '') {
-              $(this).find('.empty-name-input').removeClass('hidden');
-              labelsErrorCount++;
-            }
-            if (
-              !/^#([0-9A-F]{3}){1,2}$/i.test(
-                $(this).find('.color-fitting').val(),
-              )
-            ) {
-              labelsErrorCount++;
-              if ($(this).find('.color-fitting').val() === '') {
-                $(this).find('.empty-color-input').removeClass('hidden');
-              } else {
-                $(this).find('.invalid-color-input').removeClass('hidden');
+            if ($(this).attr('data-todo') === 'delete') {
+              return;
+            } else {
+              if ($(this).find('.label-fitting').val() === '') {
+                $(this).find('.empty-name-input').removeClass('hidden');
+                labelsErrorCount++;
+              }
+              if (
+                !/^#([0-9A-F]{3}){1,2}$/i.test(
+                  $(this).find('.color-fitting').val(),
+                )
+              ) {
+                labelsErrorCount++;
+                if ($(this).find('.color-fitting').val() === '') {
+                  $(this).find('.empty-color-input').removeClass('hidden');
+                } else {
+                  $(this).find('.invalid-color-input').removeClass('hidden');
+                }
               }
             }
           },
