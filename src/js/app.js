@@ -1374,10 +1374,10 @@ const app = () => {
       const [labelsErrorCount, milestonesErrorCount] = validateEntries();
       if (labelsErrorCount || milestonesErrorCount) {
         const labelsAlert = labelsErrorCount
-          ? `Found ${labelsErrorCount} error(s) in labels!\n`
+          ? `${labelsErrorCount} error(s) found in labels!\n`
           : '';
         const milestonesAlert = milestonesErrorCount
-          ? `Found ${milestonesErrorCount} error(s) in milestones!\n`
+          ? `${milestonesErrorCount} error(s) found in milestones!\n`
           : '';
         alert(`${labelsAlert}${milestonesAlert}`);
         return;
