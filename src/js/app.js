@@ -1386,7 +1386,7 @@ const app = () => {
       commit();
     });
 
-    // Clicking outside the modal closes it
+    // Clicking outside modal closes it
     $(document).click(function (event) {
       if ($(event.target).is('#loadingModal')) {
         $('#loadingModal').modal('hide');
