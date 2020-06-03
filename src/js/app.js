@@ -1248,6 +1248,48 @@ const app = () => {
       }
     };
 
+    const validateEntries = () => {
+      let labelsErrorCount = 0;
+      let milestonesErrorCount = 0;
+
+      $('#form-labels')
+        .children()
+        .each(
+          /** @this HTMLElement */
+          function () {
+            if ($(this).find('.label-fitting').val() === '') {
+              $(this).find('.empty-name-input').removeClass('hidden');
+              labelsErrorCount++;
+            }
+            if (
+              !/^#([0-9A-F]{3}){1,2}$/i.test(
+                $(this).find('.color-fitting').val(),
+              )
+            ) {
+              labelsErrorCount++;
+              if ($(this).find('.color-fitting').val() === '') {
+                $(this).find('.empty-color-input').removeClass('hidden');
+              } else {
+                $(this).find('.invalid-color-input').removeClass('hidden');
+              }
+            }
+          },
+        );
+
+      $('#form-milestones')
+        .children()
+        .each(
+          /** @this HTMLElement */
+          function () {
+            if ($(this).find('.title-fitting').val() === '') {
+              $(this).find('.empty-title-input').removeClass('hidden');
+              milestonesErrorCount++;
+            }
+          },
+        );
+      return [labelsErrorCount, milestonesErrorCount];
+    };
+
     const commit = () => {
       // freeze the world
       $('#loadingModal').modal({
