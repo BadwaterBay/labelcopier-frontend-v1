@@ -1377,7 +1377,7 @@ const app = () => {
           ? `${labelsErrorCount} error(s) found in labels!\n`
           : '';
         const milestonesAlert = milestonesErrorCount
-          ? `${milestonesErrorCount} error(s) found in milestones!\n`
+          ? `${milestonesErrorCount} error(s) found in milestones!`
           : '';
         alert(`${labelsAlert}${milestonesAlert}`);
         return;
