@@ -1361,6 +1361,18 @@ const app = () => {
         return;
       }
 
+      const [labelsErrorCount, milestonesErrorCount] = validateEntries();
+      if (labelsErrorCount || milestonesErrorCount) {
+        const labelsAlert = labelsErrorCount
+          ? `Found ${labelsErrorCount} error(s) in labels!\n`
+          : '';
+        const milestonesAlert = milestonesErrorCount
+          ? `Found ${milestonesErrorCount} error(s) in milestones!\n`
+          : '';
+        alert(`${labelsAlert}${milestonesAlert}`);
+        return;
+      }
+
       commit();
     });
 
