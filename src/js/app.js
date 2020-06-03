@@ -614,16 +614,16 @@ const app = () => {
             <input name="name" type="text" \
             class="form-control label-fitting" \
             placeholder="Name" value="${label.name}" ${origNameVal}>\
-            <div class="empty-name-input hidden">\
+            <div class="empty-name-input invalid-input hidden">\
               Label name is required.\
             </div>\
             <input name="color" type="text" \
             class="form-control color-fitting color-box" \
             placeholder="Color" value="${label.color}" ${origColorVal}>\
-            <div class="invalid-color-input hidden">\
+            <div class="invalid-color-input invalid-input hidden">\
               Invalid hex code.\
             </div>\
-            <div class="empty-color-input hidden">\
+            <div class="empty-color-input invalid-input hidden">\
               Label color is required.\
             </div>\
             <input name="description" type="text" \
@@ -701,6 +701,7 @@ const app = () => {
             $(this).parent().remove();
           } else {
             $(this).siblings('.card').addClass('deleted-card');
+            $(this).parent().find('.invalid-input').addClass('hidden');
             $(this).siblings('.recover-button').removeAttr('disabled');
             $(this).addClass('hidden');
             $(this).parent().attr('data-todo', 'delete');
@@ -880,7 +881,7 @@ const app = () => {
             <input name="title" type="text" \
             class="form-control title-fitting" placeholder="Title" \
             value="${milestone.title}" ${origTitleVal}>\
-            <div class="empty-title-input hidden">\
+            <div class="empty-title-input invalid-input hidden">\
               Milestone title is required.\
             </div>\
             <input name="description" type="text" \
@@ -1010,6 +1011,7 @@ const app = () => {
             $(this).parent().remove();
           } else {
             $(this).siblings('.card').addClass('deleted-card');
+            $(this).parent().find('.invalid-input').addClass('hidden');
             $(this).siblings('.recover-button').removeAttr('disabled');
             $(this).addClass('hidden');
             $(this).parent().attr('data-todo', 'delete');
@@ -1124,6 +1126,7 @@ const app = () => {
               $(this).remove();
             } else {
               $(this).children('.card').addClass('deleted-card');
+              $(this).parent().find('.invalid-input').addClass('hidden');
               $(this).children('.recover-button').removeAttr('disabled');
               $(this).children('.delete-button').addClass('hidden');
               $(this).children('.recover-button').removeClass('hidden');
