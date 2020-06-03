@@ -651,7 +651,7 @@ const app = () => {
           const $entry = $(this).closest('.label-entry');
 
           /** @this HTMLElement */
-          if (checkInputChanges($entry)) {
+          if (checkInputChanges($entry) && $entry.attr('new') !== 'true') {
             // If this is unchanged
             $entry.attr('data-todo', 'none');
             $entry.removeClass('uncommitted');
@@ -938,7 +938,7 @@ const app = () => {
         function () {
           const $entry = $(this).closest('.milestone-entry');
 
-          if (checkInputChanges($entry)) {
+          if (checkInputChanges($entry) && $entry.attr('new') !== 'true') {
             // unchanged
             $entry.attr('data-todo', 'none');
             $entry.removeClass('uncommitted');
