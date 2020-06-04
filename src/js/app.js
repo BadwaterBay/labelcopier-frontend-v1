@@ -1296,8 +1296,8 @@ const app = () => {
 
       return [
         labelsErrorCount,
-        milestonesErrorCount,
         labelsDuplicateCount,
+        milestonesErrorCount,
         milestonesDuplicateCount,
       ];
     };
@@ -1438,17 +1438,42 @@ const app = () => {
 
       const [
         labelsErrorCount,
-        milestonesErrorCount,
         labelsDuplicateCount,
+        milestonesErrorCount,
         milestonesDuplicateCount,
       ] = validateEntries();
-      if (labelsErrorCount || milestonesErrorCount) {
-        const labelsAlert = labelsErrorCount
-          ? `${labelsErrorCount} error(s) found in labels!\n`
-          : '';
-        const milestonesAlert = milestonesErrorCount
-          ? `${milestonesErrorCount} error(s) found in milestones!`
-          : '';
+      if (
+        labelsErrorCount ||
+        milestonesErrorCount ||
+        labelsDuplicateCount ||
+        milestonesDuplicateCount
+      ) {
+        let labelsAlert;
+        let milestonesAlert;
+        if (labelsErrorCount || labelsDuplicateCount) {
+          if (labelsDuplicateCount) {
+            if (labelsErrorCount) {
+              labelsAlert = `${labelsDuplicateCount} set(s) of duplicate entries and ${labelsErrorCount} other error(s) found in labels!\n`;
+            } else {
+              labelsAlert = `${labelsDuplicateCount} set(s) of duplicate entries found in labels!\n`;
+            }
+          } else {
+            labelsAlert = `${labelsErrorCount} error(s) found in labels!\n`;
+          }
+        }
+
+        if (milestonesErrorCount || milestonesDuplicateCount) {
+          if (milestonesDuplicateCount) {
+            if (milestonesErrorCount) {
+              milestonesAlert = `${milestonesDuplicateCount} set(s) of duplicate entries and ${milestonesErrorCount} other error(s) found in milestones!`;
+            } else {
+              milestonesAlert = `${milestonesDuplicateCount} set(s) of duplicate entries found in milestones!`;
+            }
+          } else {
+            milestonesAlert = `${milestonesErrorCount} error(s) found in milestones!`;
+          }
+        }
+
         alert(`${labelsAlert}${milestonesAlert}`);
         return;
       }
