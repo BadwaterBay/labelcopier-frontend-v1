@@ -64,7 +64,8 @@ body {
           grid-row: 1 / 2;
         }
 
-        .empty-name-input {
+        .empty-name-input,
+        .duplicate-name-input {
           @extend %invalid-input;
           text-align: left;
           grid-column: 1 / 2;
@@ -106,7 +107,8 @@ body {
           grid-row: 1 / 2;
         }
 
-        .empty-title-input {
+        .empty-title-input,
+        .duplicate-title-input {
           @extend %invalid-input;
           grid-column: 1 / -1;
           grid-row: 2 / 3;

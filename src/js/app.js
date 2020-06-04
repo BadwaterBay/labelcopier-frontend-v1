@@ -617,6 +617,9 @@ const app = () => {
             <div class="empty-name-input invalid-input hidden">\
               Label name is required.\
             </div>\
+            <div class="duplicate-name-input invalid-input">\
+              A label with this name already exists.
+            </div>\
             <input name="color" type="text" \
             class="form-control color-fitting color-box" \
             placeholder="Color" value="${label.color}" ${origColorVal}>\
@@ -885,6 +888,9 @@ const app = () => {
             value="${milestone.title}" ${origTitleVal}>\
             <div class="empty-title-input invalid-input hidden">\
               Milestone title is required.\
+            </div>\
+            <div class="duplicate-title-input invalid-input">\
+              A milestone with this name already exists.\
             </div>\
             <input name="description" type="text" \
               class="form-control description-fitting" \
