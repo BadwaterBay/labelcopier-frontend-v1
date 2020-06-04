@@ -120,6 +120,52 @@ const app = () => {
       return noChanges;
     };
 
+    /**
+     * @param {string} kind
+     * @param {string} blockedVal
+     * @return {number}
+     */
+    const countDuplicates = (kind, blockedVal) => {
+      let duplicateCount = 0;
+      $(`#form-${kind}`)
+        .children()
+        .each(
+          /** @this HTMLElement */
+          function () {
+            const $nameInput = $(this).find('.name-fitting');
+            if (
+              $nameInput.attr('blocked-val') === blockedVal &&
+              $nameInput.attr('dup-resolved') !== 'true'
+            ) {
+              duplicateCount += 1;
+            }
+          },
+        );
+      return duplicateCount;
+    };
+
+    /**
+     * @param {string} kind
+     * @param {string} blockedVal
+     */
+    const resolveDuplicates = (kind, blockedVal) => {
+      $(`#form-${kind}`)
+        .children()
+        .each(
+          /** @this HTMLElement */
+          function () {
+            const $nameInput = $(this).find('.name-fitting');
+            if (
+              $nameInput.attr('blocked-val') === blockedVal &&
+              !$nameInput.attr('dup-resolved') !== 'true'
+            ) {
+              $(this).find('.duplicate-name-input').addClass('hidden');
+              $nameInput.attr('dup-resolved', true);
+            }
+          },
+        );
+    };
+
     const checkIfEnableCommit = () => {
       // returns true if any change has been made and activates or
       // disactivates commit button accordingly
@@ -678,41 +724,14 @@ const app = () => {
         function () {
           $(this).siblings('.empty-name-input').addClass('hidden');
 
-          if (!$(this).siblings('.duplicate-name-input').hasClass('hidden')) {
-            let duplicateCount = 0;
+          const $duplicateMessage = $(this).siblings('.duplicate-name-input');
+          if (!$duplicateMessage.hasClass('hidden')) {
             const blockedVal = $(this).attr('blocked-val');
-            $('#form-labels')
-              .children()
-              .each(
-                /** @this HTMLElement */
-                function () {
-                  const $nameInput = $(this).find('.name-fitting');
-                  if (
-                    $nameInput.attr('blocked-val') === blockedVal &&
-                    $nameInput.attr('dup-resolved') !== 'true'
-                  ) {
-                    duplicateCount += 1;
-                  }
-                },
-              );
+            const duplicateCount = countDuplicates('labels', blockedVal);
             if (duplicateCount === 2) {
-              $('#form-labels')
-                .children()
-                .each(
-                  /** @this HTMLElement */
-                  function () {
-                    const $nameInput = $(this).find('.name-fitting');
-                    if (
-                      $nameInput.attr('blocked-val') === blockedVal &&
-                      !$nameInput.attr('dup-resolved') !== 'true'
-                    ) {
-                      $(this).find('.duplicate-name-input').addClass('hidden');
-                      $nameInput.attr('dup-resolved', true);
-                    }
-                  },
-                );
+              resolveDuplicates('labels', blockedVal);
             } else {
-              $(this).siblings('.duplicate-name-input').addClass('hidden');
+              $duplicateMessage.addClass('hidden');
               $(this).attr('dup-resolved', true);
             }
           }
@@ -1036,41 +1055,14 @@ const app = () => {
         function () {
           $(this).siblings('.empty-name-input').addClass('hidden');
 
-          if (!$(this).siblings('.duplicate-name-input').hasClass('hidden')) {
-            let duplicateCount = 0;
+          const $duplicateMessage = $(this).siblings('.duplicate-name-input');
+          if (!$duplicateMessage.hasClass('hidden')) {
             const blockedVal = $(this).attr('blocked-val');
-            $('#form-milestones')
-              .children()
-              .each(
-                /** @this HTMLElement */
-                function () {
-                  const $nameInput = $(this).find('.name-fitting');
-                  if (
-                    $nameInput.attr('blocked-val') === blockedVal &&
-                    $nameInput.attr('dup-resolved') !== 'true'
-                  ) {
-                    duplicateCount += 1;
-                  }
-                },
-              );
+            const duplicateCount = countDuplicates('milestones', blockedVal);
             if (duplicateCount === 2) {
-              $('#form-milestones')
-                .children()
-                .each(
-                  /** @this HTMLElement */
-                  function () {
-                    const $nameInput = $(this).find('.name-fitting');
-                    if (
-                      $nameInput.attr('blocked-val') === blockedVal &&
-                      !$nameInput.attr('dup-resolved') !== 'true'
-                    ) {
-                      $(this).find('.duplicate-name-input').addClass('hidden');
-                      $nameInput.attr('dup-resolved', true);
-                    }
-                  },
-                );
+              resolveDuplicates('milestones', blockedVal);
             } else {
-              $(this).siblings('.duplicate-name-input').addClass('hidden');
+              $duplicateMessage.addClass('hidden');
               $(this).attr('dup-resolved', true);
             }
           }
