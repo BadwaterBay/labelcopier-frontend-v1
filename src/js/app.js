@@ -1442,14 +1442,15 @@ const app = () => {
         milestonesErrorCount,
         milestonesDuplicateCount,
       ] = validateEntries();
+
       if (
         labelsErrorCount ||
         milestonesErrorCount ||
         labelsDuplicateCount ||
         milestonesDuplicateCount
       ) {
-        let labelsAlert;
-        let milestonesAlert;
+        let labelsAlert = '';
+        let milestonesAlert = '';
         if (labelsErrorCount || labelsDuplicateCount) {
           if (labelsDuplicateCount) {
             if (labelsErrorCount) {
