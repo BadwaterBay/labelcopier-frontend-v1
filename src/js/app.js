@@ -1386,6 +1386,13 @@ const app = () => {
       commit();
     });
 
+    // Clicking outside the modal closes it
+    $(document).click((event) => {
+      if ($(event.target).is('#loadingModal')) {
+        $('#loadingModal').modal('hide');
+      }
+    });
+
     $('#loadingModal').on('hidden.bs.modal', () => {
       isLoadingShown = false;
 
