@@ -384,8 +384,8 @@ const app = () => {
       },
     });
 
-    const LABEL_SET = new Set();
-    const MILESTONE_SET = new Set();
+    // const LABEL_SET = new Set();
+    // const MILESTONE_SET = new Set();
 
     const apiCallGetEntries = (owner, repo, kind, mode, callback) => {
       const apiCallGetUrl = (owner, repo, kind, pageNum) => {
@@ -419,12 +419,12 @@ const app = () => {
                 response.forEach((e) => {
                   e.color = `#${e.color.toUpperCase()}`;
                   createNewLabelEntry(e, mode);
-                  LABEL_SET.add(e.name);
+                  // LABEL_SET.add(e.name);
                 });
               } else if (kind === 'milestones') {
                 response.forEach((e) => {
                   createNewMilestoneEntry(e, mode);
-                  MILESTONE_SET.add(e.title);
+                  // MILESTONE_SET.add(e.title);
                 });
               } else {
                 console.log('Bug in function apiCallGetEntriesRecursive!');
@@ -459,13 +459,13 @@ const app = () => {
 
       // setWhichRepoInUseText();
 
-      if (kind === 'labels') {
-        LABEL_SET.clear();
-      } else if (kind === 'milestones') {
-        MILESTONE_SET.clear();
-      } else {
-        console.log('Bug in function apiCallGetEntries!');
-      }
+      // if (kind === 'labels') {
+      //   LABEL_SET.clear();
+      // } else if (kind === 'milestones') {
+      //   MILESTONE_SET.clear();
+      // } else {
+      //   console.log('Bug in function apiCallGetEntries!');
+      // }
 
       apiCallGetEntriesRecursive(owner, repo, kind, mode, callback, 1);
     };
@@ -612,13 +612,13 @@ const app = () => {
         <div class="card">\
           <div class="card-body" id="label-grid">\
             <input name="name" type="text" \
-            class="form-control label-fitting" \
+            class="form-control name-fitting" \
             placeholder="Name" value="${label.name}" ${origNameVal}>\
             <div class="empty-name-input invalid-input hidden">\
               Label name is required.\
             </div>\
-            <div class="duplicate-name-input invalid-input">\
-              A label with this name already exists.
+            <div class="duplicate-name-input invalid-input hidden">\
+              Another label with the same name exists.\
             </div>\
             <input name="color" type="text" \
             class="form-control color-fitting color-box" \
@@ -677,20 +677,20 @@ const app = () => {
         /** @this HTMLElement */
         function () {
           $(this).siblings('.empty-name-input').addClass('hidden');
-          const $entry = $(this).closest('.label-entry');
-          const currentVal = $(this).val();
-          const originalVal = $(this).attr('data-orig-val');
+          // const $entry = $(this).closest('.label-entry');
+          // const currentVal = $(this).val();
+          // const originalVal = $(this).attr('data-orig-val');
 
-          /** @this HTMLElement */
-          if (LABEL_SET.has(currentVal) && currentVal !== originalVal) {
-            $entry.addClass('duplicate-entry');
-            $(this).addClass('red-alert-background');
-            alert('This label name has already been taken!');
-            // In the future, we might use a popup instead of an alert
-          } else {
-            $entry.removeClass('duplicate-entry');
-            $(this).removeClass('red-alert-background');
-          }
+          // /** @this HTMLElement */
+          // if (LABEL_SET.has(currentVal) && currentVal !== originalVal) {
+          //   $entry.addClass('duplicate-entry');
+          //   $(this).addClass('red-alert-background');
+          //   alert('This label name has already been taken!');
+          //   // In the future, we might use a popup instead of an alert
+          // } else {
+          //   $entry.removeClass('duplicate-entry');
+          //   $(this).removeClass('red-alert-background');
+          // }
 
           checkIfEnableCommit();
           return;
@@ -884,13 +884,13 @@ const app = () => {
         <div class="card">\
           <div class="card-body" id="milestone-grid">\
             <input name="title" type="text" \
-            class="form-control title-fitting" placeholder="Title" \
+            class="form-control name-fitting" placeholder="Title" \
             value="${milestone.title}" ${origTitleVal}>\
-            <div class="empty-title-input invalid-input hidden">\
+            <div class="empty-name-input invalid-input hidden">\
               Milestone title is required.\
             </div>\
-            <div class="duplicate-title-input invalid-input">\
-              A milestone with this name already exists.\
+            <div class="duplicate-name-input invalid-input hidden">\
+              Another milestone with the same title exists.\
             </div>\
             <input name="description" type="text" \
               class="form-control description-fitting" \
@@ -993,20 +993,20 @@ const app = () => {
       newElementEntry.find('input[name="title"]').keyup(
         /** @this HTMLElement */
         function () {
-          $(this).siblings('.empty-title-input').addClass('hidden');
-          const $entry = $(this).closest('.milestone-entry');
-          const currentVal = $(this).val();
-          const originalVal = $(this).attr('data-orig-val');
+          $(this).siblings('.empty-name-input').addClass('hidden');
+          // const $entry = $(this).closest('.milestone-entry');
+          // const currentVal = $(this).val();
+          // const originalVal = $(this).attr('data-orig-val');
 
-          if (MILESTONE_SET.has(currentVal) && currentVal !== originalVal) {
-            $entry.addClass('duplicate-entry');
-            $(this).addClass('red-alert-background');
-            alert('This milestone title has already been taken!');
-            // In the future, we might use a popup instead of an alert
-          } else {
-            $entry.removeClass('duplicate-entry');
-            $(this).removeClass('red-alert-background');
-          }
+          // if (MILESTONE_SET.has(currentVal) && currentVal !== originalVal) {
+          //   $entry.addClass('duplicate-entry');
+          //   $(this).addClass('red-alert-background');
+          //   alert('This milestone title has already been taken!');
+          //   // In the future, we might use a popup instead of an alert
+          // } else {
+          //   $entry.removeClass('duplicate-entry');
+          //   $(this).removeClass('red-alert-background');
+          // }
 
           checkIfEnableCommit();
           return;
@@ -1198,8 +1198,34 @@ const app = () => {
     /** === START: COMMIT FUNCTION COMPONENTS === */
 
     const validateEntries = () => {
+      const displayDuplicateErrors = (kind, tally) => {
+        if (
+          Object.values(tally).some((e) => {
+            return e > 1;
+          })
+        ) {
+          const duplicates = Object.keys(tally).filter((k) => {
+            return tally[k] > 1;
+          });
+
+          $(`#form-${kind}`)
+            .children()
+            .each(
+              /** @this HTMLElement */
+              function () {
+                if (duplicates.includes($(this).find('.name-fitting').val())) {
+                  $(this).find('.duplicate-name-input').removeClass('hidden');
+                }
+              },
+            );
+          return duplicates.length;
+        }
+      };
+
       let labelsErrorCount = 0;
       let milestonesErrorCount = 0;
+      let labelsTally = {};
+      let milestonesTally = {};
 
       $('#form-labels')
         .children()
@@ -1209,9 +1235,16 @@ const app = () => {
             if ($(this).attr('data-todo') === 'delete') {
               return;
             } else {
-              if ($(this).find('.label-fitting').val() === '') {
+              const $labelName = $(this).find('.name-fitting').val();
+              if ($labelName === '') {
                 $(this).find('.empty-name-input').removeClass('hidden');
                 labelsErrorCount++;
+              } else {
+                if (labelsTally[$labelName] === undefined) {
+                  labelsTally[$labelName] = 1;
+                } else {
+                  labelsTally[$labelName] += 1;
+                }
               }
               if (
                 !/^#([0-9A-F]{3}){1,2}$/i.test(
@@ -1237,14 +1270,36 @@ const app = () => {
             if ($(this).attr('data-todo') === 'delete') {
               return;
             } else {
-              if ($(this).find('.title-fitting').val() === '') {
-                $(this).find('.empty-title-input').removeClass('hidden');
+              const $milestoneName = $(this).find('.name-fitting').val();
+              if ($milestoneName === '') {
+                $(this).find('.empty-name-input').removeClass('hidden');
                 milestonesErrorCount++;
+              } else {
+                if (milestonesTally[$milestoneName] === undefined) {
+                  milestonesTally[$milestoneName] = 1;
+                } else {
+                  milestonesTally[$milestoneName] += 1;
+                }
               }
             }
           },
         );
-      return [labelsErrorCount, milestonesErrorCount];
+
+      const labelsDuplicateCount = displayDuplicateErrors(
+        'labels',
+        labelsTally,
+      );
+      const milestonesDuplicateCount = displayDuplicateErrors(
+        'milestones',
+        milestonesTally,
+      );
+
+      return [
+        labelsErrorCount,
+        milestonesErrorCount,
+        labelsDuplicateCount,
+        milestonesDuplicateCount,
+      ];
     };
 
     const serializeEntries = (jObjectEntry, kind) => {
@@ -1381,7 +1436,12 @@ const app = () => {
         return;
       }
 
-      const [labelsErrorCount, milestonesErrorCount] = validateEntries();
+      const [
+        labelsErrorCount,
+        milestonesErrorCount,
+        labelsDuplicateCount,
+        milestonesDuplicateCount,
+      ] = validateEntries();
       if (labelsErrorCount || milestonesErrorCount) {
         const labelsAlert = labelsErrorCount
           ? `${labelsErrorCount} error(s) found in labels!\n`
