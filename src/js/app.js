@@ -677,6 +677,46 @@ const app = () => {
         /** @this HTMLElement */
         function () {
           $(this).siblings('.empty-name-input').addClass('hidden');
+
+          if (!$(this).siblings('.duplicate-name-input').hasClass('hidden')) {
+            let duplicateCount = 0;
+            const blockedVal = $(this).attr('blocked-val');
+            $('#form-labels')
+              .children()
+              .each(
+                /** @this HTMLElement */
+                function () {
+                  const $nameInput = $(this).find('.name-fitting');
+                  if (
+                    $nameInput.attr('blocked-val') === blockedVal &&
+                    $nameInput.attr('dup-resolved') !== 'true'
+                  ) {
+                    duplicateCount += 1;
+                  }
+                },
+              );
+            if (duplicateCount === 2) {
+              $('#form-labels')
+                .children()
+                .each(
+                  /** @this HTMLElement */
+                  function () {
+                    const $nameInput = $(this).find('.name-fitting');
+                    if (
+                      $nameInput.attr('blocked-val') === blockedVal &&
+                      !$nameInput.attr('dup-resolved') !== 'true'
+                    ) {
+                      $(this).find('.duplicate-name-input').addClass('hidden');
+                      $nameInput.attr('dup-resolved', true);
+                    }
+                  },
+                );
+            } else {
+              $(this).siblings('.duplicate-name-input').addClass('hidden');
+              $(this).attr('dup-resolved', true);
+            }
+          }
+
           // const $entry = $(this).closest('.label-entry');
           // const currentVal = $(this).val();
           // const originalVal = $(this).attr('data-orig-val');
@@ -749,6 +789,7 @@ const app = () => {
             $(el).ColorPickerHide();
             $(el).css('background-color', `#${hex}`);
             $(el).siblings('.invalid-color-input').addClass('hidden');
+            $(el).siblings('.empty-color-input').addClass('hidden');
             const $entry = $(el).closest('.label-entry');
 
             if (checkInputChanges($entry)) {
@@ -994,6 +1035,45 @@ const app = () => {
         /** @this HTMLElement */
         function () {
           $(this).siblings('.empty-name-input').addClass('hidden');
+
+          if (!$(this).siblings('.duplicate-name-input').hasClass('hidden')) {
+            let duplicateCount = 0;
+            const blockedVal = $(this).attr('blocked-val');
+            $('#form-milestones')
+              .children()
+              .each(
+                /** @this HTMLElement */
+                function () {
+                  const $nameInput = $(this).find('.name-fitting');
+                  if (
+                    $nameInput.attr('blocked-val') === blockedVal &&
+                    $nameInput.attr('dup-resolved') !== 'true'
+                  ) {
+                    duplicateCount += 1;
+                  }
+                },
+              );
+            if (duplicateCount === 2) {
+              $('#form-milestones')
+                .children()
+                .each(
+                  /** @this HTMLElement */
+                  function () {
+                    const $nameInput = $(this).find('.name-fitting');
+                    if (
+                      $nameInput.attr('blocked-val') === blockedVal &&
+                      !$nameInput.attr('dup-resolved') !== 'true'
+                    ) {
+                      $(this).find('.duplicate-name-input').addClass('hidden');
+                      $nameInput.attr('dup-resolved', true);
+                    }
+                  },
+                );
+            } else {
+              $(this).siblings('.duplicate-name-input').addClass('hidden');
+              $(this).attr('dup-resolved', true);
+            }
+          }
           // const $entry = $(this).closest('.milestone-entry');
           // const currentVal = $(this).val();
           // const originalVal = $(this).attr('data-orig-val');
@@ -1232,20 +1312,23 @@ const app = () => {
         .each(
           /** @this HTMLElement */
           function () {
+            $(this).find('.name-fitting').removeAttr('dup-resolved');
             if ($(this).attr('data-todo') === 'delete') {
               return;
             } else {
-              const $labelName = $(this).find('.name-fitting').val();
-              if ($labelName === '') {
+              const labelName = $(this).find('.name-fitting').val();
+              if (labelName === '') {
                 $(this).find('.empty-name-input').removeClass('hidden');
                 labelsErrorCount++;
               } else {
-                if (labelsTally[$labelName] === undefined) {
-                  labelsTally[$labelName] = 1;
+                if (labelsTally[labelName] === undefined) {
+                  labelsTally[labelName] = 1;
                 } else {
-                  labelsTally[$labelName] += 1;
+                  labelsTally[labelName] += 1;
                 }
               }
+              $(this).find('.name-fitting').attr('blocked-val', labelName);
+
               if (
                 !/^#([0-9A-F]{3}){1,2}$/i.test(
                   $(this).find('.color-fitting').val(),
@@ -1267,20 +1350,22 @@ const app = () => {
         .each(
           /** @this HTMLElement */
           function () {
+            $(this).find('.name-fitting').removeAttr('dup-resolved');
             if ($(this).attr('data-todo') === 'delete') {
               return;
             } else {
-              const $milestoneName = $(this).find('.name-fitting').val();
-              if ($milestoneName === '') {
+              const milestoneName = $(this).find('.name-fitting').val();
+              if (milestoneName === '') {
                 $(this).find('.empty-name-input').removeClass('hidden');
                 milestonesErrorCount++;
               } else {
-                if (milestonesTally[$milestoneName] === undefined) {
-                  milestonesTally[$milestoneName] = 1;
+                if (milestonesTally[milestoneName] === undefined) {
+                  milestonesTally[milestoneName] = 1;
                 } else {
-                  milestonesTally[$milestoneName] += 1;
+                  milestonesTally[milestoneName] += 1;
                 }
               }
+              $(this).find('.name-fitting').attr('blocked-val', milestoneName);
             }
           },
         );
