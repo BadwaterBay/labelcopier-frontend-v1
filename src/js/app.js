@@ -1228,9 +1228,13 @@ const app = () => {
         .each(
           /** @this HTMLElement */
           function () {
-            if ($(this).find('.title-fitting').val() === '') {
-              $(this).find('.empty-title-input').removeClass('hidden');
-              milestonesErrorCount++;
+            if ($(this).attr('data-todo') === 'delete') {
+              return;
+            } else {
+              if ($(this).find('.title-fitting').val() === '') {
+                $(this).find('.empty-title-input').removeClass('hidden');
+                milestonesErrorCount++;
+              }
             }
           },
         );
