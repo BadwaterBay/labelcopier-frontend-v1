@@ -157,7 +157,7 @@ const app = () => {
             const $nameInput = $(this).find('.name-fitting');
             if (
               $nameInput.attr('blocked-val') === blockedVal &&
-              !$nameInput.attr('dup-resolved') !== 'true'
+              $nameInput.attr('dup-resolved') !== 'true'
             ) {
               $(this).find('.duplicate-name-input').addClass('hidden');
               $nameInput.attr('dup-resolved', true);
