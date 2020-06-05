@@ -28,8 +28,8 @@ Vist our issue and pull request websites:
 [![GitHub issues](https://img.shields.io/github/issues/BadwaterBay/github-label-manager-plus.svg)](https://GitHub.com/BadwaterBay/github-label-manager-plus/issues/)
 [![GitHub issues-closed](https://img.shields.io/github/issues-closed/BadwaterBay/github-label-manager-plus.svg)](https://GitHub.com/BadwaterBay/github-label-manager-plus/issues?q=is%3Aissue+is%3Aclosed)
 
-[![GitHub pull-requests](https://img.shields.io/github/issues-pr/BadwaterBay/github-label-manager-plus.svg)](https://GitHub.com/BadwaterBay/github-label-manager-plus/pull/)
-[![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/BadwaterBay/github-label-manager-plus.svg)](https://GitHub.com/BadwaterBay/github-label-manager-plus/pull/)
+[![GitHub pull-requests](https://img.shields.io/github/issues-pr/BadwaterBay/github-label-manager-plus.svg)](https://GitHub.com/BadwaterBay/github-label-manager-plus/pulls/)
+[![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/BadwaterBay/github-label-manager-plus.svg)](https://GitHub.com/BadwaterBay/github-label-manager-plus/pulls/)
 
 ---
 
