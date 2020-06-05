@@ -724,14 +724,14 @@ const app = () => {
         function () {
           $(this).siblings('.empty-name-input').addClass('hidden');
 
-          const $duplicateMessage = $(this).siblings('.duplicate-name-input');
-          if (!$duplicateMessage.hasClass('hidden')) {
+          const $duplicateWarning = $(this).siblings('.duplicate-name-input');
+          if (!$duplicateWarning.hasClass('hidden')) {
             const blockedVal = $(this).attr('blocked-val');
             const duplicateCount = countDuplicates('labels', blockedVal);
             if (duplicateCount === 2) {
               resolveDuplicates('labels', blockedVal);
             } else {
-              $duplicateMessage.addClass('hidden');
+              $duplicateWarning.addClass('hidden');
               $(this).attr('dup-resolved', true);
             }
           }
@@ -1055,14 +1055,14 @@ const app = () => {
         function () {
           $(this).siblings('.empty-name-input').addClass('hidden');
 
-          const $duplicateMessage = $(this).siblings('.duplicate-name-input');
-          if (!$duplicateMessage.hasClass('hidden')) {
+          const $duplicateWarning = $(this).siblings('.duplicate-name-input');
+          if (!$duplicateWarning.hasClass('hidden')) {
             const blockedVal = $(this).attr('blocked-val');
             const duplicateCount = countDuplicates('milestones', blockedVal);
             if (duplicateCount === 2) {
               resolveDuplicates('milestones', blockedVal);
             } else {
-              $duplicateMessage.addClass('hidden');
+              $duplicateWarning.addClass('hidden');
               $(this).attr('dup-resolved', true);
             }
           }
