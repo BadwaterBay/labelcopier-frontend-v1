@@ -1504,6 +1504,21 @@ const app = () => {
 
     $('#commit-to-target-repo').click(() => {
       const LOGIN_INFO = getLoginInfo();
+      const writeErrorsAlert = (errorCount, duplicateCount, kind) => {
+        let alertMsg = '';
+        if (errorCount || duplicateCount) {
+          if (duplicateCount) {
+            if (errorCount) {
+              alertMsg = `${duplicateCount} set(s) of duplicate entries and ${errorCount} other error(s) found in ${kind}!\n`;
+            } else {
+              alertMsg = `${duplicateCount} set(s) of duplicate entries found in ${kind}!\n`;
+            }
+          } else {
+            alertMsg = `${errorCount} error(s) found in ${kind}!\n`;
+          }
+        }
+        return alertMsg;
+      };
 
       if (!LOGIN_INFO.personalAccessToken) {
         alert(
@@ -1526,31 +1541,16 @@ const app = () => {
         labelsDuplicateCount ||
         milestonesDuplicateCount
       ) {
-        let labelsAlert = '';
-        let milestonesAlert = '';
-        if (labelsErrorCount || labelsDuplicateCount) {
-          if (labelsDuplicateCount) {
-            if (labelsErrorCount) {
-              labelsAlert = `${labelsDuplicateCount} set(s) of duplicate entries and ${labelsErrorCount} other error(s) found in labels!\n`;
-            } else {
-              labelsAlert = `${labelsDuplicateCount} set(s) of duplicate entries found in labels!\n`;
-            }
-          } else {
-            labelsAlert = `${labelsErrorCount} error(s) found in labels!\n`;
-          }
-        }
-
-        if (milestonesErrorCount || milestonesDuplicateCount) {
-          if (milestonesDuplicateCount) {
-            if (milestonesErrorCount) {
-              milestonesAlert = `${milestonesDuplicateCount} set(s) of duplicate entries and ${milestonesErrorCount} other error(s) found in milestones!`;
-            } else {
-              milestonesAlert = `${milestonesDuplicateCount} set(s) of duplicate entries found in milestones!`;
-            }
-          } else {
-            milestonesAlert = `${milestonesErrorCount} error(s) found in milestones!`;
-          }
-        }
+        const labelsAlert = writeErrorsAlert(
+          labelsErrorCount,
+          labelsDuplicateCount,
+          'labels',
+        );
+        const milestonesAlert = writeErrorsAlert(
+          milestonesErrorCount,
+          milestonesDuplicateCount,
+          'milestones',
+        );
 
         alert(`${labelsAlert}${milestonesAlert}`);
         return;
