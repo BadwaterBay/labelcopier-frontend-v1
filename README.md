@@ -6,15 +6,20 @@
 [![Open Source Love svg2](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
+Hosted at: [https://badwaterbay.com/app/github-label-manager-plus/](https://badwaterbay.com/app/github-label-manager-plus/)
+
+Repository: [https://github.com/BadwaterBay/github-label-manager-plus](https://github.com/BadwaterBay/github-label-manager-plus)
+
 ---
 
 ## Description
 
 This web app helps you manage labels and milestones of your GitHub repositories.
 
-This project was originally forked from [here](https://github.com/destan/github-label-manager) in early 2020. However, since it hadn't been updated since 2016, we took it into our own hands to fix bugs and add new features requested by the GitHub community. 
+This project was originally forked from [here](https://github.com/destan/github-label-manager) in early 2020. However, since it hadn't been updated since 2016, we took it into our own hands to fix bugs and add new features requested by the GitHub community.
 
 We are proud to continue developing and maintaining this open-source project for the community. We have made significant improvements:
+
 - Fixed numerous bugs
 - Now you can manage milestones
 - Added data validation before committing changes
@@ -80,4 +85,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with github-label-manager. If not, see <http://www.gnu.org/licenses/>.
+along with github-label-manager-plus. If not, see <http://www.gnu.org/licenses/>.
