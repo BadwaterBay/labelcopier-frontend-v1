@@ -1,5 +1,7 @@
 # GitHub Label Manager Plus
 
+[https://badwaterbay.com/app/github-label-manager-plus/](https://badwaterbay.com/app/github-label-manager-plus/)
+
 [![CodeFactor](https://www.codefactor.io/repository/github/badwaterbay/github-label-manager-plus/badge)](https://www.codefactor.io/repository/github/badwaterbay/github-label-manager-plus)
 [![DeepScan grade](https://deepscan.io/api/teams/9440/projects/11965/branches/179826/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=9440&pid=11965&bid=179826)
 [![GitHub contributors](https://img.shields.io/github/contributors/BadwaterBay/github-label-manager-plus.svg)](https://GitHub.com/BadwaterBay/github-label-manager-plus/graphs/contributors/)
@@ -12,9 +14,10 @@
 
 This web app helps you manage labels and milestones of your GitHub repositories.
 
-This project was originally forked from [here](https://github.com/destan/github-label-manager) in early 2020. However, since it hadn't been updated since 2016, we took it into our own hands to fix bugs and add new features requested by the GitHub community. 
+This project was originally forked from [here](https://github.com/destan/github-label-manager) in early 2020. However, since it hadn't been updated since 2016, we took it into our own hands to fix bugs and add new features requested by the GitHub community.
 
 We are proud to continue developing and maintaining this open-source project for the community. We have made significant improvements:
+
 - Fixed numerous bugs
 - Now you can manage milestones
 - Added data validation before committing changes
@@ -80,4 +83,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with github-label-manager. If not, see <http://www.gnu.org/licenses/>.
+along with github-label-manager-plus. If not, see <http://www.gnu.org/licenses/>.
