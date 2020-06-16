@@ -8,7 +8,9 @@
     "lint": "eslint './src/**/*.{js,html}' --fix-dry-run",
     "lint-fix": "eslint './src/**/*.{js,html}' --fix",
     "build": "webpack",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "browser-sync start -c 'bs-config.js'",
+    "start": "dev"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,7 @@
   },
   "homepage": "https://github.com/BadwaterBay/github-label-manager-plus#readme",
   "devDependencies": {
+    "browser-sync": "^2.26.7",
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.11.0",
