@@ -4,11 +4,11 @@
   "description": "A web app that help you manage GitHub labels and milestones",
   "private": true,
   "scripts": {
-    "lint": "eslint ./src/**/*.{js,html} --fix-dry-run",
-    "lint-fix": "eslint ./src/**/*.{js,html} --fix",
-    "format": "prettier ./src/**/*.{js,html} --write",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "format": "prettier './src/**/*.{js,html}' --write",
+    "lint": "eslint './src/**/*.{js,html}' --fix-dry-run",
+    "lint-fix": "eslint './src/**/*.{js,html}' --fix",
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
