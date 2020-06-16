@@ -1,7 +1,18 @@
 module.exports = {
+  arrowParens: 'always',
   bracketSpacing: true,
-  jsxBracketSameLine: true,
+  endOfLine: 'lf',
+  htmlWhitespaceSensitivity: 'css',
+  insertPragma: false,
+  jsxBracketSameLine: false,
+  jsxSingleQuote: false,
+  printWidth: 80,
+  proseWrap: 'preserve',
+  quoteProps: 'as-needed',
+  requirePragma: false,
+  semi: true,
   singleQuote: true,
-  trailingComma: 'all',
-  // Override any other rules you want
+  tabWidth: 2,
+  trailingComma: 'es5',
+  useTabs: false,
 };

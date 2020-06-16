@@ -57,7 +57,7 @@
           .data('colorpicker')
           .selector.css(
             'backgroundColor',
-            '#' + HSBToHex({ h: hsb.h, s: 100, b: 100 }),
+            '#' + HSBToHex({ h: hsb.h, s: 100, b: 100 })
           );
         $(cal)
           .data('colorpicker')
@@ -108,7 +108,7 @@
               r: parseInt(cal.data('colorpicker').fields.eq(1).val(), 10),
               g: parseInt(cal.data('colorpicker').fields.eq(2).val(), 10),
               b: parseInt(cal.data('colorpicker').fields.eq(3).val(), 10),
-            }),
+            })
           );
         }
         if (ev) {
@@ -164,9 +164,9 @@
             0,
             Math.min(
               ev.data.max,
-              parseInt(ev.data.val + ev.pageY - ev.data.y, 10),
-            ),
-          ),
+              parseInt(ev.data.val + ev.pageY - ev.data.y, 10)
+            )
+          )
         );
         if (ev.data.preview) {
           change.apply(ev.data.field.get(0), [true]);
@@ -199,22 +199,22 @@
                 (360 *
                   (150 - Math.max(0, Math.min(150, ev.pageY - ev.data.y)))) /
                   150,
-                10,
-              ),
+                10
+              )
             )
             .get(0),
-          [ev.data.preview],
+          [ev.data.preview]
         );
         return false;
       },
       upHue = function (ev) {
         fillRGBFields(
           ev.data.cal.data('colorpicker').color,
-          ev.data.cal.get(0),
+          ev.data.cal.get(0)
         );
         fillHexFields(
           ev.data.cal.data('colorpicker').color,
-          ev.data.cal.get(0),
+          ev.data.cal.get(0)
         );
         $(document).unbind('mouseup', upHue);
         $(document).unbind('mousemove', moveHue);
@@ -240,8 +240,8 @@
                   (150 -
                     Math.max(0, Math.min(150, ev.pageY - ev.data.pos.top)))) /
                   150,
-                10,
-              ),
+                10
+              )
             )
             .end()
             .eq(5)
@@ -250,22 +250,22 @@
                 (100 *
                   Math.max(0, Math.min(150, ev.pageX - ev.data.pos.left))) /
                   150,
-                10,
-              ),
+                10
+              )
             )
             .get(0),
-          [ev.data.preview],
+          [ev.data.preview]
         );
         return false;
       },
       upSelector = function (ev) {
         fillRGBFields(
           ev.data.cal.data('colorpicker').color,
-          ev.data.cal.get(0),
+          ev.data.cal.get(0)
         );
         fillHexFields(
           ev.data.cal.data('colorpicker').color,
-          ev.data.cal.get(0),
+          ev.data.cal.get(0)
         );
         $(document).unbind('mouseup', upSelector);
         $(document).unbind('mousemove', moveSelector);
@@ -288,7 +288,7 @@
             col,
             HSBToHex(col),
             HSBToRGB(col),
-            cal.data('colorpicker').el,
+            cal.data('colorpicker').el
           );
       },
       show = function () {
