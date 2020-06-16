@@ -1,5 +1,7 @@
-// The following files will be ignored by Prettier
+# The following files will be ignored by Prettier
+
+/node_modules
+/build
 
 *.min.*
 .*ignore
-/build
