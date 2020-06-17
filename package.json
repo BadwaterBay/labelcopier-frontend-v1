@@ -29,6 +29,7 @@
   "devDependencies": {
     "browser-sync": "^2.26.7",
     "concurrently": "^5.2.0",
+    "css-loader": "^3.6.0",
     "eslint": "^7.2.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.11.0",
@@ -36,12 +37,14 @@
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-jquery": "1.5.1",
     "eslint-plugin-prettier": "^3.1.4",
+    "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.10",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "sass": "^1.26.8",
+    "style-loader": "^1.2.1",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },
@@ -57,5 +60,10 @@
     "./src/**/*.{js,html}": [
       "eslint --cache --fix"
     ]
+  },
+  "dependencies": {
+    "bootstrap-material-design": "4.1.1",
+    "jquery": "^3.5.1",
+    "popper": "^1.0.1"
   }
 }
