@@ -7,7 +7,6 @@ module.exports = {
   extends: [
     'google',
     'plugin:prettier/recommended',
-    'plugin:css-modules/recommended',
   ],
   globals: {
     Atomics: 'readonly',
@@ -21,5 +20,5 @@ module.exports = {
     'prettier/prettier': 'error',
     'new-cap': 1,
   },
-  plugins: ['prettier', 'html', 'jquery', 'css-modules',],
+  plugins: ['prettier', 'html', 'jquery',],
 };

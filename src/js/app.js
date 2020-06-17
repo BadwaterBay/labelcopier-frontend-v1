@@ -1296,8 +1296,8 @@ const app = () => {
 
       let labelsErrorCount = 0;
       let milestonesErrorCount = 0;
-      let labelsTally = {};
-      let milestonesTally = {};
+      const labelsTally = {};
+      const milestonesTally = {};
 
       $('#form-labels')
         .children()

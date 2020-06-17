@@ -15,8 +15,7 @@
   "scripts": {
     "clean": "rimraf build",
     "format": "prettier './src/**/*.{js,html,scss}' --write",
-    "lint": "eslint './src/**/*.{js,html}' --fix-dry-run",
-    "lint-fix": "eslint './src/**/*.{js,html}' --fix",
+    "lint": "eslint './src/**/*.{js,html}' --fix",
     "build": "yarn clean && webpack",
     "test": "echo 'No test specified yet' && exit 0",
     "dev-server": "browser-sync start -c 'bs-config.js'",
@@ -25,15 +24,14 @@
     "start": "browser-sync start --server 'build'"
   },
   "engines": {
-    "node": ">=0.10 <0.14"
+    "node": ">=0.10 <0.12"
   },
   "devDependencies": {
     "browser-sync": "^2.26.7",
     "concurrently": "^5.2.0",
-    "eslint": "^6.8.0",
+    "eslint": "^7.2.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-css-modules": "^2.11.0",
     "eslint-plugin-html": "^6.0.2",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-jquery": "1.5.1",
@@ -41,7 +39,6 @@
     "html-webpack-plugin": "^4.3.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.10",
-    "node-sass": "^4.14.1",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "sass": "^1.26.8",
@@ -54,9 +51,11 @@
     }
   },
   "lint-staged": {
+    "./src/**/*.{js,html,scss}": [
+      "prettier --write"
+    ],
     "./src/**/*.{js,html}": [
-      "prettier --write",
-      "eslint --fix-dry-run"
+      "eslint --cache --fix"
     ]
   }
 }

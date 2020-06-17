@@ -52,20 +52,18 @@ We also welcome [feature requests, bug reports and questions](https://github.com
 
 ### Initial setup
 
-- Prerequisites: having [Node.js](https://nodejs.org/en/) and the latest [yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) installed on your machine.
+- Prerequisites: having [Node.js 10.x or 12.x](https://nodejs.org/en/) and the latest [yarn](https://classic.yarnpkg.com/en/docs/install/) installed on your machine.
 - Clone this repository. [How to clone a repository?](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
-- Change directory to the project's root directory, run command `yarn --frozen-lockfile` to install all dependencies. This might take a while.
+- Change directory to the project's root directory and run command `yarn --frozen-lockfile` to install all dependencies. This might take a while.
+- Run command `yarn dev` to start a local server for development. It will trigger `browser-sync` to serve files from `/src` at [http://localhost:400/](http://localhost:400/) by default.
 
-### Commands
+### Other commands
 
-- Run a local server out for development:
-  - `yarn dev` will trigger `browser-sync` to serve files from `/src`
 - Formatting using Prettier:
   - `yarn format` will format files with Prettier and save changes.
   - Tip: when you git-commit, `yarn format` will be automatically triggrred.
 - Linting using Eslint:
   - `yarn lint` will run Eslint to check the code quality. Please try to resolve these issues before commiting any changes.
-  - `yarn lint-fix` to let Eslint fix problems and write to files.
   - Tip: when you git-commit, `yarn lint` will be automatically triggrred.
 - Run tests:
   - `yarn test` will run preset tests. However, this is a dummy for now, because we haven't written any tests yet. This is to show that we are aware of the importance of unit testing.
