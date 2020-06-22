@@ -24,13 +24,13 @@
     "start": "browser-sync start --server 'build'"
   },
   "engines": {
-    "node": ">=0.10 <0.12"
+    "node": ">=0.10 <=0.12"
   },
   "devDependencies": {
     "browser-sync": "^2.26.7",
     "concurrently": "^5.2.0",
     "css-loader": "^3.6.0",
-    "eslint": "^7.2.0",
+    "eslint": "^7.3.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-html": "^6.0.2",
@@ -40,13 +40,13 @@
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
     "husky": "^4.2.5",
-    "lint-staged": "^10.2.10",
+    "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "sass": "^1.26.8",
     "style-loader": "^1.2.1",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   },
   "husky": {
     "hooks": {
