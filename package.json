@@ -21,7 +21,7 @@
     "dev-server": "browser-sync start -c 'bs-config.js'",
     "sass": "sass --watch ./src/scss/app.scss:./src/css/app.min.css --style compressed",
     "dev": "concurrently 'yarn dev-server' 'yarn sass'",
-    "start": "browser-sync start --server 'build'"
+    "start": "dev"
   },
   "engines": {
     "node": ">=0.10 <=0.12"
