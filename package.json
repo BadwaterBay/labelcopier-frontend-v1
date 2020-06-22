@@ -62,7 +62,7 @@
     ]
   },
   "dependencies": {
-    "bootstrap-material-design": "4.1.1",
+    "bootstrap-material-design": "4.1.3",
     "jquery": "^3.5.1",
     "popper": "^1.0.1"
   }
