@@ -1,53 +1,69 @@
 {
   "name": "github-label-manager-plus",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A web app that help you manage GitHub labels and milestones",
-  "private": true,
-  "scripts": {
-    "lint": "eslint ./src/**/*.{js,html} --fix-dry-run",
-    "lint-fix": "eslint ./src/**/*.{js,html} --fix",
-    "format": "npx prettier ./src/**/*.{js,html} --write",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
-  },
+  "author": "Badwater Bay",
+  "license": "GPL-3.0-or-later",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BadwaterBay/github-label-manager-plus.git"
   },
-  "author": "BadwaterBay",
-  "license": "GPL-3.0-or-later",
+  "homepage": "https://github.com/BadwaterBay/github-label-manager-plus",
   "bugs": {
     "url": "https://github.com/BadwaterBay/github-label-manager-plus/issues"
   },
-  "homepage": "https://github.com/BadwaterBay/github-label-manager-plus#readme",
+  "scripts": {
+    "clean": "rimraf build",
+    "format": "prettier './src/**/*.{js,html,scss}' --write",
+    "lint": "eslint './src/**/*.{js,html}' --fix",
+    "build": "yarn clean",
+    "test": "echo 'No test specified yet' && exit 0",
+    "dev-server": "browser-sync start -c 'bs-config.js'",
+    "sass": "sass --watch ./src/scss/app.scss:./src/css/app.min.css --style compressed",
+    "dev": "concurrently 'yarn dev-server' 'yarn sass'",
+    "start": "dev"
+  },
+  "engines": {
+    "node": ">=0.10 <=0.12"
+  },
   "devDependencies": {
-    "eslint": "^6.8.0",
+    "browser-sync": "^2.26.7",
+    "concurrently": "^5.2.0",
+    "css-loader": "^3.6.0",
+    "eslint": "^7.3.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-css-modules": "2.11.0",
-    "eslint-plugin-html": "6.0.2",
+    "eslint-plugin-html": "^6.0.2",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-jquery": "1.5.1",
-    "eslint-plugin-json": "^2.1.1",
-    "eslint-plugin-markdown": "^1.0.2",
     "eslint-plugin-prettier": "^3.1.4",
-    "husky": "4.2.5",
-    "lint-staged": "10.2.10",
-    "node-sass": "^4.14.1",
-    "prettier": "2.0.5",
-    "pretty-quick": "^2.0.1",
+    "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.3.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "sass": "^1.26.8",
+    "style-loader": "^1.2.1",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged && lint-staged"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
+    "./src/**/*.{js,html,scss}": [
+      "prettier --write"
+    ],
     "./src/**/*.{js,html}": [
-      "npx prettier ./src/**/*.{js,html} --write",
-      "eslint ./src/**/*.{js,html} --fix-dry-run"
+      "eslint --cache --fix"
     ]
+  },
+  "dependencies": {
+    "bootstrap-material-design": "4.1.1",
+    "jquery": "^3.5.1",
+    "popper": "^1.0.1"
   }
 }

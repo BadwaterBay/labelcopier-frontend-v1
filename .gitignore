@@ -1,7 +1,7 @@
 # Directories #
 ###############
-node_modules
-build
+/node_modules
+/build
 
 # Local configs #
 ######################
@@ -32,6 +32,7 @@ build
 ######################
 *.log
 *.sqlite
+.eslintcache
 
 # OS generated files #
 ######################
@@ -43,3 +44,4 @@ build
 ehthumbs.db
 Thumbs.db
 @turtledb
+

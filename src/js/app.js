@@ -30,9 +30,9 @@ const app = () => {
         /** @this HTMLElement */
         function () {
           $('#target-username').val(() =>
-            $(this).prop('checked') ? $('#target-owner').val() : '',
+            $(this).prop('checked') ? $('#target-owner').val() : ''
           );
-        },
+        }
       );
 
       $('#target-owner').keyup(() => {
@@ -46,7 +46,7 @@ const app = () => {
           $('#copy-to-username').prop('checked', () => {
             return $(this).val() === $('#target-owner').val();
           });
-        },
+        }
       );
     })();
 
@@ -115,7 +115,7 @@ const app = () => {
           if ($(this).val() !== $(this).attr('data-orig-val')) {
             noChanges = false;
           }
-        },
+        }
       );
       return noChanges;
     };
@@ -139,7 +139,7 @@ const app = () => {
             ) {
               duplicateCount += 1;
             }
-          },
+          }
         );
       return duplicateCount;
     };
@@ -162,7 +162,7 @@ const app = () => {
               $(this).find('.duplicate-name-input').addClass('hidden');
               $nameInput.attr('dup-resolved', true);
             }
-          },
+          }
         );
     };
 
@@ -355,7 +355,7 @@ const app = () => {
             c2 = utftext.charCodeAt(i + 1);
             c3 = utftext.charCodeAt(i + 2);
             string += String.fromCharCode(
-              ((c1 & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63),
+              ((c1 & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63)
             );
             i += 3;
           }
@@ -397,7 +397,7 @@ const app = () => {
       return (
         'Basic ' +
         BASE64.encode(
-          `${LOGIN_INFO.targetUsername}:${LOGIN_INFO.personalAccessToken}`,
+          `${LOGIN_INFO.targetUsername}:${LOGIN_INFO.personalAccessToken}`
         )
       );
     };
@@ -448,7 +448,7 @@ const app = () => {
         kind,
         mode,
         callback,
-        pageNum,
+        pageNum
       ) => {
         $.ajax({
           type: 'GET',
@@ -485,14 +485,14 @@ const app = () => {
               kind,
               mode,
               callback,
-              ++pageNum,
+              ++pageNum
             );
           },
           error: (response) => {
             if (response.status === 404) {
               alert(
                 `Not found! If this is a private repo, make sure you 
-                provide a personal access token.`,
+                provide a personal access token.`
               );
             }
             if (typeof callback === 'function') {
@@ -546,7 +546,7 @@ const app = () => {
           writeLog(
             'Creation of ' +
               kind.slice(0, -1) +
-              `failed for: ${NAME_OF_ENTRY} due to error: ${errorThrown}`,
+              `failed for: ${NAME_OF_ENTRY} due to error: ${errorThrown}`
           );
         },
       });
@@ -580,14 +580,14 @@ const app = () => {
           writeLog(
             'Updated ' +
               kind.slice(0, -1) +
-              `: ${API_CALL_SIGN} => ${NAME_OF_ENTRY}`,
+              `: ${API_CALL_SIGN} => ${NAME_OF_ENTRY}`
           );
         },
         error: (jqXHR, textStatus, errorThrown) => {
           writeLog(
             'Update of ' +
               kind.slice(0, -1) +
-              ` failed for: ${API_CALL_SIGN} due to error: ${errorThrown}`,
+              ` failed for: ${API_CALL_SIGN} due to error: ${errorThrown}`
           );
         },
       });
@@ -622,7 +622,7 @@ const app = () => {
           writeLog(
             'Deletion of ' +
               kind.slice(0, -1) +
-              ` failed for: ${NAME_OF_ENTRY} due to error: ${errorThrown}`,
+              ` failed for: ${NAME_OF_ENTRY} due to error: ${errorThrown}`
           );
         },
       });
@@ -716,7 +716,7 @@ const app = () => {
 
           checkIfEnableCommit();
           return;
-        },
+        }
       );
 
       newElementEntry.find('input[name="name"]').keyup(
@@ -753,7 +753,7 @@ const app = () => {
 
           checkIfEnableCommit();
           return;
-        },
+        }
       );
 
       // Delete button
@@ -774,7 +774,7 @@ const app = () => {
 
           checkIfEnableCommit();
           return;
-        },
+        }
       );
 
       newElementEntry.children('.recover-button').click(
@@ -793,7 +793,7 @@ const app = () => {
           }
 
           checkIfEnableCommit();
-        },
+        }
       );
 
       /** @this HTMLElement */
@@ -843,7 +843,7 @@ const app = () => {
             } else if (/^#([0-9A-F]{3}){1,2}$/i.test(setColorCode)) {
               $(this).siblings('.invalid-color-input').addClass('hidden');
             }
-          },
+          }
         )
         .blur(
           /** @this HTMLElement */
@@ -856,7 +856,7 @@ const app = () => {
               if (displayColorCode.length === 4) {
                 displayColorCode = displayColorCode.replace(
                   /(\w)(\w)(\w)/,
-                  '$1$1$2$2$3$3',
+                  '$1$1$2$2$3$3'
                 );
               }
               $(this).val(displayColorCode.toUpperCase());
@@ -865,7 +865,7 @@ const app = () => {
               $(this).val(displayColorCode);
               $(this).siblings('.invalid-color-input').removeClass('hidden');
             }
-          },
+          }
         );
 
       $('#form-labels').prepend(newElementEntry);
@@ -984,7 +984,7 @@ const app = () => {
           <i class="fas fa-history"></i>\
         </button>\
       </div>
-      `,
+      `
       );
 
       newElementEntry
@@ -996,7 +996,7 @@ const app = () => {
             if (milestone.state === $(this).attr('value')) {
               $(this).attr('selected', true);
             }
-          },
+          }
         );
 
       newElementEntry.find(':input[data-orig-val]').keyup(
@@ -1020,7 +1020,7 @@ const app = () => {
 
           checkIfEnableCommit();
           return;
-        },
+        }
       );
 
       newElementEntry
@@ -1047,7 +1047,7 @@ const app = () => {
 
             checkIfEnableCommit();
             return;
-          },
+          }
         );
 
       newElementEntry.find('input[name="title"]').keyup(
@@ -1082,7 +1082,7 @@ const app = () => {
 
           checkIfEnableCommit();
           return;
-        },
+        }
       );
 
       newElementEntry.children('.delete-button').click(
@@ -1102,7 +1102,7 @@ const app = () => {
 
           checkIfEnableCommit();
           return;
-        },
+        }
       );
 
       newElementEntry.children('.recover-button').click(
@@ -1121,7 +1121,7 @@ const app = () => {
           }
 
           checkIfEnableCommit();
-        },
+        }
       );
 
       $('#form-milestones').prepend(newElementEntry);
@@ -1159,7 +1159,7 @@ const app = () => {
           LOGIN_INFO.targetOwner,
           LOGIN_INFO.targetRepo,
           kind,
-          'list',
+          'list'
         );
         $(`#${kind}-tab`).tab('show');
       } else {
@@ -1182,7 +1182,7 @@ const app = () => {
         LOGIN_INFO.targetOwner,
         LOGIN_INFO.targetRepo,
         'labels',
-        'list',
+        'list'
       );
     });
 
@@ -1193,7 +1193,7 @@ const app = () => {
         LOGIN_INFO.targetOwner,
         LOGIN_INFO.targetRepo,
         'milestones',
-        'list',
+        'list'
       );
     });
 
@@ -1213,7 +1213,7 @@ const app = () => {
               $(this).children('.recover-button').removeClass('hidden');
               $(this).attr('data-todo', 'delete');
             }
-          },
+          }
         );
       checkIfEnableCommit();
     };
@@ -1234,14 +1234,14 @@ const app = () => {
           LOGIN_INFO.copyFromOwner,
           LOGIN_INFO.copyFromRepo,
           kind,
-          'copy',
+          'copy'
         );
         // set adduncommitted to true because those are coming from another repo
 
         $(`#${kind}-tab`).tab('show');
       } else {
         alert(
-          'Please enter the repo owner and the repo you want to copy from.',
+          'Please enter the repo owner and the repo you want to copy from.'
         );
       }
       checkIfEnableCommit();
@@ -1288,7 +1288,7 @@ const app = () => {
                 if (duplicates.includes($(this).find('.name-fitting').val())) {
                   $(this).find('.duplicate-name-input').removeClass('hidden');
                 }
-              },
+              }
             );
           return duplicates.length;
         }
@@ -1296,8 +1296,8 @@ const app = () => {
 
       let labelsErrorCount = 0;
       let milestonesErrorCount = 0;
-      let labelsTally = {};
-      let milestonesTally = {};
+      const labelsTally = {};
+      const milestonesTally = {};
 
       $('#form-labels')
         .children()
@@ -1323,7 +1323,7 @@ const app = () => {
 
               if (
                 !/^#([0-9A-F]{3}){1,2}$/i.test(
-                  $(this).find('.color-fitting').val(),
+                  $(this).find('.color-fitting').val()
                 )
               ) {
                 labelsErrorCount++;
@@ -1334,7 +1334,7 @@ const app = () => {
                 }
               }
             }
-          },
+          }
         );
 
       $('#form-milestones')
@@ -1359,16 +1359,16 @@ const app = () => {
               }
               $(this).find('.name-fitting').attr('blocked-val', milestoneName);
             }
-          },
+          }
         );
 
       const labelsDuplicateCount = displayDuplicateErrors(
         'labels',
-        labelsTally,
+        labelsTally
       );
       const milestonesDuplicateCount = displayDuplicateErrors(
         'milestones',
-        milestonesTally,
+        milestonesTally
       );
 
       return [
@@ -1398,7 +1398,7 @@ const app = () => {
           dt.dayOfMonth,
           dt.hour,
           dt.minute,
-          dt.second,
+          dt.second
         );
         return dateObject.toISOString().replace('.000Z', 'Z');
       };
@@ -1456,7 +1456,7 @@ const app = () => {
         function () {
           const entryObject = serializeEntries($(this), 'labels');
           apiCallDeleteEntries(entryObject, 'labels');
-        },
+        }
       );
 
       $('.milestone-entry[data-todo="delete"]').each(
@@ -1464,7 +1464,7 @@ const app = () => {
         function () {
           const entryObject = serializeEntries($(this), 'milestones');
           apiCallDeleteEntries(entryObject, 'milestones');
-        },
+        }
       );
 
       // To be updated
@@ -1473,7 +1473,7 @@ const app = () => {
         function () {
           const entryObject = serializeEntries($(this), 'labels');
           apiCallUpdateEntries(entryObject, 'labels');
-        },
+        }
       );
 
       $('.milestone-entry[data-todo="update"]').each(
@@ -1481,7 +1481,7 @@ const app = () => {
         function () {
           const entryObject = serializeEntries($(this), 'milestones');
           apiCallUpdateEntries(entryObject, 'milestones');
-        },
+        }
       );
 
       // To be created
@@ -1490,7 +1490,7 @@ const app = () => {
         function () {
           const entryObject = serializeEntries($(this), 'labels');
           apiCallCreateEntries(entryObject, 'labels');
-        },
+        }
       );
 
       $('.milestone-entry[data-todo="create"]').each(
@@ -1498,7 +1498,7 @@ const app = () => {
         function () {
           const entryObject = serializeEntries($(this), 'milestones');
           apiCallCreateEntries(entryObject, 'milestones');
-        },
+        }
       );
     };
 
@@ -1523,7 +1523,7 @@ const app = () => {
       if (!LOGIN_INFO.personalAccessToken) {
         alert(
           `You need to enter your personal access token for repo \
-          ${LOGIN_INFO.targetRepo} in order to commit changes.`,
+          ${LOGIN_INFO.targetRepo} in order to commit changes.`
         );
         return;
       }
@@ -1544,12 +1544,12 @@ const app = () => {
         const labelsAlert = writeErrorsAlert(
           labelsErrorCount,
           labelsDuplicateCount,
-          'labels',
+          'labels'
         );
         const milestonesAlert = writeErrorsAlert(
           milestonesErrorCount,
           milestonesDuplicateCount,
-          'milestones',
+          'milestones'
         );
 
         alert(`${labelsAlert}${milestonesAlert}`);
@@ -1584,14 +1584,14 @@ const app = () => {
         LOGIN_INFO.targetOwner,
         LOGIN_INFO.targetRepo,
         'labels',
-        'list',
+        'list'
       );
 
       apiCallGetEntries(
         LOGIN_INFO.targetOwner,
         LOGIN_INFO.targetRepo,
         'milestones',
-        'list',
+        'list'
       );
     });
 
