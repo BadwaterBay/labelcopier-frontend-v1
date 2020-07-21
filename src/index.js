@@ -1,9 +1,3 @@
-// var $ = require( "jquery" );
-import 'popper';
-import 'bootstrap-material-design';
-import './css/app.min.css';
-import './css/colorpicker.css';
-
 import loginCard from './components/loginCard.js';
 import copyFromCard from './components/copyFromCard.js';
 import managementCard from './components/managementCard.js';
