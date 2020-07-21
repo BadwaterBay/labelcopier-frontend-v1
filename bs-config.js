@@ -30,7 +30,7 @@ module.exports = {
   "proxy": false,
   "port": 4000,
   "middleware": false,
-  "serveStatic": ['./src'],
+  "serveStatic": ['./src/'],
   "ghostMode": {
       "clicks": true,
       "scroll": true,
