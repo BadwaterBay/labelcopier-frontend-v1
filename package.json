@@ -42,7 +42,7 @@
   "dependencies": {},
   "devDependencies": {
     "css-loader": "^4.2.0",
-    "eslint": "^7.5.0",
+    "eslint": "^7.6.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-html": "^6.0.2",
