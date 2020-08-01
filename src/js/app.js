@@ -799,13 +799,14 @@ const app = () => {
       /** @this HTMLElement */
       newElementEntry
         .find('.color-box')
+        // eslint-disable-next-line new-cap
         .ColorPicker({
           // activate color picker on color-box field
           // http://www.eyecon.ro/colorpicker
           color: label.color,
           onSubmit: (hsb, hex, rgb, el) => {
             $(el).val(`#${hex.toUpperCase()}`);
-            $(el).ColorPickerHide();
+            $(el).ColorPickerHide(); // eslint-disable-line new-cap
             $(el).css('background-color', `#${hex}`);
             $(el).siblings('.invalid-color-input').addClass('hidden');
             $(el).siblings('.empty-color-input').addClass('hidden');
@@ -826,7 +827,7 @@ const app = () => {
             return;
           },
           onBeforeShow: function () {
-            $(this).ColorPickerSetColor(this.value.replace('#', ''));
+            $(this).ColorPickerSetColor(this.value.replace('#', '')); // eslint-disable-line new-cap
           },
         })
         .bind(
@@ -835,7 +836,7 @@ const app = () => {
           function () {
             $(this).siblings('.empty-color-input').addClass('hidden');
             const setColorCode = `#${this.value.replace(/#|\s/g, '')}`;
-            $(this).ColorPickerSetColor(setColorCode.replace('#', ''));
+            $(this).ColorPickerSetColor(setColorCode.replace('#', '')); // eslint-disable-line new-cap
             $(this).css('background-color', setColorCode);
 
             if (setColorCode === '#') {
