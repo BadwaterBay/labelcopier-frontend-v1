@@ -46,7 +46,7 @@
     "popper.js": "^1.16.1"
   },
   "devDependencies": {
-    "css-loader": "^3.6.0",
+    "css-loader": "^4.2.0",
     "eslint": "^7.5.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.11.0",
