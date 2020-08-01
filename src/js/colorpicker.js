@@ -6,6 +6,7 @@
  * Dual licensed under the MIT and GPL licenses
  *
  */
+
 (function ($) {
   var ColorPicker = (function () {
     var charMin = 65,
