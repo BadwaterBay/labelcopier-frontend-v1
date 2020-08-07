@@ -1,0 +1,97 @@
+/**
+ * 
+ */
+
+'use strict';
+
+const getLoginInfo = () => {
+  return {
+    targetOwner: document.getElementById('target-owner').value.trim(),
+    targetRepo: document.getElementById('target-repo').value.trim(),
+    targetUsername: document.getElementById('target-username').value.trim(),
+    personalAccessToken: document.getElementById('personal-access-token').value.trim(),
+    copyFromOwner: document.getElementById('copy-from-owner').value.trim(),
+    copyFromRepo: document.getElementById('copy-from-repo').value.trim(),
+  };
+};
+
+/**
+ * @param {string} kind
+ * @param {string} blockedVal
+ * @return {number}
+ */
+const countDuplicates = (kind, blockedVal) => {
+  let duplicateCount = 0;
+  document.getElementById(`form-${kind}`)
+    .children
+    .forEach(
+      /** @this HTMLElement */
+      function () {
+        const nameInput = this.querySelectorAll('.name-fitting');
+        if (
+          nameInput.setAttribute('blocked-val') === blockedVal &&
+          nameInput.setAttribute('dup-resolved') !== 'true'
+        ) {
+          duplicateCount += 1;
+        }
+      }
+    );
+  return duplicateCount;
+};
+
+
+const enableCommitButton = () => {
+  document.getElementById('commit-to-target-repo').removeAttribute('disabled');
+  document.getElementById('commit-to-target-repo').classList.remove('btn-outline-success');
+  document.getElementById('commit-to-target-repo').classList.add('btn-success');
+};
+
+const disableCommitButton = () => {
+  document.getElementById('commit-to-target-repo').setAttribute('disabled', true);
+  document.getElementById('commit-to-target-repo').classList.remove('btn-success');
+  document.getElementById('commit-to-target-repo').classList.add('btn-outline-success');
+};
+
+const checkIfEnableCommit = () => {
+  // returns true if any change has been made and activates or
+  // disactivates commit button accordingly
+
+  const labelsModified =
+    $('.label-entry:not([data-todo="none"])').length > 0;
+  const milestonesModified =
+    $('.milestone-entry:not([data-todo="none"])').length > 0;
+  const labelsDuplicated = $('.label-entry.duplicate-entry').length > 0;
+  const milestonesDuplicated =
+    $('.milestone-entry.duplicate-entry').length > 0;
+
+  if (labelsModified) {
+    $('#revert-labels-to-original').removeAttr('disabled');
+  } else {
+    $('#revert-labels-to-original').attr('disabled', true);
+  }
+
+  if (milestonesModified) {
+    $('#revert-milestones-to-original').removeAttr('disabled');
+  } else {
+    $('#revert-milestones-to-original').attr('disabled', true);
+  }
+
+  if (labelsDuplicated || milestonesDuplicated) {
+    // if (labelsDuplicated) {
+    //   alert("Please resolve duplicated label names before committing.");
+    // }
+    // if (milestonesDuplicated) {
+    //   alert("Please resolve duplicated milestone titles \
+    //     before committing.");
+    // }
+    disableCommitButton();
+  } else {
+    if (labelsModified || milestonesModified) {
+      enableCommitButton();
+    } else {
+      disableCommitButton();
+    }
+  }
+};
+
+export { getLoginInfo, countDuplicates, checkIfEnableCommit };
