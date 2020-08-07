@@ -1,5 +1,5 @@
 /**
- *
+ * manipulateEntries
  */
 
 'use strict';

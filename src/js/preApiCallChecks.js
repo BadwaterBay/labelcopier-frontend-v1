@@ -1,5 +1,6 @@
 /**
- *
+ * preApiCallChecks
+ * PREP WORK BEFORE MAKING API CALLS
  */
 
 'use strict';
@@ -153,6 +154,10 @@ const checkIfEnableCommit = () => {
   }
 };
 
+const writeLog = (string) => {
+  $('#loadingModal .modal-body').append(`${string}<br />`);
+};
+
 export {
   getLoginInfo,
   checkInputChanges,
@@ -161,4 +166,5 @@ export {
   enableCommitButton,
   disableCommitButton,
   checkIfEnableCommit,
+  writeLog,
 };

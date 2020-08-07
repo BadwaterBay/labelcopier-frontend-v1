@@ -26,6 +26,7 @@ import {
   countDuplicates,
   resolveDuplicates,
   checkIfEnableCommit,
+  writeLog,
 } from './preApiCallChecks';
 import { assignNameForEntry, makeBasicAuth } from './makeApiCalls';
 import {
@@ -51,14 +52,6 @@ const app = () => {
     setCopyToUsernameCheckbox();
 
     /** === END: COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES === */
-
-    /** === START: PREP WORK BEFORE MAKING API CALLS === */
-
-    const writeLog = (string) => {
-      $('#loadingModal .modal-body').append(`${string}<br />`);
-    };
-
-    /** === END: PREP WORK BEFORE MAKING API CALLS === */
 
     /** === START: API CALL FUNCTIONALITIES === */
 
@@ -114,9 +107,6 @@ const app = () => {
       },
     });
 
-    // const LABEL_SET = new Set();
-    // const MILESTONE_SET = new Set();
-
     const apiCallGetEntries = (owner, repo, kind, mode, callback) => {
       const apiCallGetUrl = (owner, repo, kind, pageNum) => {
         let queryURL = `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`;
@@ -149,12 +139,10 @@ const app = () => {
                 response.forEach((e) => {
                   e.color = `#${e.color.toUpperCase()}`;
                   createNewLabelEntry(e, mode);
-                  // LABEL_SET.add(e.name);
                 });
               } else if (kind === 'milestones') {
                 response.forEach((e) => {
                   createNewMilestoneEntry(e, mode);
-                  // MILESTONE_SET.add(e.title);
                 });
               } else {
                 console.log('Bug in function apiCallGetEntriesRecursive!');
@@ -186,16 +174,6 @@ const app = () => {
         });
         checkIfEnableCommit();
       };
-
-      // setWhichRepoInUseText();
-
-      // if (kind === 'labels') {
-      //   LABEL_SET.clear();
-      // } else if (kind === 'milestones') {
-      //   MILESTONE_SET.clear();
-      // } else {
-      //   console.log('Bug in function apiCallGetEntries!');
-      // }
 
       apiCallGetEntriesRecursive(owner, repo, kind, mode, callback, 1);
     };
