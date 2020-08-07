@@ -82,11 +82,10 @@ const resolveDuplicates = (kind, blockedVal) => {
 };
 
 const enableCommitButton = () => {
-  document.getElementById('commit-to-target-repo').removeAttribute('disabled');
-  document
-    .getElementById('commit-to-target-repo')
-    .classList.remove('btn-outline-success');
-  document.getElementById('commit-to-target-repo').classList.add('btn-success');
+  const commitToTargetRepo = document.getElementById('commit-to-target-repo');
+  commitToTargetRepo.removeAttribute('disabled');
+  commitToTargetRepo.classList.remove('btn-outline-success');
+  commitToTargetRepo.classList.add('btn-success');
 };
 
 const disableCommitButton = () => {
@@ -159,5 +158,7 @@ export {
   checkInputChanges,
   countDuplicates,
   resolveDuplicates,
+  enableCommitButton,
+  disableCommitButton,
   checkIfEnableCommit,
 };

@@ -6,7 +6,7 @@
 
 import base64 from '../js/base64';
 
-describe('Test functions', () => {
+describe('Test base64', () => {
   test('Test base64 encoder', () => {
     // Input:
     const input = [
