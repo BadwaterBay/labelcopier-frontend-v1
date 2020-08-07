@@ -15,6 +15,28 @@
 
 'use strict';
 
+import {
+  copyToUsername,
+  copyOwnerToUsername,
+  setCopyToUsernameCheckbox,
+} from './copyToUsername';
+import {
+  getLoginInfo,
+  checkInputChanges,
+  countDuplicates,
+  resolveDuplicates,
+  checkIfEnableCommit,
+  writeLog,
+} from './preApiCallChecks';
+import { assignNameForEntry, makeBasicAuth } from './makeApiCalls';
+import {
+  clearAllEntries,
+  clickToDeleteAllLabels,
+  clickToDeleteAllMilestones,
+} from './manipulateEntries';
+import { serializeEntries } from './commitChanges';
+import clickToCloseModal from './modal';
+
 const app = () => {
   return $(document).ready(function () {
     /** === START: INSTANTIATE BOOTSTRAP-MATERIAL-DESIGN === */
@@ -25,347 +47,11 @@ const app = () => {
 
     /** === START: COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES === */
 
-    (() => {
-      $('#copy-to-username').click(
-        /** @this HTMLElement */
-        function () {
-          $('#target-username').val(() =>
-            $(this).prop('checked') ? $('#target-owner').val() : ''
-          );
-        }
-      );
-
-      $('#target-owner').keyup(() => {
-        $('#copy-to-username').prop('checked') &&
-          $('#target-username').val($('#target-owner').val());
-      });
-
-      $('#target-username').keyup(
-        /** @this HTMLElement */
-        function () {
-          $('#copy-to-username').prop('checked', () => {
-            return $(this).val() === $('#target-owner').val();
-          });
-        }
-      );
-    })();
-
-    /** The following section of code is to be used if we remove
-     * the "I'm the owner of the repository" checkbox
-     */
-
-    // (() => {
-    //   let copyToUsernameBool = true;
-
-    //   $('#target-username').keyup(
-    //     /** @this HTMLElement */
-    //     function () {
-    //       copyToUsernameBool = $(this).val() === $('#target-owner').val();
-    //     },
-    //   );
-
-    //   $('#target-owner').keyup(() => {
-    //     copyToUsernameBool && $('#target-username').val($('#target-owner').val());
-    //   });
-    // })();
+    copyToUsername();
+    copyOwnerToUsername();
+    setCopyToUsernameCheckbox();
 
     /** === END: COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES === */
-
-    /** === START: PREP WORK BEFORE MAKING API CALLS === */
-
-    const getLoginInfo = () => {
-      return {
-        targetOwner: $('#target-owner').val().trim(),
-        targetRepo: $('#target-repo').val().trim(),
-        targetUsername: $('#target-username').val().trim(),
-        personalAccessToken: $('#personal-access-token').val().trim(),
-        copyFromOwner: $('#copy-from-owner').val().trim(),
-        copyFromRepo: $('#copy-from-repo').val().trim(),
-      };
-    };
-
-    const writeLog = (string) => {
-      $('#loadingModal .modal-body').append(`${string}<br />`);
-    };
-
-    // const setWhichRepoInUseText = () => {
-    //   const LOGIN_INFO = getLoginInfo();
-    //   $('#which-repo-in-use').html(`
-    //     <p>
-    //       <strong>Repo owner:</strong> ${LOGIN_INFO.targetOwner}
-    //     </p>
-    //     <p>
-    //       <strong>Repo:</strong> ${LOGIN_INFO.targetRepo}
-    //     </p>
-    //     <p>
-    //       <strong>Username:</strong> ${LOGIN_INFO.targetUsername}
-    //     </p>`);
-    // };
-
-    /**
-     * @param {Object} el
-     * @return {boolean}
-     */
-    const checkInputChanges = (el) => {
-      let noChanges = true;
-
-      el.find(':input[data-orig-val]').each(
-        /** @this HTMLElement */
-        function () {
-          if ($(this).val() !== $(this).attr('data-orig-val')) {
-            noChanges = false;
-          }
-        }
-      );
-      return noChanges;
-    };
-
-    /**
-     * @param {string} kind
-     * @param {string} blockedVal
-     * @return {number}
-     */
-    const countDuplicates = (kind, blockedVal) => {
-      let duplicateCount = 0;
-      $(`#form-${kind}`)
-        .children()
-        .each(
-          /** @this HTMLElement */
-          function () {
-            const $nameInput = $(this).find('.name-fitting');
-            if (
-              $nameInput.attr('blocked-val') === blockedVal &&
-              $nameInput.attr('dup-resolved') !== 'true'
-            ) {
-              duplicateCount += 1;
-            }
-          }
-        );
-      return duplicateCount;
-    };
-
-    /**
-     * @param {string} kind
-     * @param {string} blockedVal
-     */
-    const resolveDuplicates = (kind, blockedVal) => {
-      $(`#form-${kind}`)
-        .children()
-        .each(
-          /** @this HTMLElement */
-          function () {
-            const $nameInput = $(this).find('.name-fitting');
-            if (
-              $nameInput.attr('blocked-val') === blockedVal &&
-              $nameInput.attr('dup-resolved') !== 'true'
-            ) {
-              $(this).find('.duplicate-name-input').addClass('hidden');
-              $nameInput.attr('dup-resolved', true);
-            }
-          }
-        );
-    };
-
-    const checkIfEnableCommit = () => {
-      // returns true if any change has been made and activates or
-      // disactivates commit button accordingly
-
-      const enableCommitButton = () => {
-        $('#commit-to-target-repo').removeAttr('disabled');
-        $('#commit-to-target-repo').removeClass('btn-outline-success');
-        $('#commit-to-target-repo').addClass('btn-success');
-      };
-
-      const disableCommitButton = () => {
-        $('#commit-to-target-repo').attr('disabled', true);
-        $('#commit-to-target-repo').removeClass('btn-success');
-        $('#commit-to-target-repo').addClass('btn-outline-success');
-      };
-
-      const labelsModified =
-        $('.label-entry:not([data-todo="none"])').length > 0;
-      const milestonesModified =
-        $('.milestone-entry:not([data-todo="none"])').length > 0;
-      const labelsDuplicated = $('.label-entry.duplicate-entry').length > 0;
-      const milestonesDuplicated =
-        $('.milestone-entry.duplicate-entry').length > 0;
-
-      if (labelsModified) {
-        $('#revert-labels-to-original').removeAttr('disabled');
-      } else {
-        $('#revert-labels-to-original').attr('disabled', true);
-      }
-
-      if (milestonesModified) {
-        $('#revert-milestones-to-original').removeAttr('disabled');
-      } else {
-        $('#revert-milestones-to-original').attr('disabled', true);
-      }
-
-      if (labelsDuplicated || milestonesDuplicated) {
-        // if (labelsDuplicated) {
-        //   alert("Please resolve duplicated label names before committing.");
-        // }
-        // if (milestonesDuplicated) {
-        //   alert("Please resolve duplicated milestone titles \
-        //     before committing.");
-        // }
-        disableCommitButton();
-      } else {
-        if (labelsModified || milestonesModified) {
-          enableCommitButton();
-        } else {
-          disableCommitButton();
-        }
-      }
-    };
-
-    /** === END: PREP WORK BEFORE MAKING API CALLS === */
-
-    /** === START: BASE64 FOR API CALLS === */
-
-    const BASE64 = {
-      // http://stackoverflow.com/a/246813
-      // private property
-      _keyStr:
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=',
-
-      // public method for encoding
-      encode: function (input) {
-        let output = '';
-        let chr1;
-        let chr2;
-        let chr3;
-        let enc1;
-        let enc2;
-        let enc3;
-        let enc4;
-        let i = 0;
-
-        input = BASE64._utf8_encode(input);
-
-        while (i < input.length) {
-          chr1 = input.charCodeAt(i++);
-          chr2 = input.charCodeAt(i++);
-          chr3 = input.charCodeAt(i++);
-
-          enc1 = chr1 >> 2;
-          enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-          enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-          enc4 = chr3 & 63;
-
-          if (isNaN(chr2)) {
-            enc3 = enc4 = 64;
-          } else if (isNaN(chr3)) {
-            enc4 = 64;
-          }
-
-          /** @this BASE64 */
-          output =
-            output +
-            this._keyStr.charAt(enc1) +
-            this._keyStr.charAt(enc2) +
-            this._keyStr.charAt(enc3) +
-            this._keyStr.charAt(enc4);
-        }
-
-        return output;
-      },
-
-      // public method for decoding
-      decode: function (input) {
-        let output = '';
-        let chr1;
-        let chr2;
-        let chr3;
-        let enc1;
-        let enc2;
-        let enc3;
-        let enc4;
-        let i = 0;
-
-        input = input.replace(/[^A-Za-z0-9+/=]/g, '');
-
-        /** @this BASE64 */
-        while (i < input.length) {
-          enc1 = this._keyStr.indexOf(input.charAt(i++));
-          enc2 = this._keyStr.indexOf(input.charAt(i++));
-          enc3 = this._keyStr.indexOf(input.charAt(i++));
-          enc4 = this._keyStr.indexOf(input.charAt(i++));
-
-          chr1 = (enc1 << 2) | (enc2 >> 4);
-          chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-          chr3 = ((enc3 & 3) << 6) | enc4;
-
-          output = output + String.fromCharCode(chr1);
-
-          if (enc3 != 64) {
-            output = output + String.fromCharCode(chr2);
-          }
-          if (enc4 != 64) {
-            output = output + String.fromCharCode(chr3);
-          }
-        }
-
-        output = BASE64._utf8_decode(output);
-
-        return output;
-      },
-
-      // private method for UTF-8 encoding
-      _utf8_encode: (string) => {
-        string = string.replace(/\r\n/g, '\n');
-        let utftext = '';
-
-        for (let n = 0; n < string.length; n++) {
-          const c = string.charCodeAt(n);
-
-          if (c < 128) {
-            utftext += String.fromCharCode(c);
-          } else if (c > 127 && c < 2048) {
-            utftext += String.fromCharCode((c >> 6) | 192);
-            utftext += String.fromCharCode((c & 63) | 128);
-          } else {
-            utftext += String.fromCharCode((c >> 12) | 224);
-            utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-            utftext += String.fromCharCode((c & 63) | 128);
-          }
-        }
-
-        return utftext;
-      },
-
-      // private method for UTF-8 decoding
-      _utf8_decode: (utftext) => {
-        let string = '';
-        let i = 0;
-        let [c1, c2, c3] = [0, 0, 0];
-
-        while (i < utftext.length) {
-          c1 = utftext.charCodeAt(i);
-
-          if (c1 < 128) {
-            string += String.fromCharCode(c1);
-            i++;
-          } else if (c1 > 191 && c1 < 224) {
-            c2 = utftext.charCodeAt(i + 1);
-            string += String.fromCharCode(((c1 & 31) << 6) | (c2 & 63));
-            i += 2;
-          } else {
-            c2 = utftext.charCodeAt(i + 1);
-            c3 = utftext.charCodeAt(i + 2);
-            string += String.fromCharCode(
-              ((c1 & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63)
-            );
-            i += 3;
-          }
-        }
-
-        return string;
-      },
-    };
-
-    /** === END: BASE64 FOR API CALLS=== */
 
     /** === START: API CALL FUNCTIONALITIES === */
 
@@ -392,15 +78,6 @@ const app = () => {
         },
       };
     })();
-
-    const makeBasicAuth = (LOGIN_INFO) => {
-      return (
-        'Basic ' +
-        BASE64.encode(
-          `${LOGIN_INFO.targetUsername}:${LOGIN_INFO.personalAccessToken}`
-        )
-      );
-    };
 
     $.ajaxSetup({
       cache: false,
@@ -429,9 +106,6 @@ const app = () => {
         }
       },
     });
-
-    // const LABEL_SET = new Set();
-    // const MILESTONE_SET = new Set();
 
     const apiCallGetEntries = (owner, repo, kind, mode, callback) => {
       const apiCallGetUrl = (owner, repo, kind, pageNum) => {
@@ -465,12 +139,10 @@ const app = () => {
                 response.forEach((e) => {
                   e.color = `#${e.color.toUpperCase()}`;
                   createNewLabelEntry(e, mode);
-                  // LABEL_SET.add(e.name);
                 });
               } else if (kind === 'milestones') {
                 response.forEach((e) => {
                   createNewMilestoneEntry(e, mode);
-                  // MILESTONE_SET.add(e.title);
                 });
               } else {
                 console.log('Bug in function apiCallGetEntriesRecursive!');
@@ -503,29 +175,7 @@ const app = () => {
         checkIfEnableCommit();
       };
 
-      // setWhichRepoInUseText();
-
-      // if (kind === 'labels') {
-      //   LABEL_SET.clear();
-      // } else if (kind === 'milestones') {
-      //   MILESTONE_SET.clear();
-      // } else {
-      //   console.log('Bug in function apiCallGetEntries!');
-      // }
-
       apiCallGetEntriesRecursive(owner, repo, kind, mode, callback, 1);
-    };
-
-    const assignNameForEntry = (entryObject, kind) => {
-      let nameOfEntry = '';
-      if (kind === 'labels') {
-        nameOfEntry = entryObject.name;
-      } else if (kind === 'milestones') {
-        nameOfEntry = entryObject.title;
-      } else {
-        nameOfEntry = "There's a bug in function assignAPICallSign!";
-      }
-      return nameOfEntry;
     };
 
     const apiCallCreateEntries = (entryObject, kind, callback) => {
@@ -1135,15 +785,7 @@ const app = () => {
 
     /** === END: CREATE NEW MILESTONE ENTRIES === */
 
-    /** === START: LIST, DELETE, CLEAR, AND COPY ENTRIES === */
-
-    const clearAllEntries = (kind) => {
-      $(`#form-${kind}`).text('');
-      $('#commit-to-target-repo').text('Commit changes');
-      $('#commit-to-target-repo').attr('disabled', true);
-      $('#commit-to-target-repo').removeClass('btn-success');
-      $('#commit-to-target-repo').addClass('btn-outline-success');
-    };
+    /** === START: MANIPULATE ENTRIES (LIST, DELETE, CLEAR, AND COPY) === */
 
     const clickToListAllEntries = (kind) => {
       const LOGIN_INFO = getLoginInfo();
@@ -1198,34 +840,8 @@ const app = () => {
       );
     });
 
-    const clickToDeleteAllEntries = (selector) => {
-      $(selector)
-        .children()
-        .each(
-          /** @this HTMLElement */
-          function () {
-            if ($(this).attr('new') === 'true') {
-              $(this).remove();
-            } else {
-              $(this).children('.card').addClass('deleted-card');
-              $(this).parent().find('.invalid-input').addClass('hidden');
-              $(this).children('.recover-button').removeAttr('disabled');
-              $(this).children('.delete-button').addClass('hidden');
-              $(this).children('.recover-button').removeClass('hidden');
-              $(this).attr('data-todo', 'delete');
-            }
-          }
-        );
-      checkIfEnableCommit();
-    };
-
-    $('#delete-all-labels').click(() => {
-      clickToDeleteAllEntries('#form-labels');
-    });
-
-    $('#delete-all-milestones').click(() => {
-      clickToDeleteAllEntries('#form-milestones');
-    });
+    clickToDeleteAllLabels();
+    clickToDeleteAllMilestones();
 
     const clickToCopyEntriesFrom = (kind) => {
       const LOGIN_INFO = getLoginInfo();
@@ -1248,25 +864,27 @@ const app = () => {
       checkIfEnableCommit();
     };
 
-    $('#copy-labels-from').click(() => {
-      clickToCopyEntriesFrom('labels');
-    });
+    const clickToCopyEntriesFromLabels = () => {
+      document
+        .getElementById('copy-labels-from')
+        .addEventListener('click', () => {
+          clickToCopyEntriesFrom('labels');
+        });
+    };
 
-    $('#copy-milestones-from').click(() => {
-      clickToCopyEntriesFrom('milestones');
-    });
+    clickToCopyEntriesFromLabels();
 
-    // $('#delete-and-copy-labels-from').click(() => {
-    //   $('#delete-all-labels').click();
-    //   $('#copy-labels-from').click();
-    // });
+    const clickToCopyEntriesFromMilestones = () => {
+      document
+        .getElementById('copy-milestones-from')
+        .addEventListener('click', () => {
+          clickToCopyEntriesFrom('milestones');
+        });
+    };
 
-    // $('#delete-and-copy-milestones-from').click(() => {
-    //   $('#delete-all-milestones').click();
-    //   $('#copy-milestones-from').click();
-    // });
+    clickToCopyEntriesFromMilestones();
 
-    /** === END: LIST, DELETE, CLEAR, AND COPY ENTRIES === */
+    /** === END: MANIPULATE ENTRIES (LIST, DELETE, CLEAR, AND COPY) === */
 
     /** === START: COMMIT FUNCTION COMPONENTS === */
 
@@ -1378,69 +996,6 @@ const app = () => {
         milestonesErrorCount,
         milestonesDuplicateCount,
       ];
-    };
-
-    const serializeEntries = (jObjectEntry, kind) => {
-      const formatDate = (dateInput) => {
-        const date = dateInput.val();
-        const time = dateInput.attr('data-orig-time');
-
-        if (!date) {
-          return null;
-        }
-
-        const dt = {};
-        [dt.year, dt.month, dt.dayOfMonth] = date.split('-').map((e) => +e);
-        [dt.hour, dt.minute, dt.second] = time ? time.split(':') : [0, 0, 0];
-
-        const dateObject = new Date(
-          dt.year,
-          dt.month - 1,
-          dt.dayOfMonth,
-          dt.hour,
-          dt.minute,
-          dt.second
-        );
-        return dateObject.toISOString().replace('.000Z', 'Z');
-      };
-
-      if (kind === 'labels') {
-        return {
-          name: jObjectEntry.find('[name="name"]').val(),
-          color: jObjectEntry.find('[name="color"]').val().slice(1),
-          description: jObjectEntry.find('[name="description"]').val(),
-          originalName: jObjectEntry
-            .find('[name="name"]')
-            .attr('data-orig-val'),
-        };
-      } else if (kind === 'milestones') {
-        if (jObjectEntry.attr('data-number') !== 'null') {
-          return {
-            title: jObjectEntry.find('[name="title"]').val(),
-            state: jObjectEntry.find('[name="state"]').val(),
-            description: jObjectEntry.find('[name="description"]').val(),
-            due_on: formatDate(jObjectEntry.find('[name="due-date"]')),
-            number: +jObjectEntry.attr('data-number'),
-          };
-        } else {
-          if (jObjectEntry.find('[name="due-date"]').val() !== '') {
-            return {
-              title: jObjectEntry.find('[name="title"]').val(),
-              state: jObjectEntry.find('[name="state"]').val(),
-              description: jObjectEntry.find('[name="description"]').val(),
-              due_on: formatDate(jObjectEntry.find('[name="due-date"]')),
-            };
-          } else {
-            return {
-              title: jObjectEntry.find('[name="title"]').val(),
-              state: jObjectEntry.find('[name="state"]').val(),
-              description: jObjectEntry.find('[name="description"]').val(),
-            };
-          }
-        }
-      } else {
-        console.log('Bug in function serializeEntries!');
-      }
     };
 
     const commit = () => {
@@ -1560,12 +1115,7 @@ const app = () => {
       commit();
     });
 
-    // Clicking outside the modal closes it
-    $(document).click((event) => {
-      if ($(event.target).is('#loadingModal')) {
-        $('#loadingModal').modal('hide');
-      }
-    });
+    clickToCloseModal();
 
     $('#loadingModal').on('hidden.bs.modal', () => {
       isLoadingShown = false;

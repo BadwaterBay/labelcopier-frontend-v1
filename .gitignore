@@ -5,6 +5,7 @@
 
 # Local configs #
 ######################
+/.vscode
 
 # Compiled source #
 ###################
@@ -33,6 +34,7 @@
 *.log
 *.sqlite
 .eslintcache
+/coverage
 
 # OS generated files #
 ######################
@@ -44,4 +46,3 @@
 ehthumbs.db
 Thumbs.db
 @turtledb
-
