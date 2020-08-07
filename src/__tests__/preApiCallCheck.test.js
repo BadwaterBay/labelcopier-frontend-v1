@@ -4,12 +4,9 @@
 
 'use strict';
 
-import {
-  enableCommitButton,
-  disableCommitButton,
-} from '../js/preApiCallChecks';
+import { enableCommitButton, disableCommitButton } from '../js/preApiCallCheck';
 
-describe('Test preApiCallChecks', () => {
+describe('Test preApiCallCheck', () => {
   describe('Test enableCommitButton', () => {
     document.body.innerHTML = `
       <button id="commit-to-target-repo" type="button" class="btn btn-raised btn-outline-success btn-block" disabled="" data-loading-text="Commiting...">

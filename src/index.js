@@ -4,7 +4,6 @@
 
 'use strict';
 
-import './css/colorpicker.css';
 import './scss/app.scss';
 import loginCard from './components/loginCard.js';
 import copyFromCard from './components/copyFromCard.js';

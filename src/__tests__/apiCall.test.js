@@ -4,9 +4,9 @@
 
 'use strict';
 
-import { assignNameForEntry, makeBasicAuth } from '../js/makeApiCalls';
+import { assignNameForEntry, makeBasicAuth } from '../js/apiCall';
 
-describe('Test makeApiCalls', () => {
+describe('Test apiCall', () => {
   test('Test assignNameForEntry on successful cases', () => {
     const input = [
       [{ name: 'help wanted' }, 'labels'],

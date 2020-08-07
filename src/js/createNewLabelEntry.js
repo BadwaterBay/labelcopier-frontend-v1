@@ -4,13 +4,14 @@
 
 'use strict';
 
+import '../css/colorpicker.css';
+import './colorpicker';
 import { checkIfEnableCommitButton } from './preApiCallCheck';
 import {
   checkInputChanges,
   countDuplicates,
   resolveDuplicates,
 } from './dataValidation';
-import './colorpicker';
 
 const createNewLabelEntry = (label, mode) => {
   let todo = ' data-todo="none" ';
