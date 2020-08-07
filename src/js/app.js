@@ -29,10 +29,11 @@ import {
 } from './preApiCallChecks';
 import { assignNameForEntry, makeBasicAuth } from './makeApiCalls';
 import {
+  clearAllEntries,
   clickToDeleteAllLabels,
   clickToDeleteAllMilestones,
 } from './manipulateEntries';
-import serializeEntries from './commitChanges';
+import { serializeEntries } from './commitChanges';
 import clickToCloseModal from './modal';
 
 const app = () => {
@@ -807,14 +808,6 @@ const app = () => {
     /** === END: CREATE NEW MILESTONE ENTRIES === */
 
     /** === START: MANIPULATE ENTRIES (LIST, DELETE, CLEAR, AND COPY) === */
-
-    const clearAllEntries = (kind) => {
-      $(`#form-${kind}`).text('');
-      $('#commit-to-target-repo').text('Commit changes');
-      $('#commit-to-target-repo').attr('disabled', true);
-      $('#commit-to-target-repo').removeClass('btn-success');
-      $('#commit-to-target-repo').addClass('btn-outline-success');
-    };
 
     const clickToListAllEntries = (kind) => {
       const LOGIN_INFO = getLoginInfo();
