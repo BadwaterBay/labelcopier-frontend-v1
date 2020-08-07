@@ -1,5 +1,5 @@
 /**
- * COPY-TO-USERNAME CHECKBOX FUNCTIONALITIES
+ * LOGIN INPUT FUNCTIONALITIES
  */
 
 'use strict';
@@ -8,7 +8,7 @@
  * Copy #target-owner to #target-username when #copy-to-username checkbox is
  * checked; if unchecked, reset #target-username to an empty string
  */
-const copyToUsername = () => {
+const listenForRepoOwnerCheckbox = () => {
   document.getElementById('copy-to-username').addEventListener(
     'click',
     /** @this HTMLElement */
@@ -22,7 +22,7 @@ const copyToUsername = () => {
 /**
  * Copy #target-owner to #target-username if #copy-to-username is checked
  */
-const copyOwnerToUsername = () => {
+const listenForRepoOwnerInput = () => {
   document.getElementById('target-owner').addEventListener(
     'keyup',
     /** @this HTMLElement */
@@ -38,7 +38,7 @@ const copyOwnerToUsername = () => {
  * Check #copy-to-username checkbox if the values of #target-username and
  * #target-owner are equal, and vice versa
  */
-const setCopyToUsernameCheckbox = () => {
+const autoCheckRepoOwnerCheckbox = () => {
   document.getElementById('target-username').addEventListener(
     'keyup',
     /** @this HTMLElement */
@@ -50,4 +50,8 @@ const setCopyToUsernameCheckbox = () => {
   );
 };
 
-export { copyToUsername, copyOwnerToUsername, setCopyToUsernameCheckbox };
+export {
+  listenForRepoOwnerCheckbox,
+  listenForRepoOwnerInput,
+  autoCheckRepoOwnerCheckbox,
+};

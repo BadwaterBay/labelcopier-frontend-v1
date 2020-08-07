@@ -1,5 +1,5 @@
-const loginCard = () => {
-  return `
+const loginCard = (() =>
+  `
     <div class="card bg-light card-body mb-3">
       <div class="card-header">
         <h3>
@@ -139,7 +139,6 @@ const loginCard = () => {
       </div>
       <!-- row -->
     </div>
-  `;
-};
+  `)();
 
 export default loginCard;

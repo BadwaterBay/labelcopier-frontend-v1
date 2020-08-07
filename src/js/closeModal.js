@@ -7,7 +7,7 @@
 // jQuery is temporarily made accessible globally
 
 // Clicking outside the modal closes it
-const clickToCloseModal = () => {
+const clickOutsideToCloseModal = () => {
   $(document).click((event) => {
     if ($(event.target).is('#loadingModal')) {
       $('#loadingModal').modal('hide');
@@ -15,4 +15,4 @@ const clickToCloseModal = () => {
   });
 };
 
-export default clickToCloseModal;
+export default clickOutsideToCloseModal;

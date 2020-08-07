@@ -1,5 +1,12 @@
-const navbar = () => {
-  return `
+/**
+ * Navbar component
+ *
+ * However, we're not using navbar because this web app will be injected to
+ * another webpage with a navbar and a footer
+ */
+
+const navbar = (() =>
+  `
     <div class="navbar navbar-expand-md navbar-dark bg-dark">
       <div class="container">
         <a class="navbar-brand" href="#">
@@ -19,7 +26,6 @@ const navbar = () => {
         </ul>
       </div>
     </div>
-  `;
-};
+  `)();
 
 export default navbar;

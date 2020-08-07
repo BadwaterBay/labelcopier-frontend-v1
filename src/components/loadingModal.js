@@ -1,5 +1,5 @@
-const loadingModal = () => {
-  return `
+const loadingModal = (() =>
+  `
     <div id="loadingModal" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -25,7 +25,6 @@ const loadingModal = () => {
       </div>
     </div>
     <!-- #loadingModal -->
-  `;
-};
+  `)();
 
 export default loadingModal;

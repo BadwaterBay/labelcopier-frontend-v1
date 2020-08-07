@@ -18,70 +18,6 @@ const getLoginInfo = () => {
   };
 };
 
-/**
- * @param {Object} el
- * @return {boolean}
- */
-const checkInputChanges = (el) => {
-  let noChanges = true;
-
-  el.find(':input[data-orig-val]').each(
-    /** @this HTMLElement */
-    function () {
-      if ($(this).val() !== $(this).attr('data-orig-val')) {
-        noChanges = false;
-      }
-    }
-  );
-  return noChanges;
-};
-
-/**
- * @param {string} kind
- * @param {string} blockedVal
- * @return {number}
- */
-const countDuplicates = (kind, blockedVal) => {
-  let duplicateCount = 0;
-  $(`#form-${kind}`)
-    .children()
-    .each(
-      /** @this HTMLElement */
-      function () {
-        const $nameInput = $(this).find('.name-fitting');
-        if (
-          $nameInput.attr('blocked-val') === blockedVal &&
-          $nameInput.attr('dup-resolved') !== 'true'
-        ) {
-          duplicateCount += 1;
-        }
-      }
-    );
-  return duplicateCount;
-};
-
-/**
- * @param {string} kind
- * @param {string} blockedVal
- */
-const resolveDuplicates = (kind, blockedVal) => {
-  $(`#form-${kind}`)
-    .children()
-    .each(
-      /** @this HTMLElement */
-      function () {
-        const $nameInput = $(this).find('.name-fitting');
-        if (
-          $nameInput.attr('blocked-val') === blockedVal &&
-          $nameInput.attr('dup-resolved') !== 'true'
-        ) {
-          $(this).find('.duplicate-name-input').addClass('hidden');
-          $nameInput.attr('dup-resolved', true);
-        }
-      }
-    );
-};
-
 const enableCommitButton = () => {
   const commitToTargetRepo = document.getElementById('commit-to-target-repo');
   commitToTargetRepo.removeAttribute('disabled');
@@ -101,7 +37,7 @@ const disableCommitButton = () => {
     .classList.add('btn-outline-success');
 };
 
-const checkIfEnableCommit = () => {
+const checkIfEnableCommitButton = () => {
   // returns true if any change has been made and activates or
   // disactivates commit button accordingly
 
@@ -154,17 +90,9 @@ const checkIfEnableCommit = () => {
   }
 };
 
-const writeLog = (string) => {
-  $('#loadingModal .modal-body').append(`${string}<br />`);
-};
-
 export {
   getLoginInfo,
-  checkInputChanges,
-  countDuplicates,
-  resolveDuplicates,
   enableCommitButton,
   disableCommitButton,
-  checkIfEnableCommit,
-  writeLog,
+  checkIfEnableCommitButton,
 };
