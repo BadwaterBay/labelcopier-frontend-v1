@@ -31,5 +31,4 @@ mainContent.innerHTML = (() =>
   `)();
 document.body.appendChild(mainContent);
 
-console.log(app);
 app();
