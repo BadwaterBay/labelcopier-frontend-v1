@@ -149,7 +149,7 @@ const listenForCreateNewLabel = () => {
  */
 const listenForCreateNewMilestone = () => {
   document
-    .getElementById('add-new-label-entry')
+    .getElementById('add-new-milestone-entry')
     .addEventListener('click', () => {
       createNewMilestoneEntry(null, 'new');
       checkIfEnableCommitButton();
