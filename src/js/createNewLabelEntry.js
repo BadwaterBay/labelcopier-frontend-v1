@@ -12,6 +12,11 @@ import {
   countDuplicates,
   resolveDuplicates,
 } from './dataValidation';
+import { library, dom } from '@fortawesome/fontawesome-svg-core';
+import { faTrashAlt, faHistory } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faTrashAlt, faHistory);
+dom.watch();
 
 const createNewLabelEntry = (label, mode) => {
   let todo = ' data-todo="none" ';
@@ -63,10 +68,10 @@ const createNewLabelEntry = (label, mode) => {
       </div>\
     </div>\
     <button type="button" class="btn btn-danger delete-button">\
-      <i class="fas fa-trash-alt"></i>\
+      <svg class="fas fa-trash-alt"></svg>\
     </button>\
     <button type="button" class="btn btn-success hidden recover-button">\
-      <i class="fas fa-history"></i>\
+      <svg class="fas fa-history"></svg>\
     </button>\
   <div>
   `);

@@ -4,7 +4,10 @@
 
 'use strict';
 
+import 'bootstrap-material-design/dist/css/bootstrap-material-design.min.css';
 import './scss/app.scss';
+import 'bootstrap-material-design';
+
 import loginCard from './components/loginCard.js';
 import copyFromCard from './components/copyFromCard.js';
 import managementCard from './components/managementCard.js';
