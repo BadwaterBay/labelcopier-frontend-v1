@@ -1,6 +1,6 @@
 {
   "name": "github-label-manager-plus",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Web app that helps you manage and migrate GitHub labels and milestones",
   "author": "Badwater Bay",
   "license": "GPL-3.0-or-later",

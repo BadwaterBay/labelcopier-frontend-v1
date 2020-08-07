@@ -1,5 +1,6 @@
 /**
- * preApiCallChecks
+ * preApiCallCheck.js
+ *
  * PREP WORK BEFORE MAKING API CALLS
  */
 
