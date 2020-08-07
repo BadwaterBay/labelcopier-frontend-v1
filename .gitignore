@@ -34,6 +34,7 @@
 *.log
 *.sqlite
 .eslintcache
+/coverage
 
 # OS generated files #
 ######################
