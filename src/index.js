@@ -7,14 +7,13 @@
 import 'bootstrap-material-design/dist/css/bootstrap-material-design.min.css';
 import './scss/app.scss';
 import 'bootstrap-material-design';
-import loginCard from './components/loginCard.js';
-import copyFromCard from './components/copyFromCard.js';
-import managementCard from './components/managementCard.js';
-import loadingModal from './components/loadingModal.js';
-import app from './js/app.js';
+import loginCard from './components/loginCard';
+import copyFromCard from './components/copyFromCard';
+import managementCard from './components/managementCard';
+import loadingModal from './components/loadingModal';
+import app from './js/app';
 
 const mainContent = document.createElement('div');
-
 mainContent.innerHTML = (() =>
   `
     <div id="main-content" class="container">
@@ -30,7 +29,7 @@ mainContent.innerHTML = (() =>
     </div><!-- #content -->
     ${loadingModal}
   `)();
-
 document.body.appendChild(mainContent);
 
+console.log(app);
 app();
