@@ -5,6 +5,7 @@
 
 # Local configs #
 ######################
+/.vscode
 
 # Compiled source #
 ###################
@@ -44,4 +45,3 @@
 ehthumbs.db
 Thumbs.db
 @turtledb
-
