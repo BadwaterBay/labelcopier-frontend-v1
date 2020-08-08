@@ -18,7 +18,7 @@
     "lint": "eslint './**/*.{js,html}' --fix",
     "build:dev": "webpack-dev-server --mode=development",
     "build": "yarn clean && webpack --mode=production",
-    "test": "echo 'No test specified yet' && exit 0",
+    "test": "jest",
     "start": "run-s clean build:dev",
     "serve": "serve build",
     "refresh": "rm -rf node_modules && yarn --frozen-lockfile"
@@ -28,19 +28,22 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged && yarn test --coverage"
     }
   },
   "lint-staged": {
-    "./**/*.{js,html,md,json,css,scss}": [
+    "./**/*.{js,ts,html,md,json,css,scss}": [
       "prettier --write"
     ],
-    "./**/*.{js,html}": [
+    "./**/*.{js}": [
       "eslint --cache --fix"
     ]
   },
   "dependencies": {},
   "devDependencies": {
+    "@babel/core": "^7.0.0-0",
+    "@babel/preset-env": "^7.11.0",
+    "babel-jest": "^26.2.2",
     "css-loader": "^4.2.0",
     "eslint": "^7.5.0",
     "eslint-config-google": "^0.14.0",
