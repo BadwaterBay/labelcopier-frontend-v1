@@ -7,13 +7,15 @@
 import base64 from './base64';
 
 const assignNameForEntry = (entryObject, kind) => {
-  let nameOfEntry = '';
+  let nameOfEntry = 'Default name';
   if (kind === 'labels') {
     nameOfEntry = entryObject.name;
   } else if (kind === 'milestones') {
     nameOfEntry = entryObject.title;
   } else {
-    nameOfEntry = "There's a bug in function assignAPICallSign!";
+    console.log(
+      "The 'kind' is invalid (neither labels or milestones). Return 'Default name'."
+    );
   }
   return nameOfEntry;
 };

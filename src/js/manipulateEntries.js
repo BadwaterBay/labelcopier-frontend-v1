@@ -1,11 +1,20 @@
 /**
- *
+ * manipulateEntries
  */
 
 'use strict';
 
-const clickToDeleteAllEntries = (selector) => {
-  $(selector)
+const clearAllEntries = (kind) => {
+  document.getElementById(`form-${kind}`).textContent = '';
+  const commitToTargetRepo = document.getElementById('commit-to-target-repo');
+  commitToTargetRepo.textContent = 'Commit changes';
+  commitToTargetRepo.setAttribute('disabled', true);
+  commitToTargetRepo.classList.remove('btn-success');
+  commitToTargetRepo.classList.add('btn-outline-success');
+};
+
+const clickToDeleteAllEntries = (kind) => {
+  $(`#form-${kind}`)
     .children()
     .each(
       /** @this HTMLElement */
@@ -27,7 +36,7 @@ const clickToDeleteAllEntries = (selector) => {
 
 const clickToDeleteAllLabels = () => {
   document.getElementById('delete-all-labels').addEventListener('click', () => {
-    clickToDeleteAllEntries('#form-labels');
+    clickToDeleteAllEntries('labels');
     checkIfEnableCommit();
   });
 };
@@ -36,9 +45,9 @@ const clickToDeleteAllMilestones = () => {
   document
     .getElementById('delete-all-milestones')
     .addEventListener('click', () => {
-      clickToDeleteAllEntries('#form-milestones');
+      clickToDeleteAllEntries('milestones');
       checkIfEnableCommit();
     });
 };
 
-export { clickToDeleteAllLabels, clickToDeleteAllMilestones };
+export { clearAllEntries, clickToDeleteAllLabels, clickToDeleteAllMilestones };

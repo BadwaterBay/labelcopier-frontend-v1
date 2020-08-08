@@ -13,6 +13,7 @@ describe('Test makeApiCalls', () => {
       [{ name: 'good first issue' }, 'labels'],
       [{ title: 'On Deck' }, 'milestones'],
       [{ title: 'Version 1.0' }, 'milestones'],
+      [{ title: 'Invalid case' }, 'invalid-kind'],
     ];
 
     const output = [];
@@ -26,6 +27,7 @@ describe('Test makeApiCalls', () => {
       'good first issue',
       'On Deck',
       'Version 1.0',
+      'Default name',
     ];
 
     expect(output).toStrictEqual(answerKey);
