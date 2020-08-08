@@ -16,10 +16,7 @@ describe('Test base64', () => {
     ];
 
     // Output:
-    const output = [];
-    input.forEach((e) => {
-      output.push(base64.encode(e));
-    });
+    const output = input.map((e) => base64.encode(e));
 
     // Answer key:
     const answerKey = [

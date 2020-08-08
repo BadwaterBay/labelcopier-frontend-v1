@@ -5,6 +5,88 @@
 'use strict';
 
 /**
+ * Returns the trimmed value from an ID selector
+ * @param {string} id ID selector
+ * @return {string}
+ */
+const trimmedValFromId = (id) => document.getElementById(id).value.trim();
+
+/**
+ * Returns an object of login info
+ * @return {Object}
+ */
+const getLoginInfo = () => ({
+  homeRepoOwner: trimmedValFromId('home-repo-owner'),
+  homeRepoName: trimmedValFromId('home-repo-name'),
+  gitHubUsername: trimmedValFromId('github-username'),
+  personalAccessToken: trimmedValFromId('personal-access-token'),
+  templateRepoOwner: trimmedValFromId('template-repo-owner'),
+  templateRepoName: trimmedValFromId('template-repo-name'),
+});
+
+const enableCommitButton = () => {
+  const el = document.getElementById('commit-to-home-repo-name');
+  el.removeAttribute('disabled');
+  el.classList.remove('btn-outline-success');
+  el.classList.add('btn-success');
+};
+
+const disableCommitButton = () => {
+  const el = document.getElementById('commit-to-home-repo-name');
+  el.setAttribute('disabled', true);
+  el.classList.remove('btn-success');
+  el.classList.add('btn-outline-success');
+};
+
+const checkIfEnableCommitButton = () => {
+  // returns true if any change has been made and activates or
+  // disactivates commit button accordingly
+
+  console.log('checkIfEnableCommitButton activated!');
+
+  const labelsModified =
+    document.querySelectorAll('.label-entry:not([data-todo="none"])').length >
+    0;
+  const milestonesModified =
+    document.querySelectorAll('.milestone-entry:not([data-todo="none"])')
+      .length > 0;
+  const labelsDuplicated =
+    document.querySelectorAll('.label-entry.duplicate-entry').length > 0;
+  const milestonesDuplicated =
+    document.querySelectorAll('.milestone-entry.duplicate-entry').length > 0;
+
+  if (labelsModified) {
+    document
+      .getElementById('revert-labels-to-original')
+      .removeAttribute('disabled');
+  } else {
+    document
+      .getElementById('revert-labels-to-original')
+      .setAttribute('disabled', true);
+  }
+
+  if (milestonesModified) {
+    document
+      .getElementById('revert-milestones-to-original')
+      .removeAttribute('disabled');
+  } else {
+    document
+      .getElementById('revert-milestones-to-original')
+      .setAttribute('disabled', true);
+  }
+
+  if (labelsDuplicated || milestonesDuplicated) {
+    disableCommitButton();
+  } else {
+    if (labelsModified || milestonesModified) {
+      enableCommitButton();
+    } else {
+      disableCommitButton();
+    }
+  }
+};
+
+/**
  * @param {Object} el
  * @return {boolean}
  */
@@ -110,7 +192,7 @@ const validateEntries = () => {
           const labelName = $(this).find('.name-fitting').val();
           if (labelName === '') {
             $(this).find('.empty-name-input').removeClass('hidden');
-            labelsErrorCount++;
+            labelsErrorCount += 1;
           } else {
             if (labelsTally[labelName] === undefined) {
               labelsTally[labelName] = 1;
@@ -123,7 +205,7 @@ const validateEntries = () => {
           if (
             !/^#([0-9A-F]{3}){1,2}$/i.test($(this).find('.color-fitting').val())
           ) {
-            labelsErrorCount++;
+            labelsErrorCount += 1;
             if ($(this).find('.color-fitting').val() === '') {
               $(this).find('.empty-color-input').removeClass('hidden');
             } else {
@@ -146,7 +228,7 @@ const validateEntries = () => {
           const milestoneName = $(this).find('.name-fitting').val();
           if (milestoneName === '') {
             $(this).find('.empty-name-input').removeClass('hidden');
-            milestonesErrorCount++;
+            milestonesErrorCount += 1;
           } else {
             if (milestonesTally[milestoneName] === undefined) {
               milestonesTally[milestoneName] = 1;
@@ -184,6 +266,11 @@ const validateKind = (kind) => {
 };
 
 export {
+  trimmedValFromId,
+  getLoginInfo,
+  enableCommitButton,
+  disableCommitButton,
+  checkIfEnableCommitButton,
   checkInputChanges,
   countDuplicates,
   resolveDuplicates,

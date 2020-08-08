@@ -12,7 +12,7 @@ describe('Test manipulateEntires', () => {
       <form id="form-labels">
         <div>Dummy to be removed.</div>
       </form>
-      <button id="commit-to-target-repo" type="button" class="btn btn-raised btn-block btn-success" data-loading-text="Commiting...">
+      <button id="commit-to-home-repo-name" type="button" class="btn btn-raised btn-block btn-success" data-loading-text="Commiting...">
         To be changed
       </button>
     `;
@@ -20,23 +20,25 @@ describe('Test manipulateEntires', () => {
     clearAllEntries('labels');
 
     const formEl = document.getElementById('form-labels');
-    const commitToTargetRepo = document.getElementById('commit-to-target-repo');
+    const commitToTargetRepo = document.getElementById(
+      'commit-to-home-repo-name'
+    );
 
     test('Test if the content of the corresponding form is cleared', () => {
       expect(formEl.textContent).toStrictEqual('');
     });
-    test("Test if #commit-to-target-repo's text is changed correctly", () => {
+    test("Test if #commit-to-home-repo-name's text is changed correctly", () => {
       expect(commitToTargetRepo.textContent).toStrictEqual('Commit changes');
     });
-    test("Test if #commit-to-target-repo's disabled attribute is added", () => {
+    test("Test if #commit-to-home-repo-name's disabled attribute is added", () => {
       expect(commitToTargetRepo.getAttribute('disabled')).toStrictEqual('true');
     });
-    test("Test if #commit-to-target-repo's btn-success class is removed", () => {
+    test("Test if #commit-to-home-repo-name's btn-success class is removed", () => {
       expect(
         commitToTargetRepo.classList.contains('btn-success')
       ).toStrictEqual(false);
     });
-    test("Test if #commit-to-target-repo's btn-outline-success class is added", () => {
+    test("Test if #commit-to-home-repo-name's btn-outline-success class is added", () => {
       expect(
         commitToTargetRepo.classList.contains('btn-outline-success')
       ).toStrictEqual(true);

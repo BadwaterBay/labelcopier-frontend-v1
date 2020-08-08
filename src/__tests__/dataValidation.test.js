@@ -1,22 +1,24 @@
 /**
- * Test preApiCallChecks
+ * Test dataValidation.js
  */
 
 'use strict';
 
-import { enableCommitButton, disableCommitButton } from '../js/preApiCallCheck';
+import { enableCommitButton, disableCommitButton } from '../js/dataValidation';
 
-describe('Test preApiCallCheck', () => {
+describe('Test dataValidation', () => {
   describe('Test enableCommitButton', () => {
     document.body.innerHTML = `
-      <button id="commit-to-target-repo" type="button" class="btn btn-raised btn-outline-success btn-block" disabled="" data-loading-text="Commiting...">
+      <button id="commit-to-home-repo-name" type="button" class="btn btn-raised btn-outline-success btn-block" disabled="" data-loading-text="Commiting...">
         Commit changes'
       </button>
       `;
 
     enableCommitButton();
 
-    const commitToTargetRepo = document.getElementById('commit-to-target-repo');
+    const commitToTargetRepo = document.getElementById(
+      'commit-to-home-repo-name'
+    );
 
     test("Test if attribute 'disabled' is removed", () => {
       expect(commitToTargetRepo.hasAttribute('disabled')).toBe(false);
@@ -36,7 +38,7 @@ describe('Test preApiCallCheck', () => {
   describe('Test disableCommitButton', () => {
     document.body.innerHTML = `
       <div>
-        <button id="commit-to-target-repo" type="button" class="btn btn-raised btn-success btn-block" data-loading-text="Commiting...">
+        <button id="commit-to-home-repo-name" type="button" class="btn btn-raised btn-success btn-block" data-loading-text="Commiting...">
           Commit changes'
         </button>
       </div>
@@ -44,7 +46,9 @@ describe('Test preApiCallCheck', () => {
 
     disableCommitButton();
 
-    const commitToTargetRepo = document.getElementById('commit-to-target-repo');
+    const commitToTargetRepo = document.getElementById(
+      'commit-to-home-repo-name'
+    );
 
     test("Test if attribute 'disabled' is added", () => {
       expect(commitToTargetRepo.hasAttribute('disabled')).toBe(true);

@@ -32,7 +32,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html',
+      template: path.join(__dirname, 'public', 'index.html'),
     }),
     new webpack.ProvidePlugin({
       $: 'jquery',
@@ -45,4 +45,5 @@ module.exports = {
     compress: true,
     port: 5000,
   },
+  devtool: 'source-map',
 };

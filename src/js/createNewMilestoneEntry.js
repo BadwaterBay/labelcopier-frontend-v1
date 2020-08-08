@@ -4,8 +4,8 @@
 
 'use strict';
 
-import { checkIfEnableCommitButton } from './preApiCallCheck';
 import {
+  checkIfEnableCommitButton,
   checkInputChanges,
   countDuplicates,
   resolveDuplicates,

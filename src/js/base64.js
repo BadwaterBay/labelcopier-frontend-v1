@@ -125,7 +125,7 @@ const base64 = {
 
       if (c1 < 128) {
         string += String.fromCharCode(c1);
-        i++;
+        i += 1;
       } else if (c1 > 191 && c1 < 224) {
         c2 = utftext.charCodeAt(i + 1);
         string += String.fromCharCode(((c1 & 31) << 6) | (c2 & 63));

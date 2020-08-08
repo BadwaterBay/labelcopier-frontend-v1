@@ -31,18 +31,18 @@ import {
   listenForListAllMilestones,
   listenForDeleteAllLabels,
   listenForDeleteAllMilestones,
-  listenForRevertLabelsToOriginal,
-  listenForRevertMilestonesToOriginal,
+  listenForUndoLabels,
+  listenForUndoMilestones,
   listenForCopyLabelsFromRepo,
   listenForCopyMilestonesFromRepo,
   listenForCreateNewLabel,
   listenForCreateNewMilestone,
 } from './js/manipulateEntries';
 import {
-  listenForClickOfCommitButton,
-  reloadEntriesWhenModalCloses,
-} from './js/apiCall';
-import clickOutsideToCloseModal from './js/closeModal';
+  listenForCommitButton,
+  reloadAfterCommit,
+  clickOutsideToCloseModal,
+} from './js/commitChanges';
 
 export default () =>
   document.addEventListener('DOMContentLoaded', () => {
@@ -66,8 +66,8 @@ export default () =>
     listenForListAllMilestones();
     listenForDeleteAllLabels();
     listenForDeleteAllMilestones();
-    listenForRevertLabelsToOriginal();
-    listenForRevertMilestonesToOriginal();
+    listenForUndoLabels();
+    listenForUndoMilestones();
     listenForCopyLabelsFromRepo();
     listenForCopyMilestonesFromRepo();
     listenForCreateNewLabel();
@@ -77,12 +77,12 @@ export default () =>
      * Listen for click events of the commit button
      * When clicked, commit changes by communicating with GitHub API
      */
-    listenForClickOfCommitButton();
+    listenForCommitButton();
 
     /**
      * Reload entries when the modal is closed after comitting changes
      */
-    reloadEntriesWhenModalCloses();
+    reloadAfterCommit();
 
     /**
      * Click anywhere outside the modal to close the modal
