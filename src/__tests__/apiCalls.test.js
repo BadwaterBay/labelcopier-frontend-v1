@@ -1,5 +1,5 @@
 /**
- * Test apiCall
+ * Test apiCalls
  */
 
 'use strict';
