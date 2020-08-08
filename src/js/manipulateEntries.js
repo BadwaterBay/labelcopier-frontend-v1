@@ -20,9 +20,9 @@ const clearAllEntries = (kind) => {
 };
 
 const listAllEntries = (kind) => {
-  const LOGIN_INFO = getLoginInfo();
+  const loginInfo = getLoginInfo();
 
-  if (LOGIN_INFO.targetOwner && LOGIN_INFO.targetRepo) {
+  if (loginInfo.targetOwner && loginInfo.targetRepo) {
     if (kind === 'labels') {
       clearAllEntries('labels');
     }
@@ -103,9 +103,9 @@ const listenForRevertMilestonesToOriginal = () => {
 };
 
 const copyEntriesFromRepo = (kind) => {
-  const LOGIN_INFO = getLoginInfo();
+  const loginInfo = getLoginInfo();
 
-  if (LOGIN_INFO.copyFromOwner && LOGIN_INFO.copyFromRepo) {
+  if (loginInfo.copyFromOwner && loginInfo.copyFromRepo) {
     apiCallGetEntries(kind, 'copy');
     // set uncommitted to true because those are coming from another repo
 

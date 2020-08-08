@@ -19,26 +19,26 @@ dom.watch();
 const parseDate = (raw) => {
   if (raw === null || raw === '') {
     return ['', ''];
-  } else {
-    const parsedDatetime = new Date(raw);
-    const dt = {
-      year: parsedDatetime.getFullYear(),
-      month: parsedDatetime.getMonth() + 1,
-      dayOfMonth: parsedDatetime.getDate(),
-      hour: parsedDatetime.getHours(),
-      minute: parsedDatetime.getMinutes(),
-      second: parsedDatetime.getSeconds(),
-    };
-
-    Object.keys(dt).forEach((k) => {
-      dt[k] = dt[k] < 10 ? '0' + dt[k] : '' + dt[k];
-    });
-
-    return [
-      `${dt.year}-${dt.month}-${dt.dayOfMonth}`,
-      `${dt.hour}:${dt.minute}:${dt.second}`,
-    ];
   }
+
+  const parsedDatetime = new Date(raw);
+  const dt = {
+    year: parsedDatetime.getFullYear(),
+    month: parsedDatetime.getMonth() + 1,
+    dayOfMonth: parsedDatetime.getDate(),
+    hour: parsedDatetime.getHours(),
+    minute: parsedDatetime.getMinutes(),
+    second: parsedDatetime.getSeconds(),
+  };
+
+  Object.keys(dt).forEach((k) => {
+    dt[k] = dt[k] < 10 ? '0' + dt[k] : '' + dt[k];
+  });
+
+  return [
+    `${dt.year}-${dt.month}-${dt.dayOfMonth}`,
+    `${dt.hour}:${dt.minute}:${dt.second}`,
+  ];
 };
 
 const createNewMilestoneEntry = (milestone, mode) => {

@@ -7,13 +7,9 @@
 import base64 from './base64';
 import { getLoginInfo, checkIfEnableCommitButton } from './preApiCallCheck';
 import { clearAllEntries } from './manipulateEntries';
-import { validateEntries } from './dataValidation';
+import { validateEntries, validateKind } from './dataValidation';
 import createNewLabelEntry from './createNewLabelEntry';
 import { createNewMilestoneEntry } from './createNewMilestoneEntry';
-
-const writeLog = (string) => {
-  $('#loadingModal .modal-body').append(`${string}<br />`);
-};
 
 const formatDate = (dateInput) => {
   const date = dateInput.val();
@@ -46,17 +42,28 @@ const formatDate = (dateInput) => {
  * @return {Object | null} Serialized object
  */
 const serializeEntries = (jObjectEntry, kind) => {
+  try {
+    validateKind(kind);
+  } catch (err) {
+    console.error(err);
+    alert(err);
+    return;
+  }
+
   if (kind === 'labels') {
     return {
       name: jObjectEntry.find('[name="name"]').val(),
+      originalName: jObjectEntry.find('[name="name"]').attr('data-orig-val'),
       color: jObjectEntry.find('[name="color"]').val().slice(1),
       description: jObjectEntry.find('[name="description"]').val(),
-      originalName: jObjectEntry.find('[name="name"]').attr('data-orig-val'),
     };
-  } else if (kind === 'milestones') {
+  } else {
     if (jObjectEntry.attr('data-number') !== 'null') {
       return {
         title: jObjectEntry.find('[name="title"]').val(),
+        originalTitle: jObjectEntry
+          .find('[name="title"]')
+          .attr('data-orig-val'),
         state: jObjectEntry.find('[name="state"]').val(),
         description: jObjectEntry.find('[name="description"]').val(),
         due_on: formatDate(jObjectEntry.find('[name="due-date"]')),
@@ -78,264 +85,281 @@ const serializeEntries = (jObjectEntry, kind) => {
         };
       }
     }
-  } else {
-    console.log('Bug in function serializeEntries!');
   }
 };
 
-const assignNameForEntry = (entryObject, kind) => {
-  let nameOfEntry = 'Default name';
+const makeBasicAuth = (loginInfo) =>
+  'Basic ' +
+  base64.encode(`${loginInfo.targetUsername}:${loginInfo.personalAccessToken}`);
+
+const packEntry = (entryObject, kind) => {
+  const entryObjectCopy = entryObject;
+  const entryPackage = {};
+
   if (kind === 'labels') {
-    nameOfEntry = entryObject.name;
-  } else if (kind === 'milestones') {
-    nameOfEntry = entryObject.title;
+    entryPackage.originalName = entryObjectCopy.originalName;
+    entryPackage.newName = entryObjectCopy.name;
+    entryPackage.apiCallSign = entryObjectCopy.originalName;
+    delete entryObjectCopy.originalName;
   } else {
-    console.log(
-      "The 'kind' is invalid (neither labels or milestones). Return 'Default name'."
-    );
+    // Milestone
+    entryPackage.originalName = entryObjectCopy.originalTitle;
+    entryPackage.newName = entryObjectCopy.title;
+    entryPackage.apiCallSign = entryObjectCopy.number;
+    delete entryObjectCopy.originalTitle;
   }
-  return nameOfEntry;
-};
-
-const makeBasicAuth = (LOGIN_INFO) => {
-  return (
-    'Basic ' +
-    base64.encode(
-      `${LOGIN_INFO.targetUsername}:${LOGIN_INFO.personalAccessToken}`
-    )
-  );
-};
-
-const loadingSemaphore = (() => {
-  let count = 0;
 
   return {
-    acquire: () => {
-      ++count;
-      return null;
-    },
-    release: () => {
-      if (count <= 0) {
-        throw new Error('Semaphore inconsistency');
-      }
-
-      --count;
-      return null;
-    },
-    isLocked: () => {
-      return count > 0;
-    },
+    body: entryObjectCopy,
+    names: entryPackage,
   };
-})();
+};
 
-let isLoadingShown = false;
+const writeLog = (string) => {
+  $('#loadingModal .modal-body').append(`${string}<br/>`);
+};
 
-$.ajaxSetup({
-  cache: false,
-  complete: () => {
-    loadingSemaphore.release();
-    if (isLoadingShown && loadingSemaphore.isLocked() === false) {
-      writeLog('All operations are done.');
-
-      $('#loadingModal .modal-content').append(`
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary"
-              data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">
-                Close
-              </span>
-            </button>
-          </div>
-          `);
-    }
-  },
-  beforeSend: (xhr) => {
-    const LOGIN_INFO = getLoginInfo();
-    loadingSemaphore.acquire();
-    if (LOGIN_INFO.targetUsername && LOGIN_INFO.personalAccessToken) {
-      xhr.setRequestHeader('Authorization', makeBasicAuth(LOGIN_INFO));
-    }
-  },
-});
-
-const apiCallGetUrl = (owner, repo, kind, pageNum) => {
-  let queryURL = `https://api.github.com/repos/${owner}/${repo}/${kind}?page=${pageNum}`;
+const urlForGetEntries = (loginInfo, kind, pageNum = 1) => {
+  const owner = loginInfo.targetOwner;
+  const repo = loginInfo.targetRepo;
+  let queryURL =
+    `https://api.github.com/repos/${owner}/${repo}/${kind}` +
+    `?page=${pageNum}`;
   if (kind === 'milestones') {
     queryURL += '&state=all';
   }
   return queryURL;
 };
 
-const apiCallGetEntriesRecursively = (
-  owner,
-  repo,
+const apiCallGetEntriesRecursively = async (
+  loginInfo,
   kind,
   mode,
   pageNum = 1,
   callback = undefined
 ) => {
-  $.ajax({
-    type: 'GET',
-    url: apiCallGetUrl(owner, repo, kind, pageNum),
-    success: (response) => {
-      if (response) {
-        if (response.length === 0) {
+  const url = urlForGetEntries(loginInfo, kind, pageNum);
+  fetch(url, {
+    method: 'GET',
+    headers: {
+      Authorization: makeBasicAuth(loginInfo),
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        if (typeof callback === 'function') {
+          callback(response);
+        }
+        throw new Error('Error occurred while getting entries.');
+      }
+      response.json().then((body) => {
+        if (body.length === 0) {
           if (pageNum === 1) {
-            alert(`No ${kind} exist in this repo!`);
+            alert(`No ${kind} exist in this repository.`);
           }
           return;
         }
         if (kind === 'labels') {
-          response.forEach((e) => {
-            e.color = `#${e.color.toUpperCase()}`;
+          body.forEach((e) => {
             createNewLabelEntry(e, mode);
           });
-        } else if (kind === 'milestones') {
-          response.forEach((e) => {
+        } else {
+          body.forEach((e) => {
             createNewMilestoneEntry(e, mode);
           });
-        } else {
-          console.log('Bug in function apiCallGetEntriesRecursively!');
         }
-      }
-      if (typeof callback === 'function') {
-        callback(response);
-      }
-      apiCallGetEntriesRecursively(
-        owner,
-        repo,
-        kind,
-        mode,
-        ++pageNum,
-        callback
-      );
-    },
-    error: (response) => {
-      if (response.status === 404) {
-        alert(
-          `Not found! If this is a private repo, make sure you provide a personal access token.`
+        if (typeof callback === 'function') {
+          callback(body);
+        }
+        apiCallGetEntriesRecursively(
+          loginInfo,
+          kind,
+          mode,
+          ++pageNum,
+          callback
         );
-      }
-      if (typeof callback === 'function') {
-        callback(response);
-      }
-    },
-  });
-  checkIfEnableCommitButton();
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      alert(err);
+    });
 };
 
 const apiCallGetEntries = (kind, mode = 'list', callback = undefined) => {
-  const LOGIN_INFO = getLoginInfo();
-  const startingPageNum = 1;
+  try {
+    validateKind(kind);
+  } catch (err) {
+    console.error(err);
+    alert(err);
+    return;
+  }
 
-  apiCallGetEntriesRecursively(
-    LOGIN_INFO.targetOwner,
-    LOGIN_INFO.targetRepo,
-    kind,
-    mode,
-    startingPageNum,
-    callback
-  );
+  const loginInfo = getLoginInfo();
+  const startingPageNum = 1;
+  apiCallGetEntriesRecursively(loginInfo, kind, mode, startingPageNum, callback)
+    .then(() => {
+      checkIfEnableCommitButton();
+    })
+    .catch((err) => {
+      console.error(err);
+      alert(err);
+    });
 };
+
+const urlForCreateEntries = (loginInfo, kind) =>
+  `https://api.github.com/repos/${loginInfo.targetOwner}/` +
+  `${loginInfo.targetRepo}/${kind}`;
 
 const apiCallCreateEntries = (entryObject, kind, callback = undefined) => {
-  const LOGIN_INFO = getLoginInfo();
-  const NAME_OF_ENTRY = assignNameForEntry(entryObject, kind);
+  try {
+    validateKind(kind);
+  } catch (err) {
+    console.error(err);
+    alert(err);
+    return;
+  }
 
-  $.ajax({
-    type: 'POST',
-    url: `https://api.github.com/repos/${LOGIN_INFO.targetOwner}/${LOGIN_INFO.targetRepo}/${kind}`,
-    data: JSON.stringify(entryObject),
-    success: (response) => {
-      if (typeof callback === 'function') {
-        callback(response);
+  const loginInfo = getLoginInfo();
+  const entryPackage = packEntry(entryObject, kind);
+  const url = urlForCreateEntries(loginInfo, kind);
+  const kindNameSingular = kind.slice(0, -1);
+
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: makeBasicAuth(loginInfo),
+    },
+    body: JSON.stringify(entryPackage.body),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        if (typeof callback === 'function') {
+          callback(response);
+        }
+        throw new Error(response.status);
       }
-      writeLog(`Created ${kind.slice(0, -1)}: ${NAME_OF_ENTRY}`);
-    },
-    error: (jqXHR, textStatus, errorThrown) => {
+      response.json().then((body) => {
+        if (typeof callback === 'function') {
+          callback(body);
+        }
+        writeLog(
+          `Created ${kindNameSingular}: ${entryPackage.names.originalName}.`
+        );
+      });
+    })
+    .catch((err) => {
       writeLog(
-        'Creation of ' +
-          kind.slice(0, -1) +
-          `failed for: ${NAME_OF_ENTRY} due to error: ${errorThrown}`
+        `Creation of ${kindNameSingular} ${entryPackage.names.originalName} failed due to ` +
+          `error: ${err}.`
       );
-    },
-  });
+      console.error(err);
+    });
 };
+
+const urlForUpdateEntries = (loginInfo, kind, apiCallSign) =>
+  `https://api.github.com/repos/${loginInfo.targetOwner}/` +
+  `${loginInfo.targetRepo}/${kind}/${apiCallSign}`;
 
 const apiCallUpdateEntries = (entryObject, kind, callback = undefined) => {
-  const API_CALL_SIGN = ((entryObject, kind) => {
-    let apiCallSign = '';
-    if (kind === 'labels') {
-      apiCallSign = entryObject.originalName;
-      delete entryObject.originalName;
-    } else if (kind === 'milestones') {
-      apiCallSign = entryObject.number;
-    } else {
-      apiCallSign = "There's a bug in function assignAPICallSign4Update!";
-    }
-    return apiCallSign;
-  })(entryObject, kind);
+  try {
+    validateKind(kind);
+  } catch (err) {
+    console.error(err);
+    alert(err);
+    return;
+  }
 
-  const LOGIN_INFO = getLoginInfo();
-  const NAME_OF_ENTRY = assignNameForEntry(entryObject, kind);
+  const loginInfo = getLoginInfo();
+  const entryPackage = packEntry(entryObject, kind);
+  const url = urlForUpdateEntries(
+    loginInfo,
+    kind,
+    entryPackage.names.apiCallSign
+  );
+  const kindNameSingular = kind.slice(0, -1);
 
-  $.ajax({
-    type: 'PATCH',
-    url: `https://api.github.com/repos/${LOGIN_INFO.targetOwner}/${LOGIN_INFO.targetRepo}/${kind}/${API_CALL_SIGN}`,
-    data: JSON.stringify(entryObject),
-    success: (response) => {
-      if (typeof callback === 'function') {
-        callback(response);
+  fetch(url, {
+    method: 'PATCH',
+    headers: {
+      Authorization: makeBasicAuth(loginInfo),
+    },
+    body: JSON.stringify(entryPackage.body),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        if (typeof callback === 'function') {
+          callback(response);
+        }
+        throw new Error(response.status);
       }
+      response.json().then((body) => {
+        if (typeof callback === 'function') {
+          callback(body);
+        }
+        writeLog(
+          `Updated ${kindNameSingular}: ${entryPackage.names.originalName} -> ${entryPackage.names.newName}.`
+        );
+      });
+    })
+    .catch((err) => {
       writeLog(
-        'Updated ' +
-          kind.slice(0, -1) +
-          `: ${API_CALL_SIGN} => ${NAME_OF_ENTRY}`
+        `Update of ${kindNameSingular} ${entryPackage.names.originalName} -> ${entryPackage.names.newName} failed due to ` +
+          `error: ${err}.`
       );
-    },
-    error: (jqXHR, textStatus, errorThrown) => {
-      writeLog(
-        'Update of ' +
-          kind.slice(0, -1) +
-          ` failed for: ${API_CALL_SIGN} due to error: ${errorThrown}`
-      );
-    },
-  });
+      console.error(err);
+    });
 };
 
+const urlForDeleteEntries = (loginInfo, kind, apiCallSign) =>
+  `https://api.github.com/repos/${loginInfo.targetOwner}/` +
+  `${loginInfo.targetRepo}/${kind}/${apiCallSign}`;
+
 const apiCallDeleteEntries = (entryObject, kind, callback = undefined) => {
-  const API_CALL_SIGN = ((entryObject, kind) => {
-    let apiCallSign = '';
-    if (kind === 'labels') {
-      apiCallSign = entryObject.originalName;
-    } else if (kind === 'milestones') {
-      apiCallSign = entryObject.number;
-    } else {
-      apiCallSign = "There's a bug in function assignAPICallSign4Delete!";
-    }
-    return apiCallSign;
-  })(entryObject, kind);
+  try {
+    validateKind(kind);
+  } catch (err) {
+    console.error(err);
+    alert(err);
+    return;
+  }
 
-  const LOGIN_INFO = getLoginInfo();
-  const NAME_OF_ENTRY = assignNameForEntry(entryObject, kind);
+  const loginInfo = getLoginInfo();
+  const entryPackage = packEntry(entryObject, kind);
+  const url = urlForDeleteEntries(
+    loginInfo,
+    kind,
+    entryPackage.names.apiCallSign
+  );
+  const kindNameSingular = kind.slice(0, -1);
 
-  $.ajax({
-    type: 'DELETE',
-    url: `https://api.github.com/repos/${LOGIN_INFO.targetOwner}/${LOGIN_INFO.targetRepo}/${kind}/${API_CALL_SIGN}`,
-    success: (response) => {
+  fetch(url, {
+    method: 'DELETE',
+    headers: {
+      Authorization: makeBasicAuth(loginInfo),
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        if (typeof callback === 'function') {
+          callback(response);
+        }
+        throw new Error(response.status);
+      }
       if (typeof callback === 'function') {
         callback(response);
       }
-      writeLog(`Deleted ${kind.slice(0, -1)}: ${NAME_OF_ENTRY}`);
-    },
-    error: (jqXHR, textStatus, errorThrown) => {
       writeLog(
-        'Deletion of ' +
-          kind.slice(0, -1) +
-          ` failed for: ${NAME_OF_ENTRY} due to error: ${errorThrown}`
+        `Updated ${kindNameSingular}: ${entryPackage.names.originalName}.`
       );
-    },
-  });
+    })
+    .catch((err) => {
+      writeLog(
+        `Update of ${kindNameSingular} ${entryPackage.names.originalName} ` +
+          `failed due to error: ${err}.`
+      );
+      console.error(err);
+    });
 };
 
 const commitChanges = () => {
@@ -344,7 +368,6 @@ const commitChanges = () => {
     keyboard: false,
     backdrop: 'static',
   });
-  isLoadingShown = true;
 
   // To be deleted
   $('.label-entry[data-todo="delete"]').each(
@@ -420,12 +443,12 @@ const writeErrorsAlert = (errorCount, duplicateCount, kind) => {
  */
 const listenForClickOfCommitButton = () => {
   $('#commit-to-target-repo').click(() => {
-    const LOGIN_INFO = getLoginInfo();
+    const loginInfo = getLoginInfo();
 
-    if (!LOGIN_INFO.personalAccessToken) {
+    if (!loginInfo.personalAccessToken) {
       alert(
         `You need to enter your personal access token for repo \
-      ${LOGIN_INFO.targetRepo} in order to commit changes.`
+      ${loginInfo.targetRepo} in order to commit changes.`
       );
       return;
     }
@@ -467,8 +490,6 @@ const listenForClickOfCommitButton = () => {
  */
 const reloadEntriesWhenModalCloses = () => {
   $('#loadingModal').on('hidden.bs.modal', () => {
-    isLoadingShown = false;
-
     // reset modal
     $('#loadingModal .modal-body').text('');
     $('#loadingModal .modal-body').append('<p>Commiting...');
@@ -491,17 +512,19 @@ const reloadEntriesWhenModalCloses = () => {
 };
 
 export {
-  writeLog,
   formatDate,
   serializeEntries,
-  assignNameForEntry,
   makeBasicAuth,
-  loadingSemaphore,
-  apiCallGetUrl,
+  packEntry,
+  writeLog,
+  urlForGetEntries,
   apiCallGetEntriesRecursively,
   apiCallGetEntries,
+  urlForCreateEntries,
   apiCallCreateEntries,
+  urlForUpdateEntries,
   apiCallUpdateEntries,
+  urlForDeleteEntries,
   apiCallDeleteEntries,
   commitChanges,
   writeErrorsAlert,

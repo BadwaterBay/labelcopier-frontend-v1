@@ -4,35 +4,9 @@
 
 'use strict';
 
-import { assignNameForEntry, makeBasicAuth } from '../js/apiCall';
+import { makeBasicAuth } from '../js/apiCall';
 
 describe('Test apiCall', () => {
-  test('Test assignNameForEntry on successful cases', () => {
-    const input = [
-      [{ name: 'help wanted' }, 'labels'],
-      [{ name: 'good first issue' }, 'labels'],
-      [{ title: 'On Deck' }, 'milestones'],
-      [{ title: 'Version 1.0' }, 'milestones'],
-      [{ title: 'Invalid case' }, 'invalid-kind'],
-    ];
-
-    const output = [];
-
-    input.forEach((e) => {
-      output.push(assignNameForEntry(...e));
-    });
-
-    const answerKey = [
-      'help wanted',
-      'good first issue',
-      'On Deck',
-      'Version 1.0',
-      'Default name',
-    ];
-
-    expect(output).toStrictEqual(answerKey);
-  });
-
   test('Test makeBasicAuth', () => {
     const input = [
       {

@@ -19,20 +19,22 @@ library.add(faTrashAlt, faHistory);
 dom.watch();
 
 const createNewLabelEntry = (label, mode) => {
-  let todo = ' data-todo="none" ';
-  let uncommittedSignClass = '';
-
-  if (mode === 'copy' || mode === 'new') {
-    todo = ' data-todo="create" new="true" ';
-    uncommittedSignClass = ' uncommitted ';
-  }
-
   if (label === undefined || label === null) {
     label = {
       name: '',
       color: '',
       description: '',
     };
+  }
+
+  label.color = `#${label.color.toUpperCase()}`;
+
+  let todo = ' data-todo="none" ';
+  let uncommittedSignClass = '';
+
+  if (mode === 'copy' || mode === 'new') {
+    todo = ' data-todo="create" new="true" ';
+    uncommittedSignClass = ' uncommitted ';
   }
 
   const origNameVal = ` data-orig-val="${label.name}"`;

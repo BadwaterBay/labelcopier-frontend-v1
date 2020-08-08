@@ -173,10 +173,21 @@ const validateEntries = () => {
   ];
 };
 
+const validateKind = (kind) => {
+  const validKinds = new Set(['labels', 'milestones']);
+  if (validKinds.has(kind)) {
+    return true;
+  }
+  throw new Error(
+    "Invalid kind parameter was given. It is neither 'labels' or 'milestones'."
+  );
+};
+
 export {
   checkInputChanges,
   countDuplicates,
   resolveDuplicates,
   displayDuplicateErrors,
   validateEntries,
+  validateKind,
 };
