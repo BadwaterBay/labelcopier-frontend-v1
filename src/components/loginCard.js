@@ -10,14 +10,14 @@ const loginCard = (() =>
         <div class="row">
           <div class="col-12 col-md-6 col-lg-12">
             <div class="form-group">
-              <label for="target-owner" class="bmd-label-floating">
+              <label for="home-repo-owner" class="bmd-label-floating">
                 Repository&nbsp;owner
               </label>
               <input
                 type="text"
                 class="form-control"
-                id="target-owner"
-                name="target-owner"
+                id="home-repo-owner"
+                name="home-repo-owner"
               />
               <span class="bmd-help">
                 Such as: BadwaterBay
@@ -27,10 +27,10 @@ const loginCard = (() =>
           </div>
           <div class="col-12 col-md-6 col-lg-12">
             <div class="form-group">
-              <label for="target-repo" class="bmd-label-floating">
+              <label for="home-repo-name" class="bmd-label-floating">
                 Repository
               </label>
-              <input type="text" class="form-control" id="target-repo" />
+              <input type="text" class="form-control" id="home-repo-name" />
               <span class="bmd-help">
                 Such as: template-for-label-and-milestone-1
               </span>
@@ -45,7 +45,7 @@ const loginCard = (() =>
               <label>
                 <input
                   type="checkbox"
-                  id="copy-to-username"
+                  id="i-am-repo-owner"
                   name="checkOwnerOfRepository"
                   value=""
                   checked
@@ -61,14 +61,14 @@ const loginCard = (() =>
         <div class="row">
           <div class="col-12 col-md-6 col-lg-12">
             <div class="form-group">
-              <label class="bmd-label-floating" for="target-username">
+              <label class="bmd-label-floating" for="github-username">
                 Username&nbsp;for&nbsp;authentication
               </label>
               <input
                 type="text"
                 class="form-control"
-                id="target-username"
-                name="target-username"
+                id="github-username"
+                name="github-username"
               />
               <span class="bmd-help">
                 You can manage repositories you own or have access to
@@ -126,7 +126,7 @@ const loginCard = (() =>
         <!-- <div class="row"> -->
         <div class="col-12 col-md-4 col-lg-12">
           <button
-            id="commit-to-target-repo"
+            id="commit-to-home-repo-name"
             type="button"
             class="btn btn-raised btn-outline-success btn-block"
             disabled

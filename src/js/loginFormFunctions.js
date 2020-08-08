@@ -5,47 +5,46 @@
 'use strict';
 
 /**
- * Copy #target-owner to #target-username when #copy-to-username checkbox is
- * checked; if unchecked, reset #target-username to an empty string
+ * Copy #home-repo-owner to #github-username when #i-am-repo-owner checkbox is
+ * checked; if unchecked, reset #github-username to an empty string
  */
 const listenForRepoOwnerCheckbox = () => {
-  document.getElementById('copy-to-username').addEventListener(
+  document.getElementById('i-am-repo-owner').addEventListener(
     'click',
     /** @this HTMLElement */
     function () {
-      document.getElementById('target-username').value = (() =>
-        this.checked ? document.getElementById('target-owner').value : '')();
+      document.getElementById('github-username').value = (() =>
+        this.checked ? document.getElementById('home-repo-owner').value : '')();
     }
   );
 };
 
 /**
- * Copy #target-owner to #target-username if #copy-to-username is checked
+ * Copy #home-repo-owner to #github-username if #i-am-repo-owner is checked
  */
 const listenForRepoOwnerInput = () => {
-  document.getElementById('target-owner').addEventListener(
+  document.getElementById('home-repo-owner').addEventListener(
     'keyup',
     /** @this HTMLElement */
     function () {
-      if (document.getElementById('copy-to-username').checked) {
-        document.getElementById('target-username').value = this.value;
+      if (document.getElementById('i-am-repo-owner').checked) {
+        document.getElementById('github-username').value = this.value;
       }
     }
   );
 };
 
 /**
- * Check #copy-to-username checkbox if the values of #target-username and
- * #target-owner are equal, and vice versa
+ * Check #i-am-repo-owner checkbox if the values of #github-username and
+ * #home-repo-owner are equal, and vice versa
  */
 const autoCheckRepoOwnerCheckbox = () => {
-  document.getElementById('target-username').addEventListener(
+  document.getElementById('github-username').addEventListener(
     'keyup',
     /** @this HTMLElement */
     function () {
-      document.getElementById('copy-to-username').prop('checked', () => {
-        return this.value === document.getElementById('target-owner').value;
-      });
+      document.getElementById('i-am-repo-owner').checked =
+        this.value === document.getElementById('home-repo-owner').value;
     }
   );
 };

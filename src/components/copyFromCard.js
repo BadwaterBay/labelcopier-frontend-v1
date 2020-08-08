@@ -15,13 +15,13 @@ const copyFromCard = (() =>
           <div class="row">
             <div class="col-12 col-md-6 col-lg-12">
               <div class="form-group">
-                <label for="target-owner" class="bmd-label-floating">
+                <label for="home-repo-owner" class="bmd-label-floating">
                   Repository&nbsp;owner
                 </label>
                 <input
                   type="text"
                   class="form-control"
-                  id="copy-from-owner"
+                  id="template-repo-owner"
                 />
                 <span class="bmd-help">
                   Such as: BadwaterBay
@@ -31,13 +31,13 @@ const copyFromCard = (() =>
             <!-- col -->
             <div class="col-12 col-md-6 col-lg-12">
               <div class="form-group">
-                <label for="target-repo" class="bmd-label-floating">
+                <label for="home-repo-name" class="bmd-label-floating">
                   Repository
                 </label>
                 <input
                   type="text"
                   class="form-control"
-                  id="copy-from-repo"
+                  id="template-repo-name"
                 />
                 <span class="bmd-help">
                   Such as: template-for-label-and-milestone-1

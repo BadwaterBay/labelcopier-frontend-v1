@@ -1,29 +1,25 @@
 /**
- * Test makeApiCalls
+ * Test apiCall
  */
 
 'use strict';
 
-import { makeBasicAuth } from '../js/apiCall';
+import { makeBasicAuth } from '../js/apiCalls';
 
-describe('Test apiCall', () => {
+describe('Test apiCalls', () => {
   test('Test makeBasicAuth', () => {
     const input = [
       {
-        targetUsername: 'BadwaterBay',
+        gitHubUsername: 'BadwaterBay',
         personalAccessToken: 'abcdefg',
       },
       {
-        targetUsername: 'githubUsername',
+        gitHubUsername: 'githubUsername',
         personalAccessToken: '1234567890abcde1234567890abcde',
       },
     ];
 
-    const output = [];
-
-    input.forEach((e) => {
-      output.push(makeBasicAuth(e));
-    });
+    const output = input.map(makeBasicAuth);
 
     const answerKey = [
       'Basic QmFkd2F0ZXJCYXk6YWJjZGVmZw==',

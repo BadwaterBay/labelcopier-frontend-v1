@@ -6,13 +6,15 @@
 
 import createNewLabelEntry from './createNewLabelEntry';
 import { createNewMilestoneEntry } from './createNewMilestoneEntry';
-import { getLoginInfo, checkIfEnableCommitButton } from './preApiCallCheck';
-import { apiCallGetEntries } from './apiCall';
+import { getLoginInfo, checkIfEnableCommitButton } from './dataValidation';
+import { apiCallGet } from './apiCalls';
 
 const clearAllEntries = (kind) => {
   document.getElementById(`form-${kind}`).textContent = '';
 
-  const commitToTargetRepo = document.getElementById('commit-to-target-repo');
+  const commitToTargetRepo = document.getElementById(
+    'commit-to-home-repo-name'
+  );
   commitToTargetRepo.textContent = 'Commit changes';
   commitToTargetRepo.setAttribute('disabled', true);
   commitToTargetRepo.classList.remove('btn-success');
@@ -22,7 +24,7 @@ const clearAllEntries = (kind) => {
 const listAllEntries = (kind) => {
   const loginInfo = getLoginInfo();
 
-  if (loginInfo.targetOwner && loginInfo.targetRepo) {
+  if (loginInfo.homeRepoOwner && loginInfo.homeRepoName) {
     if (kind === 'labels') {
       clearAllEntries('labels');
     }
@@ -30,8 +32,14 @@ const listAllEntries = (kind) => {
       clearAllEntries('milestones');
     }
 
-    apiCallGetEntries(kind, 'list');
-    $(`#${kind}-tab`).tab('show');
+    apiCallGet(kind)
+      .then(() => {
+        $(`#${kind}-tab`).tab('show');
+        checkIfEnableCommitButton();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   } else {
     alert('Please enter the owner and the name of the repository.');
   }
@@ -88,47 +96,55 @@ const listenForDeleteAllMilestones = () => {
     });
 };
 
-const listenForRevertLabelsToOriginal = () => {
+const listenForUndoLabels = () => {
   document.getElementById('revert-labels-to-original').click(() => {
     clearAllEntries('labels');
-    apiCallGetEntries('labels', 'list');
+    apiCallGet('labels');
   });
 };
 
-const listenForRevertMilestonesToOriginal = () => {
+const listenForUndoMilestones = () => {
   document.getElementById('revert-milestones-to-original').click(() => {
     clearAllEntries('milestones');
-    apiCallGetEntries('milestones', 'list');
+    apiCallGet('milestones');
   });
 };
 
 const copyEntriesFromRepo = (kind) => {
   const loginInfo = getLoginInfo();
 
-  if (loginInfo.copyFromOwner && loginInfo.copyFromRepo) {
-    apiCallGetEntries(kind, 'copy');
+  if (loginInfo.templateRepoOwner && loginInfo.templateRepoName) {
+    apiCallGet(kind, 'copy')
+      .then(() => {
+        console.log('apiCallGet then inside copyEntriesFromRepo!');
+        $(`#${kind}-tab`).tab('show');
+        checkIfEnableCommitButton();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
     // set uncommitted to true because those are coming from another repo
-
-    $(`#${kind}-tab`).tab('show');
   } else {
     alert(
-      "Please enter the owner and the name of the repository you'd like to copy from."
+      "Please enter the owner and the name of the repository you'd " +
+        'like to copy from.'
     );
   }
-  checkIfEnableCommitButton();
 };
 
 const listenForCopyLabelsFromRepo = () => {
-  document.getElementById('copy-labels-from').addEventListener('click', () => {
-    copyEntriesFromRepo('labels');
-  });
+  document
+    .getElementById('copy-labels-from')
+    .addEventListener('click', async () => {
+      await copyEntriesFromRepo('labels');
+    });
 };
 
 const listenForCopyMilestonesFromRepo = () => {
   document
     .getElementById('copy-milestones-from')
-    .addEventListener('click', () => {
-      copyEntriesFromRepo('milestones');
+    .addEventListener('click', async () => {
+      await copyEntriesFromRepo('milestones');
     });
 };
 
@@ -163,8 +179,8 @@ export {
   clearAllEntries,
   listenForDeleteAllLabels,
   listenForDeleteAllMilestones,
-  listenForRevertLabelsToOriginal,
-  listenForRevertMilestonesToOriginal,
+  listenForUndoLabels,
+  listenForUndoMilestones,
   copyEntriesFromRepo,
   listenForCopyLabelsFromRepo,
   listenForCopyMilestonesFromRepo,
