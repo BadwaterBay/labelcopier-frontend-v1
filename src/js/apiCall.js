@@ -120,11 +120,9 @@ const writeLog = (string) => {
 };
 
 const urlForGetEntries = (loginInfo, kind, pageNum = 1) => {
-  const owner = loginInfo.targetOwner;
-  const repo = loginInfo.targetRepo;
   let queryURL =
-    `https://api.github.com/repos/${owner}/${repo}/${kind}` +
-    `?page=${pageNum}`;
+    `https://api.github.com/repos/${loginInfo.targetOwner}/` +
+    `${loginInfo.targetRepo}/${kind}?page=${pageNum}`;
   if (kind === 'milestones') {
     queryURL += '&state=all';
   }
@@ -139,6 +137,7 @@ const apiCallGetEntriesRecursively = async (
   callback = undefined
 ) => {
   const url = urlForGetEntries(loginInfo, kind, pageNum);
+
   fetch(url, {
     method: 'GET',
     headers: {
@@ -243,15 +242,13 @@ const apiCallCreateEntries = (entryObject, kind, callback = undefined) => {
         if (typeof callback === 'function') {
           callback(body);
         }
-        writeLog(
-          `Created ${kindNameSingular}: ${entryPackage.names.originalName}.`
-        );
+        writeLog(`Created ${kindNameSingular}: ${entryPackage.names.newName}.`);
       });
     })
     .catch((err) => {
       writeLog(
-        `Creation of ${kindNameSingular} ${entryPackage.names.originalName} failed due to ` +
-          `error: ${err}.`
+        `Creation of ${kindNameSingular} ${entryPackage.names.newName} ` +
+          `failed due to error: ${err}.`
       );
       console.error(err);
     });
@@ -426,7 +423,9 @@ const writeErrorsAlert = (errorCount, duplicateCount, kind) => {
   if (errorCount || duplicateCount) {
     if (duplicateCount) {
       if (errorCount) {
-        alertMsg = `${duplicateCount} set(s) of duplicate entries and ${errorCount} other error(s) found in ${kind}!\n`;
+        alertMsg =
+          `${duplicateCount} set(s) of duplicate entries ` +
+          `and ${errorCount} other error(s) found in ${kind}!\n`;
       } else {
         alertMsg = `${duplicateCount} set(s) of duplicate entries found in ${kind}!\n`;
       }
@@ -447,8 +446,8 @@ const listenForClickOfCommitButton = () => {
 
     if (!loginInfo.personalAccessToken) {
       alert(
-        `You need to enter your personal access token for repo \
-      ${loginInfo.targetRepo} in order to commit changes.`
+        `You need to enter your personal access token for repo ` +
+          `${loginInfo.targetRepo} in order to commit changes.`
       );
       return;
     }
@@ -492,7 +491,7 @@ const reloadEntriesWhenModalCloses = () => {
   $('#loadingModal').on('hidden.bs.modal', () => {
     // reset modal
     $('#loadingModal .modal-body').text('');
-    $('#loadingModal .modal-body').append('<p>Commiting...');
+    $('#loadingModal .modal-body').append('<p>Commiting...</p>');
     $('#loadingModal .modal-footer').remove();
 
     // reload labels after changes

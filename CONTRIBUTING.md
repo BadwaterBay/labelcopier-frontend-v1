@@ -65,7 +65,7 @@ Please follow these steps:
 
 ### Initial setup
 
-- Prerequisites: having [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Node.js 12.x](https://nodejs.org/en/) and [Yarn](https://classic.yarnpkg.com/en/docs/install/) installed on your machine.
+- Prerequisites: having [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Node.js](https://nodejs.org/en/) (preferably 12 or 14) installed on your machine.
 - Fork the repository. ([How to fork a repository?](https://help.github.com/en/github/getting-started-with-github/fork-a-repo#fork-an-example-repository))
 - Clone the forked repository. ([How to clone a repository?](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository))
 - In the terminal, change directory to the repository's root directory.
@@ -97,24 +97,39 @@ Please follow these steps:
 
 ## Workflow
 
+### TLDR
+
 Our workflow is:
+
+- Claim an issue
+- Fork repository
+- Write code to resolve the issue
+- `yarn format` and `yarn lint`
+- `yarn test`
+- Commit
+- Submit a pull request
+
+### Step-by-step instructions
+
+If you are new to this workflow, you can a practice run here: [https://github.com/firstcontributions/first-contributions](https://github.com/firstcontributions/first-contributions).
+
+Here's the step-by-step instruction:
 
 - Find an [issue](https://github.com/BadwaterBay/github-label-manager-plus/issues) you'd like to solve and claim it by leaving a comment.
 - Complete the [initial setup](#Initial-setup), if you haven't.
 - [Bring your fork up to date with the original repository](#Bring-your-fork-up-to-date-with-the-original-repository).
-- Modify the code to solve the issue and commit changes.
+- Modify the code to resolve the issue and commit changes.
+- Run `yarn format` and `yarn lint` to format and lint your code. Please try to resolve linting issues, although it's acceptable to have a few minor linting issues. If it's reasonable, you can manually suppress linting warnings and make a note in your pull request. [How to disable Eslint with inline comments?](https://eslint.org/docs/2.13.1/user-guide/configuring#disabling-rules-with-inline-comments-1)
 - Run `yarn test` to make sure all tests are passed.
 - Make sure your base is up to date with the original repository (`upstream`) with commands:
   ```
   git fetch upstream
   git rebase upstream/master
   ```
-- Push your commit to the remote of your forked repository. ([How to push commits to remote?](https://help.github.com/en/github/using-git/pushing-commits-to-a-remote-repository))
+- Push your branch to the remote of your forked repository (i.e., push to origin). ([How to push commits to remote?](https://help.github.com/en/github/using-git/pushing-commits-to-a-remote-repository))
 - Submit a pull request (PR) to be merged into the original repository's `master` branch. ([How to create a PR?](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request))
 - Peers will review your PR and may request revisions.
 - Once your PR is approved, your commit will be merged to the `master` branch. Congratulations!
-
-If you are new to this workflow, you can a practice run here: [https://github.com/firstcontributions/first-contributions](https://github.com/firstcontributions/first-contributions)
 
 If you are stuck, you are welcome to reach out and leave a comment.
 
@@ -152,14 +167,14 @@ If you are stuck, you are welcome to reach out and leave a comment.
   - `yarn format` will format files with Prettier and save changes.
   - Tip: when you git-commit, `yarn format` will be automatically triggered.
 - Lint your code using Eslint:
-  - `yarn lint` will run Eslint to check the code quality. Please try to resolve these issues before committing any changes.
+  - `yarn lint` will run Eslint to check the code quality.
   - Tip: when you git-commit, `yarn lint` will be automatically triggered.
-- `yarn build`: Create a production build inside `build/`.
-- `yarn test`: Run preset tests.
-- `yarn start`: Start the development server at `http://localhost:5000/` by default. Webpack bundles the source code into `build/` and serve `build/`.
+- `yarn start`: Start the development server at `http://localhost:5000/` by default.
+- `yarn production`: Create a production build inside `build/` and serve it at `http://localhost:5000/` by default.
+- `yarn test`: Run tests with Jest.
 - If you run into problems with Node dependencies:
   - Try `yarn --frozen-lockfile` to see if it solves your problems.
-  - If not, run `yarn refresh` to remove all dependencies in the `node_modules` directory and do a clean install of all dependencies.
+  - If not, run `yarn refresh` to remove all dependencies in the `node_modules` directory and do a clean install.
 
 ---
 
