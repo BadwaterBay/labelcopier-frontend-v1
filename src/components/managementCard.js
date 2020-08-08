@@ -1,5 +1,5 @@
-const managementCard = () => {
-  return `
+const managementCard = (() =>
+  `
     <div class="card bg-light card-body mb-3">
       <ul class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
         <li class="nav-item">
@@ -178,7 +178,6 @@ const managementCard = () => {
         </div>
       </div>
     </div>
-  `;
-};
+  `)();
 
 export default managementCard;

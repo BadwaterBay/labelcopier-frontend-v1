@@ -4,8 +4,14 @@
 
 'use strict';
 
+import createNewLabelEntry from './createNewLabelEntry';
+import { createNewMilestoneEntry } from './createNewMilestoneEntry';
+import { getLoginInfo, checkIfEnableCommitButton } from './preApiCallCheck';
+import { apiCallGetEntries } from './apiCall';
+
 const clearAllEntries = (kind) => {
   document.getElementById(`form-${kind}`).textContent = '';
+
   const commitToTargetRepo = document.getElementById('commit-to-target-repo');
   commitToTargetRepo.textContent = 'Commit changes';
   commitToTargetRepo.setAttribute('disabled', true);
@@ -13,7 +19,39 @@ const clearAllEntries = (kind) => {
   commitToTargetRepo.classList.add('btn-outline-success');
 };
 
-const clickToDeleteAllEntries = (kind) => {
+const listAllEntries = (kind) => {
+  const loginInfo = getLoginInfo();
+
+  if (loginInfo.targetOwner && loginInfo.targetRepo) {
+    if (kind === 'labels') {
+      clearAllEntries('labels');
+    }
+    if (kind === 'milestones') {
+      clearAllEntries('milestones');
+    }
+
+    apiCallGetEntries(kind, 'list');
+    $(`#${kind}-tab`).tab('show');
+  } else {
+    alert('Please enter the owner and the name of the repository.');
+  }
+};
+
+const listenForListAllLabels = () => {
+  document.getElementById('list-all-labels').addEventListener('click', () => {
+    listAllEntries('labels');
+  });
+};
+
+const listenForListAllMilestones = () => {
+  document
+    .getElementById('list-all-milestones')
+    .addEventListener('click', () => {
+      listAllEntries('milestones');
+    });
+};
+
+const deleteAllEntries = (kind) => {
   $(`#form-${kind}`)
     .children()
     .each(
@@ -31,23 +69,105 @@ const clickToDeleteAllEntries = (kind) => {
         }
       }
     );
-  checkIfEnableCommit();
+  checkIfEnableCommitButton();
 };
 
-const clickToDeleteAllLabels = () => {
+const listenForDeleteAllLabels = () => {
   document.getElementById('delete-all-labels').addEventListener('click', () => {
-    clickToDeleteAllEntries('labels');
-    checkIfEnableCommit();
+    deleteAllEntries('labels');
+    checkIfEnableCommitButton();
   });
 };
 
-const clickToDeleteAllMilestones = () => {
+const listenForDeleteAllMilestones = () => {
   document
     .getElementById('delete-all-milestones')
     .addEventListener('click', () => {
-      clickToDeleteAllEntries('milestones');
-      checkIfEnableCommit();
+      deleteAllEntries('milestones');
+      checkIfEnableCommitButton();
     });
 };
 
-export { clearAllEntries, clickToDeleteAllLabels, clickToDeleteAllMilestones };
+const listenForRevertLabelsToOriginal = () => {
+  document.getElementById('revert-labels-to-original').click(() => {
+    clearAllEntries('labels');
+    apiCallGetEntries('labels', 'list');
+  });
+};
+
+const listenForRevertMilestonesToOriginal = () => {
+  document.getElementById('revert-milestones-to-original').click(() => {
+    clearAllEntries('milestones');
+    apiCallGetEntries('milestones', 'list');
+  });
+};
+
+const copyEntriesFromRepo = (kind) => {
+  const loginInfo = getLoginInfo();
+
+  if (loginInfo.copyFromOwner && loginInfo.copyFromRepo) {
+    apiCallGetEntries(kind, 'copy');
+    // set uncommitted to true because those are coming from another repo
+
+    $(`#${kind}-tab`).tab('show');
+  } else {
+    alert(
+      "Please enter the owner and the name of the repository you'd like to copy from."
+    );
+  }
+  checkIfEnableCommitButton();
+};
+
+const listenForCopyLabelsFromRepo = () => {
+  document.getElementById('copy-labels-from').addEventListener('click', () => {
+    copyEntriesFromRepo('labels');
+  });
+};
+
+const listenForCopyMilestonesFromRepo = () => {
+  document
+    .getElementById('copy-milestones-from')
+    .addEventListener('click', () => {
+      copyEntriesFromRepo('milestones');
+    });
+};
+
+/**
+ * CREATE NEW LABEL ENTRIES
+ */
+const listenForCreateNewLabel = () => {
+  document
+    .getElementById('add-new-label-entry')
+    .addEventListener('click', () => {
+      createNewLabelEntry(null, 'new');
+      checkIfEnableCommitButton();
+    });
+};
+
+/**
+ * CREATE NEW MILESTONE ENTRIES
+ */
+const listenForCreateNewMilestone = () => {
+  document
+    .getElementById('add-new-milestone-entry')
+    .addEventListener('click', () => {
+      createNewMilestoneEntry(null, 'new');
+      checkIfEnableCommitButton();
+    });
+};
+
+export {
+  listAllEntries,
+  listenForListAllLabels,
+  listenForListAllMilestones,
+  clearAllEntries,
+  listenForDeleteAllLabels,
+  listenForDeleteAllMilestones,
+  listenForRevertLabelsToOriginal,
+  listenForRevertMilestonesToOriginal,
+  copyEntriesFromRepo,
+  listenForCopyLabelsFromRepo,
+  listenForCopyMilestonesFromRepo,
+  listenForCreateNewLabel,
+  listenForCreateNewMilestone,
+};

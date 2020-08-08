@@ -1,5 +1,5 @@
-const copyFromCard = () => {
-  return `
+const copyFromCard = (() =>
+  `
     <div class="card bg-light card-body mb-3">
       <div class="card-header">
         <h3>
@@ -83,7 +83,6 @@ const copyFromCard = () => {
       </button> -->
       </div>
     </div>
-  `;
-};
+  `)();
 
 export default copyFromCard;

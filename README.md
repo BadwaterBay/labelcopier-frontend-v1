@@ -40,13 +40,14 @@ This project was originally forked from [here](https://github.com/destan/github-
 
 We are proud to continue developing and maintaining this open-source project for the community. We have made significant improvements:
 
-- Now you can manage milestones
-- Added data validation before committing changes
-- Refined the UI to a modern, responsive design with meticulous attention to details
-- Upgraded from Bootstrap 2 to Bootstrap 4 with Material Design
-- Upgraded from JQuery 1.x.x to the latest JQuery 3.x.x
-- Fixed numerous bugs
-- Many more features to come
+- Now you can manage milestones in addition to labels.
+- Added data validation before committing changes.
+- Refined the UI to a modern, responsive design with meticulous attention to details.
+- Replaced jQuery Ajax with JavaScript's native Fetch API.
+- Upgraded from Bootstrap 2 to Bootstrap 4 with Material Design.
+- Upgraded from JQuery 1.x.x to the latest JQuery 3.x.x.
+- Fixed numerous bugs.
+- Many more features to come.
 
 ---
 

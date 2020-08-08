@@ -43,7 +43,7 @@ describe('Test manipulateEntires', () => {
     });
   });
 
-  // describe('Test clickToDeleteAllEntries', () => {
+  // describe('Test deleteAllEntries', () => {
   //   document.body.innerHTML = `
   //     <form id="form-labels" class="form-inline">
   //       <div class="label-entry uncommitted" data-todo="create" new="true">
@@ -84,7 +84,7 @@ describe('Test manipulateEntires', () => {
   //     </form>
   //   `
 
-  //   clickToDeleteAllEntries('#form-labels');
+  //   deleteAllEntries('#form-labels');
 
   //   test('Test some case', () => {
 
