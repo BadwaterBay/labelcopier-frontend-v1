@@ -1,5 +1,5 @@
 /**
- * Entry point for all JavaScript
+ * Entry point for all JavaScript and HTML
  */
 
 'use strict';
@@ -11,7 +11,7 @@ import loginCard from './components/loginCard';
 import copyFromCard from './components/copyFromCard';
 import managementCard from './components/managementCard';
 import loadingModal from './components/loadingModal';
-import app from './js/app';
+import app from './app';
 
 const mainContent = document.createElement('div');
 mainContent.innerHTML = (() =>

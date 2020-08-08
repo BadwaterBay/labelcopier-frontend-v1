@@ -25,7 +25,7 @@ import {
   listenForRepoOwnerCheckbox,
   listenForRepoOwnerInput,
   autoCheckRepoOwnerCheckbox,
-} from './loginFormFunctions';
+} from './js/loginFormFunctions';
 import {
   listenForListAllLabels,
   listenForListAllMilestones,
@@ -37,12 +37,12 @@ import {
   listenForCopyMilestonesFromRepo,
   listenForCreateNewLabel,
   listenForCreateNewMilestone,
-} from './manipulateEntries';
+} from './js/manipulateEntries';
 import {
   listenForClickOfCommitButton,
   reloadEntriesWhenModalCloses,
-} from './apiCall';
-import clickOutsideToCloseModal from './closeModal';
+} from './js/apiCall';
+import clickOutsideToCloseModal from './js/closeModal';
 
 export default () =>
   document.addEventListener('DOMContentLoaded', () => {

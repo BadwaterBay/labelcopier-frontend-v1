@@ -13,29 +13,28 @@
     "url": "https://github.com/BadwaterBay/github-label-manager-plus/issues"
   },
   "scripts": {
-    "clean": "rimraf build",
-    "format": "prettier './**/*.{js,html,md,json,css,scss}' --write",
-    "lint": "eslint './**/*.{js,html}' --fix",
+    "ci": "yarn --frozen-lockfile",
+    "clean": "rm -rf build",
+    "format": "prettier './**/*.{js,ts,html,md,json,css,scss}' --write",
+    "lint": "eslint './**/*.{js,ts}' --fix",
     "build:dev": "webpack-dev-server --mode=development",
     "build": "yarn clean && webpack --mode=production",
-    "test": "jest",
-    "start": "run-s clean build:dev",
     "serve": "serve build",
-    "refresh": "rm -rf node_modules && yarn --frozen-lockfile"
-  },
-  "engines": {
-    "node": ">=0.12 <0.13"
+    "test": "jest",
+    "start": "yarn build:dev",
+    "production": "yarn build && yarn serve",
+    "refresh": "rm -rf node_modules && yarn ci"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && yarn test --coverage"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
     "./**/*.{js,ts,html,md,json,css,scss}": [
       "prettier --write"
     ],
-    "./**/*.{js}": [
+    "./**/*.{js,ts}": [
       "eslint --cache --fix"
     ]
   },
@@ -63,11 +62,8 @@
     "husky": "^4.2.5",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^26.2.2",
-    "jquery": "^3.5.1",
     "lint-staged": "^10.2.11",
-    "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
-    "rimraf": "^3.0.2",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.2",
     "serve": "^11.3.2",
