@@ -37,7 +37,7 @@ const listAllEntries = (kind) =>
       validateKind(kind);
     } catch (err) {
       document
-        .getElementById('labels-progress-indicator')
+        .getElementById(`${kind}-progress-indicator`)
         .classList.add('hidden');
       alert(err);
       reject(err);
@@ -48,7 +48,7 @@ const listAllEntries = (kind) =>
     const loginInfo = getLoginInfo();
     if (!(loginInfo.homeRepoOwner && loginInfo.homeRepoName)) {
       document
-        .getElementById('labels-progress-indicator')
+        .getElementById(`${kind}-progress-indicator`)
         .classList.add('hidden');
       const msg = 'Please enter the owner and the name of the repository.';
       alert(msg);
@@ -88,7 +88,7 @@ const listAllEntries = (kind) =>
       })
       .catch((err) => {
         document
-          .getElementById('labels-progress-indicator')
+          .getElementById(`${kind}-progress-indicator`)
           .classList.add('hidden');
         console.error(err);
         reject(err);
