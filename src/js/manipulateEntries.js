@@ -116,7 +116,6 @@ const copyEntriesFromRepo = (kind) => {
   if (loginInfo.templateRepoOwner && loginInfo.templateRepoName) {
     apiCallGet(kind, 'copy')
       .then(() => {
-        console.log('apiCallGet then inside copyEntriesFromRepo!');
         $(`#${kind}-tab`).tab('show');
         checkIfEnableCommitButton();
       })

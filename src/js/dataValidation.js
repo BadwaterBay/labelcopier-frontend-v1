@@ -5,7 +5,8 @@
 'use strict';
 
 const bugReportLink =
-  'https://github.com/BadwaterBay/github-label-manager-plus/blob/master/CONTRIBUTING.md#reporting-bugs';
+  'https://github.com/BadwaterBay/github-label-manager-plus/blob/' +
+  'master/CONTRIBUTING.md#reporting-bugs';
 
 /**
  * Returns the trimmed value from an ID selector
@@ -27,6 +28,9 @@ const getLoginInfo = () => ({
   templateRepoName: trimmedValFromId('template-repo-name'),
 });
 
+/**
+ * Enable commit button
+ */
 const enableCommitButton = () => {
   const el = document.getElementById('commit-to-home-repo-name');
   el.removeAttribute('disabled');
@@ -34,6 +38,9 @@ const enableCommitButton = () => {
   el.classList.add('btn-success');
 };
 
+/**
+ * Disable commit button
+ */
 const disableCommitButton = () => {
   const el = document.getElementById('commit-to-home-repo-name');
   el.setAttribute('disabled', true);
@@ -41,6 +48,9 @@ const disableCommitButton = () => {
   el.classList.add('btn-outline-success');
 };
 
+/**
+ * Check conditions to enable or disable the commit button
+ */
 const checkIfEnableCommitButton = () => {
   // returns true if any change has been made and activates or
   // disactivates commit button accordingly
@@ -88,6 +98,7 @@ const checkIfEnableCommitButton = () => {
 };
 
 /**
+ * Return a boolean, indicating if changes of entires are present
  * @param {Object} el
  * @return {boolean}
  */
@@ -256,17 +267,24 @@ const validateEntries = () => {
   ];
 };
 
+/**
+ * Validate 'kind'
+ * Valid: 'labels', 'milestones'
+ * @param {*} kind
+ * @return {boolean}
+ */
 const validateKind = (kind) => {
   const validKinds = new Set(['labels', 'milestones']);
   if (validKinds.has(kind)) {
     return true;
   }
   throw new Error(
-    'There is probably a bug in the web app. ' +
-      'Please consider submitting a bug report at ' +
-      `<a href="${bugReportLink}" target="_blank" ref="noopener noreferrer">` +
+    'There is probably a bug in the web app.' +
+      ' Please consider submitting a bug report at' +
+      ` <a href="${bugReportLink}" target="_blank" ref="noopener noreferrer">` +
       'our GitHub page</a> with the following message:</br>' +
-      "Error at validateKind. Invalid kind argument was given. It is neither 'labels' or 'milestones'."
+      'Error at validateKind. Invalid kind argument was given.' +
+      " It is neither 'labels' or 'milestones'."
   );
 };
 
