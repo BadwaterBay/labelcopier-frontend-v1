@@ -46,6 +46,10 @@ const comparatorLexic = (
  * @param {Array} arr Input array
  * @param {comparatorSortArray} comparatorSortArray
  * @return {Array}
+ *
+ * This sorting function eliminates the side effect of JavaScript's build-in
+ * .sort() by returning a new array.
+ *
  */
 const sortArray = (arr, comparatorSortArray) => {
   return arr.slice(0).sort(comparatorSortArray);

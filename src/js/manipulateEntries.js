@@ -60,6 +60,12 @@ const clearAllEntries = (kind) => {
   commitToTargetRepo.classList.add('btn-outline-success');
 };
 
+/**
+ * List entries from API by calling GET HTTP requests
+ * @param {string} kind
+ * @param {string} mode
+ * @return {Promise} A sorted array of fetched entries
+ */
 const listEntriesFromApi = (kind, mode = 'list') =>
   new Promise((resolve, reject) => {
     // Eye candy
@@ -88,9 +94,9 @@ const listEntriesFromApi = (kind, mode = 'list') =>
         let sortedFetchedEntries = [];
 
         /**
-         * This is because we append existing entries to the pannel, but
-         * prepend 'copy' entries that are copied from other repositories,
-         * and hence, we use descending order for 'copy'.
+         * The use of 'descendingOrder' is because we append existing entries
+         * to the pannel, but prepend 'copy' entries that are copied from
+         * other repositories, and hence, we use descending order for 'copy'.
          *
          * We might re-write the logic of how we add entries to the panel
          * in the future. The current method requires frequent direct DOM
