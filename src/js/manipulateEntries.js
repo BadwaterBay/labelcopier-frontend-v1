@@ -99,7 +99,6 @@ const listEntriesFromApi = (kind, mode = 'list') =>
         const descendingOrder = mode === 'copy';
 
         if (kind === 'labels') {
-          console.log(`descendingOrder is ${descendingOrder}`);
           sortedFetchedEntries = sortArray(
             fetchedEntries,
             comparatorLexic('name', true, descendingOrder)
