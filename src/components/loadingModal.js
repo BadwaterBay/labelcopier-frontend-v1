@@ -1,6 +1,6 @@
 const loadingModal = (() =>
   `
-    <div id="loadingModal" class="modal fade" tabindex="-1" role="dialog">
+    <div id="committing-modal" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -24,7 +24,7 @@ const loadingModal = (() =>
         </div>
       </div>
     </div>
-    <!-- #loadingModal -->
+    <!-- #committing-modal -->
   `)();
 
 export default loadingModal;

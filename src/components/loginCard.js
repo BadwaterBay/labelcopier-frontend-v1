@@ -90,7 +90,7 @@ const loginCard = (() =>
                 id="personal-access-token"
               />
               <span class="bmd-help">
-                We don't store your GitHub personal access token
+                See FAQ for how to generate one
               </span>
             </div>
           </div>

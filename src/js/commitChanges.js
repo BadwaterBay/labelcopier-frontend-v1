@@ -4,7 +4,11 @@
  * Things that happen when the 'Commit' button is clicked
  */
 
-import { getLoginInfo, validateEntries } from './dataValidation';
+import {
+  getLoginInfo,
+  validateEntries,
+  checkIfEnableCommitButton,
+} from './dataValidation';
 import { clearAllEntries } from './manipulateEntries';
 import {
   apiCallGet,
@@ -15,7 +19,7 @@ import {
 
 /**
  * Callback for making API calls
- * @callback apiCall
+ * @callback apiCallFunc
  * @param {HTMLElement} e HTML element node
  * @param {string} kind Kind of entry, e.g. 'labels' or 'milestones'
  */
@@ -23,12 +27,12 @@ import {
  * Select entries and make API calls
  * @param {string} kind Kind of entry, e.g. 'labels' or 'milestones'
  * @param {string} todo Action to do, e.g. create, update or delete
- * @param {apiCall} apiCall API call function as callback
+ * @param {apiCallFunc} apiCallFunc API call function as callback
  */
-const selectEntriesForApiCall = (kind, todo, apiCall) => {
+const selectEntriesForApiCall = (kind, todo, apiCallFunc) => {
   const kindSingular = kind.slice(0, -1);
   const selector = `.${kindSingular}-entry[data-todo="${todo}"]`;
-  document.querySelectorAll(selector).forEach((e) => apiCall(e, kind));
+  document.querySelectorAll(selector).forEach((e) => apiCallFunc(e, kind));
 };
 
 /**
@@ -46,7 +50,7 @@ const entriesForApiCall = [
 
 const commitChanges = () => {
   // freeze the world
-  $('#loadingModal').modal({
+  $('#committing-modal').modal({
     keyboard: false,
     backdrop: 'static',
   });
@@ -54,7 +58,14 @@ const commitChanges = () => {
   /**
    * Loop through the array and make API calls
    */
-  entriesForApiCall.map((e) => selectEntriesForApiCall(...e));
+  const apiCalls = entriesForApiCall.map((e) => selectEntriesForApiCall(...e));
+  Promise.allSettled(apiCalls)
+    .then(() => {
+      console.log('All API calls completed!');
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 };
 
 const writeErrorsAlert = (errorCount, duplicateCount, kind) => {
@@ -129,18 +140,26 @@ const listenForCommitButton = () => {
  * Reload entries when the modal is closed after comitting changes
  */
 const reloadAfterCommit = () => {
-  $('#loadingModal').on('hidden.bs.modal', () => {
+  $('#committing-modal').on('hidden.bs.modal', () => {
     // reset modal
-    $('#loadingModal .modal-body').text('');
-    $('#loadingModal .modal-body').append('<p>Commiting...</p>');
-    $('#loadingModal .modal-footer').remove();
+    const pNode = document.createElement('p');
+    pNode.innerHTML = 'Committing...';
+
+    const modalBody = document.querySelector('#committing-modal .modal-body');
+    modalBody.textContent = '';
+    modalBody.appendChild(pNode);
 
     // reload labels after changes
     clearAllEntries('labels');
     clearAllEntries('milestones');
 
-    apiCallGet('labels');
-    apiCallGet('milestones');
+    Promise.allSettled([apiCallGet('labels'), apiCallGet('milestones')])
+      .then(() => {
+        checkIfEnableCommitButton();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   });
 };
 
@@ -149,8 +168,8 @@ const reloadAfterCommit = () => {
  */
 const clickOutsideToCloseModal = () => {
   $(document).click((event) => {
-    if ($(event.target).is('#loadingModal')) {
-      $('#loadingModal').modal('hide');
+    if ($(event.target).is('#committing-modal')) {
+      $('#committing-modal').modal('hide');
     }
   });
 };

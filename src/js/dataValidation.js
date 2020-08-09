@@ -42,8 +42,6 @@ const checkIfEnableCommitButton = () => {
   // returns true if any change has been made and activates or
   // disactivates commit button accordingly
 
-  console.log('checkIfEnableCommitButton activated!');
-
   const labelsModified =
     document.querySelectorAll('.label-entry:not([data-todo="none"])').length >
     0;
