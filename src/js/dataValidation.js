@@ -29,6 +29,32 @@ const getLoginInfo = () => ({
 });
 
 /**
+ * Validate necessary login information against null
+ * @param {Object} loginInfo
+ * @param {string} mode 'list' or 'copy'
+ * @return {boolean} True if valid
+ */
+const validateLoginAgainstNull = (loginInfo, mode = 'list') => {
+  if (mode === 'list') {
+    if (!(loginInfo.homeRepoOwner && loginInfo.homeRepoName)) {
+      throw new Error('Please enter the owner and the name of the repository.');
+    }
+  } else if (mode === 'copy') {
+    if (!(loginInfo.templateRepoOwner && loginInfo.templateRepoName)) {
+      throw new Error(
+        'Please enter the owner and the name of' +
+          " the repository you'd like to copy from."
+      );
+    }
+  } else {
+    throw new Error(
+      "Invalid 'mode' argument was given to validateLoginAgainstNull."
+    );
+  }
+  return true;
+};
+
+/**
  * Enable commit button
  */
 const enableCommitButton = () => {
@@ -285,6 +311,7 @@ const validateKind = (kind) => {
 export {
   trimmedValFromId,
   getLoginInfo,
+  validateLoginAgainstNull,
   enableCommitButton,
   disableCommitButton,
   checkIfEnableCommitButton,

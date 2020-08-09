@@ -6,6 +6,7 @@
 
 import {
   getLoginInfo,
+  validateLoginAgainstNull,
   checkIfEnableCommitButton,
   validateKind,
 } from './dataValidation';
@@ -14,6 +15,39 @@ import createNewLabelEntry from './createNewLabelEntry';
 import { createNewMilestoneEntry } from './createNewMilestoneEntry';
 import { comparatorLexic, sortArray } from './helpers';
 
+/**
+ * Toggle the progress indicator in the tabs of labels and milestones
+ * in Management Card
+ *
+ * @param {string} kind 'labels' or 'milestones'
+ * @param {string | null} action 'show' or 'hide'
+ * @return {bool}
+ *
+ * If 'action' is not specified, toggle the 'hidden' class of the indicator.
+ * If 'action' is specified, do the action.
+ */
+const toggleTabProgressIndicator = (kind, action = null) => {
+  const nodeClassList = document.getElementById(`${kind}-progress-indicator`)
+    .classList;
+
+  if (action === null) {
+    action = nodeClassList.contains('hidden') ? show : hide;
+  }
+
+  if (action === 'show') {
+    nodeClassList.remove('hidden');
+  } else if (action === 'hide') {
+    nodeClassList.add('hidden');
+  } else {
+    throw new Error('Invalid action in toggleTabProgressIndication.');
+  }
+  return true;
+};
+
+/**
+ * Clear all entries of the specified kind
+ * @param {string} kind
+ */
 const clearAllEntries = (kind) => {
   document.getElementById(`form-${kind}`).textContent = '';
 
@@ -26,70 +60,67 @@ const clearAllEntries = (kind) => {
   commitToTargetRepo.classList.add('btn-outline-success');
 };
 
-const listAllEntries = (kind) =>
+const listEntriesFromApi = (kind, mode = 'list') =>
   new Promise((resolve, reject) => {
     // Eye candy
-    document
-      .getElementById(`${kind}-progress-indicator`)
-      .classList.remove('hidden');
+    toggleTabProgressIndicator(kind, 'show');
+
+    const loginInfo = getLoginInfo();
 
     try {
+      // Validate 'kind' argument:
       validateKind(kind);
+      // Validate if necessary login information is present:
+      validateLoginAgainstNull(loginInfo, mode);
     } catch (err) {
-      document
-        .getElementById(`${kind}-progress-indicator`)
-        .classList.add('hidden');
+      toggleTabProgressIndicator(kind, 'hide');
       alert(err);
       reject(err);
       return;
     }
 
-    // Check if login information is present
-    const loginInfo = getLoginInfo();
-    if (!(loginInfo.homeRepoOwner && loginInfo.homeRepoName)) {
-      document
-        .getElementById(`${kind}-progress-indicator`)
-        .classList.add('hidden');
-      const msg = 'Please enter the owner and the name of the repository.';
-      alert(msg);
-      reject(msg);
-      return;
-    }
-
-    apiCallGet(loginInfo, kind)
+    apiCallGet(loginInfo, kind, 1, mode)
       .then((fetchedEntries) => {
-        clearAllEntries(kind);
+        if (mode === 'list') {
+          clearAllEntries(kind);
+        }
+
         let sortedFetchedEntries = [];
 
+        /**
+         * This is because we append existing entries to the pannel, but
+         * prepend 'copy' entries that are copied from other repositories,
+         * and hence, we use descending order for 'copy'.
+         *
+         * We might re-write the logic of how we add entries to the panel
+         * in the future. The current method requires frequent direct DOM
+         * manipultions, which are expensive.
+         */
+        const descendingOrder = mode === 'copy';
+
         if (kind === 'labels') {
+          console.log(`descendingOrder is ${descendingOrder}`);
           sortedFetchedEntries = sortArray(
             fetchedEntries,
-            comparatorLexic('name', true)
+            comparatorLexic('name', true, descendingOrder)
           );
-          sortedFetchedEntries.map((e) => createNewLabelEntry(e));
-          document
-            .getElementById('labels-progress-indicator')
-            .classList.add('hidden');
+          sortedFetchedEntries.map((e) => createNewLabelEntry(e, mode));
         } else {
           // kind === 'milestones'
           sortedFetchedEntries = sortArray(
             fetchedEntries,
-            comparatorLexic('title', true)
+            comparatorLexic('title', true, descendingOrder)
           );
-          sortedFetchedEntries.map((e) => createNewMilestoneEntry(e));
-          document
-            .getElementById('milestones-progress-indicator')
-            .classList.add('hidden');
+          sortedFetchedEntries.map((e) => createNewMilestoneEntry(e, mode));
         }
 
+        toggleTabProgressIndicator(kind, 'hide');
         checkIfEnableCommitButton();
         resolve(sortedFetchedEntries);
         return;
       })
       .catch((err) => {
-        document
-          .getElementById(`${kind}-progress-indicator`)
-          .classList.add('hidden');
+        toggleTabProgressIndicator(kind, 'hide');
         console.error(err);
         reject(err);
         return;
@@ -97,19 +128,35 @@ const listAllEntries = (kind) =>
   });
 
 const listenForListAllLabels = () => {
-  document.getElementById('list-all-labels').addEventListener('click', () => {
-    $(`#labels-tab`).tab('show');
-    listAllEntries('labels');
+  const kind = 'labels';
+  document.getElementById(`list-all-${kind}`).addEventListener('click', () => {
+    $(`#${kind}-tab`).tab('show');
+    listEntriesFromApi(kind).catch((err) => console.error(err));
   });
 };
 
 const listenForListAllMilestones = () => {
-  document
-    .getElementById('list-all-milestones')
-    .addEventListener('click', () => {
-      $(`#milestones-tab`).tab('show');
-      listAllEntries('milestones');
-    });
+  const kind = 'milestones';
+  document.getElementById(`list-all-${kind}`).addEventListener('click', () => {
+    $(`#${kind}-tab`).tab('show');
+    listEntriesFromApi(kind).catch((err) => console.error(err));
+  });
+};
+
+const listenForCopyLabelsFromRepo = () => {
+  const kind = 'labels';
+  document.getElementById(`copy-${kind}-from`).addEventListener('click', () => {
+    $(`#${kind}-tab`).tab('show');
+    listEntriesFromApi(kind, 'copy').catch((err) => console.error(err));
+  });
+};
+
+const listenForCopyMilestonesFromRepo = () => {
+  const kind = 'milestones';
+  document.getElementById(`copy-${kind}-from`).addEventListener('click', () => {
+    $(`#${kind}-tab`).tab('show');
+    listEntriesFromApi(kind, 'copy').catch((err) => console.error(err));
+  });
 };
 
 const deleteAllEntries = (kind) => {
@@ -149,7 +196,7 @@ const listenForDeleteAllMilestones = () => {
 
 const listenForUndoLabels = () => {
   document.getElementById('undo-all-labels').addEventListener('click', () => {
-    listAllEntries('labels');
+    listEntriesFromApi('labels');
   });
 };
 
@@ -157,44 +204,7 @@ const listenForUndoMilestones = () => {
   document
     .getElementById('undo-all-milestones')
     .addEventListener('click', () => {
-      listAllEntries('milestones');
-    });
-};
-
-const copyEntriesFromRepo = (kind) => {
-  const loginInfo = getLoginInfo();
-
-  if (loginInfo.templateRepoOwner && loginInfo.templateRepoName) {
-    apiCallGet(loginInfo, kind, 'copy')
-      .then(() => {
-        $(`#${kind}-tab`).tab('show');
-        checkIfEnableCommitButton();
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-    // set uncommitted to true because those are coming from another repo
-  } else {
-    alert(
-      "Please enter the owner and the name of the repository you'd " +
-        'like to copy from.'
-    );
-  }
-};
-
-const listenForCopyLabelsFromRepo = () => {
-  document
-    .getElementById('copy-labels-from')
-    .addEventListener('click', async () => {
-      await copyEntriesFromRepo('labels');
-    });
-};
-
-const listenForCopyMilestonesFromRepo = () => {
-  document
-    .getElementById('copy-milestones-from')
-    .addEventListener('click', async () => {
-      await copyEntriesFromRepo('milestones');
+      listEntriesFromApi('milestones');
     });
 };
 
@@ -223,8 +233,9 @@ const listenForCreateNewMilestone = () => {
 };
 
 export {
+  toggleTabProgressIndicator,
   clearAllEntries,
-  listAllEntries,
+  listEntriesFromApi,
   listenForListAllLabels,
   listenForListAllMilestones,
   deleteAllEntries,
@@ -232,7 +243,6 @@ export {
   listenForDeleteAllMilestones,
   listenForUndoLabels,
   listenForUndoMilestones,
-  copyEntriesFromRepo,
   listenForCopyLabelsFromRepo,
   listenForCopyMilestonesFromRepo,
   listenForCreateNewLabel,

@@ -15,8 +15,8 @@
  */
 const comparatorLexic = (
   key = null,
-  ignoreCase = 'false',
-  descending = 'false'
+  ignoreCase = false,
+  descending = false
 ) => {
   return (a, b) => {
     let x = '';
@@ -36,10 +36,10 @@ const comparatorLexic = (
     }
 
     if (descending) {
-      return x < y ? -1 : 1;
+      return x < y ? 1 : -1;
     }
     // if ascending
-    return x < y ? 1 : -1;
+    return x < y ? -1 : 1;
   };
 };
 

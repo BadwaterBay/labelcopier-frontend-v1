@@ -147,27 +147,34 @@ const packEntry = (serializedEntry, kind) => {
 /**
  * Throw error message when HTTP request fails
  * @param {Object} response
+ * @return {string}
  */
-const throwFailedStatusError = (response) => {
+const composeStatusMessage = (response) => {
+  if (response.ok) {
+    return `${response.status} status OK.`;
+  }
   if (response.status === 401) {
-    throw new Error(
+    return (
       `${response.status} ${response.statusText}.` +
-        ' Please check the repository owner, the repository name,' +
-        ' the username and the personal access token that you provided.'
+      ' Please check the input values of your login information.'
     );
   }
   if (response.status === 403) {
-    throw new Error(
+    return (
       `${response.status} ${response.statusText}.` +
-        ' The GitHub server refused to your request.' +
-        ' Maybe you have exceeded your rate limit.' +
-        ' Please wait for a little while.'
+      ' The GitHub server refused to your request.' +
+      ' Maybe you have exceeded your rate limit.' +
+      ' Please wait for a little while.'
     );
   }
-  throw new Error(
-    `${response.status} ${response.statusText}.` +
-      ` Error occurred while fetching ${kind}.`
-  );
+  if (response.status === 404) {
+    return (
+      `${response.status} ${response.statusText}.` +
+      ' Repository not found. Please check the input values of your' +
+      ' login information.'
+    );
+  }
+  return `${response.status} ${response.statusText}.` + ` Error occurred.`;
 };
 
 /**
@@ -228,8 +235,7 @@ const apiCallGet = (loginInfo, kind, pageNum = 1, mode = 'list') =>
     fetchGet(urlForGet, loginInfo, kind, pageNum, mode)
       .then((response) => {
         if (!response.ok) {
-          reject(throwFailedStatusError(response));
-          return;
+          throw new Error(composeStatusMessage(response));
         }
         return response.json();
       })
@@ -237,7 +243,6 @@ const apiCallGet = (loginInfo, kind, pageNum = 1, mode = 'list') =>
         if (body.length === 0) {
           if (pageNum === 1) {
             const msg = `No ${kind} exist in this repository.`;
-            alert(msg);
             reject(msg);
             return;
           }
@@ -248,6 +253,7 @@ const apiCallGet = (loginInfo, kind, pageNum = 1, mode = 'list') =>
         resolve(
           body.concat(await apiCallGet(loginInfo, kind, ++pageNum, mode))
         );
+        return;
       })
       .catch((err) => {
         alert(err);
@@ -307,7 +313,7 @@ const apiCallCreate = (entryNode, kind) => {
   return fetchCreate(urlForCreate, loginInfo, kind, entryPackage)
     .then((response) => {
       if (!response.ok) {
-        throwFailedStatusError(response);
+        composeStatusMessage(response);
       }
     })
     .then(() => {
@@ -373,7 +379,7 @@ const apiCallUpdate = (entryNode, kind) => {
   return fetchUpdate(urlForUpdate, loginInfo, kind, entryPackage)
     .then((response) => {
       if (!response.ok) {
-        throwFailedStatusError(response);
+        composeStatusMessage(response);
       }
     })
     .then(() => {
@@ -441,7 +447,7 @@ const apiCallDelete = (entryNode, kind) => {
   return fetchDelete(urlForDelete, loginInfo, kind, entryPackage)
     .then((response) => {
       if (!response.ok) {
-        throwFailedStatusError(response);
+        composeStatusMessage(response);
       }
       writeLog(`Deleted ${kindSingular}: ${entryPackage.names.originalName}.`);
     })
@@ -460,7 +466,7 @@ export {
   formatDate,
   serializeEntry,
   packEntry,
-  throwFailedStatusError,
+  composeStatusMessage,
   urlForGet,
   fetchGet,
   apiCallGet,

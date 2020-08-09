@@ -5,7 +5,7 @@
  */
 
 import { getLoginInfo, validateEntries } from './dataValidation';
-import { listAllEntries } from './manipulateEntries';
+import { listEntriesFromApi } from './manipulateEntries';
 import { apiCallCreate, apiCallUpdate, apiCallDelete } from './apiCalls';
 
 /**
@@ -14,8 +14,8 @@ import { apiCallCreate, apiCallUpdate, apiCallDelete } from './apiCalls';
  */
 const reloadEntries = () =>
   Promise.allSettled([
-    listAllEntries('labels'),
-    listAllEntries('milestones'),
+    listEntriesFromApi('labels'),
+    listEntriesFromApi('milestones'),
   ]).catch((err) => {
     console.error(err);
   });
