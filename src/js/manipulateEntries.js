@@ -4,7 +4,11 @@
 
 'use strict';
 
-import { getLoginInfo, checkIfEnableCommitButton } from './dataValidation';
+import {
+  getLoginInfo,
+  checkIfEnableCommitButton,
+  validateKind,
+} from './dataValidation';
 import { apiCallGet } from './apiCalls';
 import createNewLabelEntry from './createNewLabelEntry';
 import { createNewMilestoneEntry } from './createNewMilestoneEntry';
@@ -29,16 +33,24 @@ const listAllEntries = (kind) =>
       .getElementById(`${kind}-progress-indicator`)
       .classList.remove('hidden');
 
+    try {
+      validateKind(kind);
+    } catch (err) {
+      alert(err);
+      reject(err);
+      return;
+    }
+
     // Check if login information is present
     const loginInfo = getLoginInfo();
-
     if (!(loginInfo.homeRepoOwner && loginInfo.homeRepoName)) {
       const msg = 'Please enter the owner and the name of the repository.';
       alert(msg);
       reject(msg);
+      return;
     }
 
-    apiCallGet(kind)
+    apiCallGet(loginInfo, kind)
       .then((fetchedEntries) => {
         clearAllEntries(kind);
         let sortedFetchedEntries = [];
@@ -66,10 +78,12 @@ const listAllEntries = (kind) =>
 
         checkIfEnableCommitButton();
         resolve(sortedFetchedEntries);
+        return;
       })
       .catch((err) => {
         console.error(err);
         reject(err);
+        return;
       });
   });
 
@@ -142,7 +156,7 @@ const copyEntriesFromRepo = (kind) => {
   const loginInfo = getLoginInfo();
 
   if (loginInfo.templateRepoOwner && loginInfo.templateRepoName) {
-    apiCallGet(kind, 'copy')
+    apiCallGet(loginInfo, kind, 'copy')
       .then(() => {
         $(`#${kind}-tab`).tab('show');
         checkIfEnableCommitButton();

@@ -9,7 +9,7 @@ import { getLoginInfo, validateKind } from './dataValidation';
 
 /**
  * Encode authentication info for HTTP requests
- * @param {*} loginInfo
+ * @param {Object} loginInfo
  * @return {string}
  */
 const makeBasicAuth = (loginInfo) =>
@@ -20,7 +20,7 @@ const makeBasicAuth = (loginInfo) =>
 
 /**
  * Write logs inside modal #committing-modal when committing changes
- * @param {*} string
+ * @param {string} string
  */
 const writeLog = (string) => {
   const logNode = document.createElement('p');
@@ -32,7 +32,7 @@ const writeLog = (string) => {
 
 /**
  * Format data from an HTML node element
- * @param {*} node
+ * @param {HTMLElement} node
  * @return {string | null}
  */
 const formatDate = (node) => {
@@ -117,8 +117,8 @@ const serializeEntry = (node, kind) => {
 
 /**
  * Pack an entry with serialized data and various information for convenience
- * @param {*} serializedEntry
- * @param {*} kind
+ * @param {Object} serializedEntry
+ * @param {string} kind
  * @return {Object}
  */
 const packEntry = (serializedEntry, kind) => {
@@ -146,7 +146,7 @@ const packEntry = (serializedEntry, kind) => {
 
 /**
  * Throw error message when HTTP request fails
- * @param {*} response
+ * @param {Object} response
  */
 const throwFailedStatusError = (response) => {
   if (response.status === 401) {
@@ -172,13 +172,13 @@ const throwFailedStatusError = (response) => {
 
 /**
  * Returns a HTTP request URL for getting entries from a repository
- * @param {*} pageNum
- * @param {*} loginInfo
- * @param {*} kind
- * @param {*} mode
+ * @param {Object} loginInfo
+ * @param {string} kind
+ * @param {number} pageNum
+ * @param {string} mode
  * @return {string}
  */
-const urlForGet = (pageNum, loginInfo, kind, mode = 'list') => {
+const urlForGet = (loginInfo, kind, pageNum, mode = 'list') => {
   const owner =
     mode === 'list' ? loginInfo.homeRepoOwner : loginInfo.templateRepoOwner;
   const repo =
@@ -186,7 +186,7 @@ const urlForGet = (pageNum, loginInfo, kind, mode = 'list') => {
   let url =
     'https://api.github.com/repos/' +
     `${owner}/${repo}/${kind}` +
-    `?per_page=100` +
+    `?per_page=20` +
     `&page=${pageNum}`;
 
   if (kind === 'milestones') {
@@ -197,15 +197,15 @@ const urlForGet = (pageNum, loginInfo, kind, mode = 'list') => {
 
 /**
  * Returns a Fetch API promise for getting entries
- * @param {*} getUrl
- * @param {*} pageNum
- * @param {*} loginInfo
- * @param {*} kind
- * @param {*} mode
+ * @param {function} getUrl
+ * @param {Object} loginInfo
+ * @param {string} kind
+ * @param {number} pageNum
+ * @param {string} mode
  * @return {Promise}
  */
-const fetchGet = (getUrl, pageNum, loginInfo, kind, mode) =>
-  fetch(getUrl(pageNum, loginInfo, kind, mode), {
+const fetchGet = (getUrl, loginInfo, kind, pageNum, mode) =>
+  fetch(getUrl(loginInfo, kind, pageNum, mode), {
     method: 'GET',
     headers: {
       Authorization: makeBasicAuth(loginInfo),
@@ -214,73 +214,53 @@ const fetchGet = (getUrl, pageNum, loginInfo, kind, mode) =>
   });
 
 /**
- * Get entries recursively as there might be multiple pages
- * @param {*} pageNum
- * @param {*} loginInfo
- * @param {*} kind
- * @param {*} mode
+ * Get entries recursively because there might be multiple pages
+ * @param {Object} loginInfo
+ * @param {string} kind
+ * @param {number} pageNum
+ * @param {string} mode
  * @return {Promise}
  */
-const apiCallGetRecursively = (pageNum, loginInfo, kind, mode = 'list') =>
-  fetchGet(urlForGet, pageNum, loginInfo, kind, mode)
-    .then((response) => {
-      if (!response.ok) {
-        throwFailedStatusError(response);
-      }
-      return response.json();
-    })
-    .then(async (body) => {
-      if (body.length === 0) {
-        if (pageNum === 1) {
-          alert(`No ${kind} exist in this repository.`);
+const apiCallGet = (loginInfo, kind, pageNum = 1, mode = 'list') =>
+  new Promise((resolve, reject) => {
+    pageNum = pageNum === 1 ? 1 : pageNum;
+
+    fetchGet(urlForGet, loginInfo, kind, pageNum, mode)
+      .then((response) => {
+        if (!response.ok) {
+          reject(throwFailedStatusError(response));
+          return;
         }
-        return body;
-      }
+        return response.json();
+      })
+      .then(async (body) => {
+        if (body.length === 0) {
+          if (pageNum === 1) {
+            const msg = `No ${kind} exist in this repository.`;
+            alert(msg);
+            reject(msg);
+            return;
+          }
+          resolve(body);
+          return;
+        }
 
-      return body.concat(
-        await apiCallGetRecursively(++pageNum, loginInfo, kind, mode)
-      );
-    });
-
-/**
- * Get entries from a repository
- * @param {*} kind Either 'labels' or 'milestones'
- * @param {*} mode Either 'list' or 'copy'. 'List' means to list entries
- * from the repository you're managing. 'Copy' means to copy entries from
- * a template repository.
- * @return {Promise}
- */
-const apiCallGet = (kind, mode = 'list') => {
-  return new Promise((resolve, reject) => {
-    try {
-      validateKind(kind);
-    } catch (err) {
-      writeLog(err);
-      reject(err);
-    }
-
-    const loginInfo = getLoginInfo();
-
-    const outputApiCallGet = apiCallGetRecursively(
-      1,
-      loginInfo,
-      kind,
-      mode
-    ).catch((err) => {
-      console.error(err);
-      alert(err);
-    });
-
-    outputApiCallGet.then((outputApiCallGetRecur) => {
-      resolve(outputApiCallGetRecur);
-    });
+        resolve(
+          body.concat(await apiCallGet(loginInfo, kind, ++pageNum, mode))
+        );
+      })
+      .catch((err) => {
+        alert(err);
+        console.error(err);
+        reject(err);
+        return;
+      });
   });
-};
 
 /**
  * Returns a HTTP request URL for creating entries
- * @param {*} loginInfo
- * @param {*} kind
+ * @param {Object} loginInfo
+ * @param {string} kind
  * @return {string}
  */
 const urlForCreate = (loginInfo, kind) =>
@@ -289,10 +269,10 @@ const urlForCreate = (loginInfo, kind) =>
 
 /**
  * Return a Fetch API promise for creating entries
- * @param {*} getUrl
- * @param {*} loginInfo
- * @param {*} kind
- * @param {*} entryPackage
+ * @param {function} getUrl
+ * @param {Object} loginInfo
+ * @param {string} kind
+ * @param {Object} entryPackage
  * @return {Promise}
  */
 const fetchCreate = (getUrl, loginInfo, kind, entryPackage) =>
@@ -307,11 +287,11 @@ const fetchCreate = (getUrl, loginInfo, kind, entryPackage) =>
 
 /**
  * Make API calls to create entries and parse responses
- * @param {*} entry
- * @param {*} kind
+ * @param {HTMLElement} entryNode
+ * @param {string} kind
  * @return {Promise}
  */
-const apiCallCreate = (entry, kind) => {
+const apiCallCreate = (entryNode, kind) => {
   try {
     validateKind(kind);
   } catch (err) {
@@ -320,7 +300,7 @@ const apiCallCreate = (entry, kind) => {
   }
 
   const loginInfo = getLoginInfo();
-  const serializedEntry = serializeEntry(entry, kind);
+  const serializedEntry = serializeEntry(entryNode, kind);
   const entryPackage = packEntry(serializedEntry, kind);
   const kindSingular = kind.slice(0, -1);
 
@@ -344,9 +324,9 @@ const apiCallCreate = (entry, kind) => {
 
 /**
  * Return a URL for updating entries
- * @param {*} loginInfo
- * @param {*} kind
- * @param {*} apiCallSign
+ * @param {Object} loginInfo
+ * @param {string} kind
+ * @param {string} apiCallSign
  * @return {string}
  */
 const urlForUpdate = (loginInfo, kind, apiCallSign) =>
@@ -355,10 +335,10 @@ const urlForUpdate = (loginInfo, kind, apiCallSign) =>
 
 /**
  * Returns a Fetch API promise for updating entries
- * @param {*} getUrl
- * @param {*} loginInfo
- * @param {*} kind
- * @param {*} entryPackage
+ * @param {function} getUrl
+ * @param {Object} loginInfo
+ * @param {string} kind
+ * @param {Object} entryPackage
  * @return {Promise}
  */
 const fetchUpdate = (getUrl, loginInfo, kind, entryPackage) =>
@@ -373,11 +353,11 @@ const fetchUpdate = (getUrl, loginInfo, kind, entryPackage) =>
 
 /**
  * Make API calls to update entries
- * @param {*} entry
- * @param {*} kind
+ * @param {HTMLElement} entryNode
+ * @param {string} kind
  * @return {Promise}
  */
-const apiCallUpdate = (entry, kind) => {
+const apiCallUpdate = (entryNode, kind) => {
   try {
     validateKind(kind);
   } catch (err) {
@@ -386,7 +366,7 @@ const apiCallUpdate = (entry, kind) => {
   }
 
   const loginInfo = getLoginInfo();
-  const serializedEntry = serializeEntry(entry, kind);
+  const serializedEntry = serializeEntry(entryNode, kind);
   const entryPackage = packEntry(serializedEntry, kind);
   const kindSingular = kind.slice(0, -1);
 
@@ -413,9 +393,9 @@ const apiCallUpdate = (entry, kind) => {
 
 /**
  * Return a URL for deleting entries
- * @param {*} loginInfo
- * @param {*} kind
- * @param {*} apiCallSign
+ * @param {Object} loginInfo
+ * @param {string} kind
+ * @param {string} apiCallSign
  * @return {string}
  */
 const urlForDelete = (loginInfo, kind, apiCallSign) =>
@@ -424,10 +404,10 @@ const urlForDelete = (loginInfo, kind, apiCallSign) =>
 
 /**
  * Return a Fetch promise for deleting entries
- * @param {*} getUrl
- * @param {*} loginInfo
- * @param {*} kind
- * @param {*} entryPackage
+ * @param {function} getUrl
+ * @param {Object} loginInfo
+ * @param {string} kind
+ * @param {Object} entryPackage
  * @return {Promise}
  */
 const fetchDelete = (getUrl, loginInfo, kind, entryPackage) =>
@@ -441,11 +421,11 @@ const fetchDelete = (getUrl, loginInfo, kind, entryPackage) =>
 
 /**
  * Make API calls to delete entries
- * @param {*} entry
- * @param {*} kind
+ * @param {HTMLElement} entryNode
+ * @param {string} kind
  * @return {Promise}
  */
-const apiCallDelete = (entry, kind) => {
+const apiCallDelete = (entryNode, kind) => {
   try {
     validateKind(kind);
   } catch (err) {
@@ -454,7 +434,7 @@ const apiCallDelete = (entry, kind) => {
   }
 
   const loginInfo = getLoginInfo();
-  const serializedEntry = serializeEntry(entry, kind);
+  const serializedEntry = serializeEntry(entryNode, kind);
   const entryPackage = packEntry(serializedEntry, kind);
   const kindSingular = kind.slice(0, -1);
 
@@ -483,7 +463,6 @@ export {
   throwFailedStatusError,
   urlForGet,
   fetchGet,
-  apiCallGetRecursively,
   apiCallGet,
   urlForCreate,
   fetchCreate,

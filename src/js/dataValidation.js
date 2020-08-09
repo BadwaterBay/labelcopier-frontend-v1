@@ -264,7 +264,7 @@ const validateEntries = () => {
 /**
  * Validate 'kind'
  * Valid: 'labels', 'milestones'
- * @param {*} kind
+ * @param {string} kind
  * @return {boolean}
  */
 const validateKind = (kind) => {
