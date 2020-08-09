@@ -200,10 +200,11 @@ const listenForCreateNewMilestone = () => {
 };
 
 export {
+  clearAllEntries,
   listAllEntries,
   listenForListAllLabels,
   listenForListAllMilestones,
-  clearAllEntries,
+  deleteAllEntries,
   listenForDeleteAllLabels,
   listenForDeleteAllMilestones,
   listenForUndoLabels,
