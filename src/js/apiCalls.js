@@ -18,7 +18,7 @@ const makeBasicAuth = (loginInfo) =>
 const writeLog = (string) => {
   const logNode = document.createElement('p');
   logNode.innerHTML = string;
-  const modalNode = document.querySelector('#loadingModal .modal-body');
+  const modalNode = document.querySelector('#committing-modal .modal-body');
   modalNode.appendChild(logNode);
 };
 
@@ -133,7 +133,7 @@ const urlForApiCallGet = (pageNum, loginInfo, kind, mode = 'list') => {
   let url =
     'https://api.github.com/repos/' +
     `${owner}/${repo}/${kind}` +
-    `?per_page=50` +
+    `?per_page=70` +
     `&page=${pageNum}`;
 
   if (kind === 'milestones') {
@@ -157,16 +157,13 @@ const apiCallGetRecursively = (pageNum, loginInfo, kind, mode = 'list') =>
       if (!response.ok) {
         throw new Error('Error occurred while getting entries.');
       }
-      console.log(response);
       return response.json();
     })
     .then((body) => {
-      console.log(body);
       if (body.length === 0) {
         if (pageNum === 1) {
           alert(`No ${kind} exist in this repository.`);
         }
-        console.log(`apiCallGetRecursively RESOLVED at page: ${pageNum} `);
         return;
       }
       if (kind === 'labels') {
@@ -200,8 +197,7 @@ const apiCallCreate = (entry, kind) => {
   try {
     validateKind(kind);
   } catch (err) {
-    console.error(err);
-    alert(err);
+    writeLog(err);
     return;
   }
 
@@ -211,7 +207,7 @@ const apiCallCreate = (entry, kind) => {
   const url = urlForApiCallCreate(loginInfo, kind);
   const kindSingular = kind.slice(0, -1);
 
-  fetch(url, {
+  return fetch(url, {
     method: 'POST',
     headers: {
       Authorization: makeBasicAuth(loginInfo),
@@ -220,6 +216,7 @@ const apiCallCreate = (entry, kind) => {
     body: JSON.stringify(entryPackage.body),
   })
     .then((response) => {
+      console.log(response);
       if (!response.ok) {
         throw new Error(response.status);
       }
@@ -244,8 +241,7 @@ const apiCallUpdate = (entry, kind) => {
   try {
     validateKind(kind);
   } catch (err) {
-    console.error(err);
-    alert(err);
+    writeLog(err);
     return;
   }
 
@@ -259,7 +255,7 @@ const apiCallUpdate = (entry, kind) => {
   );
   const kindSingular = kind.slice(0, -1);
 
-  fetch(url, {
+  return fetch(url, {
     method: 'PATCH',
     headers: {
       Authorization: makeBasicAuth(loginInfo),
@@ -272,13 +268,13 @@ const apiCallUpdate = (entry, kind) => {
       }
       response.json().then((body) => {
         writeLog(
-          `Updated ${kindSingular}: ${entryPackage.names.originalName} -> ${entryPackage.names.newName}.`
+          `Updated ${kindSingular}: ${entryPackage.names.originalName} &#8680; ${entryPackage.names.newName}.`
         );
       });
     })
     .catch((err) => {
       writeLog(
-        `Update of ${kindSingular} ${entryPackage.names.originalName} -> ${entryPackage.names.newName} failed due to ` +
+        `Update of ${kindSingular} ${entryPackage.names.originalName} &#8680; ${entryPackage.names.newName} failed due to ` +
           `error: ${err}.`
       );
       console.error(err);
@@ -293,8 +289,7 @@ const apiCallDelete = (entry, kind) => {
   try {
     validateKind(kind);
   } catch (err) {
-    console.error(err);
-    alert(err);
+    writeLog(err);
     return;
   }
 
@@ -308,7 +303,7 @@ const apiCallDelete = (entry, kind) => {
   );
   const kindSingular = kind.slice(0, -1);
 
-  fetch(url, {
+  return fetch(url, {
     method: 'DELETE',
     headers: {
       Authorization: makeBasicAuth(loginInfo),

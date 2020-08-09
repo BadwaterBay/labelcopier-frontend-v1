@@ -4,6 +4,9 @@
 
 'use strict';
 
+const bugReportLink =
+  'https://github.com/BadwaterBay/github-label-manager-plus/blob/master/CONTRIBUTING.md#reporting-bugs';
+
 /**
  * Returns the trimmed value from an ID selector
  * @param {string} id ID selector
@@ -41,8 +44,6 @@ const disableCommitButton = () => {
 const checkIfEnableCommitButton = () => {
   // returns true if any change has been made and activates or
   // disactivates commit button accordingly
-
-  console.log('checkIfEnableCommitButton activated!');
 
   const labelsModified =
     document.querySelectorAll('.label-entry:not([data-todo="none"])').length >
@@ -261,7 +262,11 @@ const validateKind = (kind) => {
     return true;
   }
   throw new Error(
-    "Invalid kind parameter was given. It is neither 'labels' or 'milestones'."
+    'There is probably a bug in the web app. ' +
+      'Please consider submitting a bug report at ' +
+      `<a href="${bugReportLink}" target="_blank" ref="noopener noreferrer">` +
+      'our GitHub page</a> with the following message:</br>' +
+      "Error at validateKind. Invalid kind argument was given. It is neither 'labels' or 'milestones'."
   );
 };
 
