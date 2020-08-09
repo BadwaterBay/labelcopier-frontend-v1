@@ -17,30 +17,28 @@ const comparatorLexic = (
   key = null,
   ignoreCase = false,
   descending = false
-) => {
-  return (a, b) => {
-    let x = '';
-    let y = '';
+) => (a, b) => {
+  let x = '';
+  let y = '';
 
-    if (key === null) {
-      x = ignoreCase ? a.toUpperCase() : a;
-      y = ignoreCase ? b.toUpperCase() : b;
-    } else if (typeof key === 'string') {
-      x = ignoreCase ? a[key].toUpperCase() : a[key];
-      y = ignoreCase ? b[key].toUpperCase() : b[key];
-    }
-    // else if (Array.isArray(key)) {
-    // }
-    else {
-      throw new TypeError("Invalid type of argument 'key'.");
-    }
+  if (key === null) {
+    x = ignoreCase ? a.toUpperCase() : a;
+    y = ignoreCase ? b.toUpperCase() : b;
+  } else if (typeof key === 'string') {
+    x = ignoreCase ? a[key].toUpperCase() : a[key];
+    y = ignoreCase ? b[key].toUpperCase() : b[key];
+  }
+  // else if (Array.isArray(key)) {
+  // }
+  else {
+    throw new TypeError("Invalid type of argument 'key'.");
+  }
 
-    if (descending) {
-      return x < y ? 1 : -1;
-    }
-    // if ascending
-    return x < y ? -1 : 1;
-  };
+  if (descending) {
+    return x < y ? 1 : -1;
+  }
+  // if ascending
+  return x < y ? -1 : 1;
 };
 
 /**
