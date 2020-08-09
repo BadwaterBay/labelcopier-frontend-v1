@@ -4,10 +4,11 @@
 
 'use strict';
 
-import createNewLabelEntry from './createNewLabelEntry';
-import { createNewMilestoneEntry } from './createNewMilestoneEntry';
 import { getLoginInfo, checkIfEnableCommitButton } from './dataValidation';
 import { apiCallGet } from './apiCalls';
+import createNewLabelEntry from './createNewLabelEntry';
+import { createNewMilestoneEntry } from './createNewMilestoneEntry';
+import { comparatorLexic, sortArray } from './helpers';
 
 const clearAllEntries = (kind) => {
   document.getElementById(`form-${kind}`).textContent = '';
@@ -21,32 +22,60 @@ const clearAllEntries = (kind) => {
   commitToTargetRepo.classList.add('btn-outline-success');
 };
 
-const listAllEntries = (kind) => {
-  const loginInfo = getLoginInfo();
+const listAllEntries = (kind) =>
+  new Promise((resolve, reject) => {
+    // Eye candy
+    document
+      .getElementById(`${kind}-progress-indicator`)
+      .classList.remove('hidden');
 
-  if (loginInfo.homeRepoOwner && loginInfo.homeRepoName) {
-    if (kind === 'labels') {
-      clearAllEntries('labels');
-    }
-    if (kind === 'milestones') {
-      clearAllEntries('milestones');
+    // Check if login information is present
+    const loginInfo = getLoginInfo();
+
+    if (!(loginInfo.homeRepoOwner && loginInfo.homeRepoName)) {
+      const msg = 'Please enter the owner and the name of the repository.';
+      alert(msg);
+      reject(msg);
     }
 
     apiCallGet(kind)
-      .then(() => {
-        $(`#${kind}-tab`).tab('show');
+      .then((fetchedEntries) => {
+        clearAllEntries(kind);
+        let sortedFetchedEntries = [];
+
+        if (kind === 'labels') {
+          sortedFetchedEntries = sortArray(
+            fetchedEntries,
+            comparatorLexic('name', true)
+          );
+          sortedFetchedEntries.map((e) => createNewLabelEntry(e));
+          document
+            .getElementById('labels-progress-indicator')
+            .classList.add('hidden');
+        } else {
+          // kind === 'milestones'
+          sortedFetchedEntries = sortArray(
+            fetchedEntries,
+            comparatorLexic('title', true)
+          );
+          sortedFetchedEntries.map((e) => createNewMilestoneEntry(e));
+          document
+            .getElementById('milestones-progress-indicator')
+            .classList.add('hidden');
+        }
+
         checkIfEnableCommitButton();
+        resolve(sortedFetchedEntries);
       })
       .catch((err) => {
         console.error(err);
+        reject(err);
       });
-  } else {
-    alert('Please enter the owner and the name of the repository.');
-  }
-};
+  });
 
 const listenForListAllLabels = () => {
   document.getElementById('list-all-labels').addEventListener('click', () => {
+    $(`#labels-tab`).tab('show');
     listAllEntries('labels');
   });
 };
@@ -55,6 +84,7 @@ const listenForListAllMilestones = () => {
   document
     .getElementById('list-all-milestones')
     .addEventListener('click', () => {
+      $(`#milestones-tab`).tab('show');
       listAllEntries('milestones');
     });
 };
@@ -83,7 +113,6 @@ const deleteAllEntries = (kind) => {
 const listenForDeleteAllLabels = () => {
   document.getElementById('delete-all-labels').addEventListener('click', () => {
     deleteAllEntries('labels');
-    checkIfEnableCommitButton();
   });
 };
 
@@ -92,7 +121,6 @@ const listenForDeleteAllMilestones = () => {
     .getElementById('delete-all-milestones')
     .addEventListener('click', () => {
       deleteAllEntries('milestones');
-      checkIfEnableCommitButton();
     });
 };
 

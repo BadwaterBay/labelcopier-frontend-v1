@@ -4,36 +4,21 @@
  * Things that happen when the 'Commit' button is clicked
  */
 
-import {
-  getLoginInfo,
-  validateEntries,
-  checkIfEnableCommitButton,
-} from './dataValidation';
-import { clearAllEntries } from './manipulateEntries';
-import {
-  apiCallGet,
-  apiCallCreate,
-  apiCallUpdate,
-  apiCallDelete,
-} from './apiCalls';
+import { getLoginInfo, validateEntries } from './dataValidation';
+import { listAllEntries } from './manipulateEntries';
+import { apiCallCreate, apiCallUpdate, apiCallDelete } from './apiCalls';
 
 /**
  * Reload entires
  * @return {Promise}
  */
-const reloadEntries = () => {
-  // reload labels after changes
-  clearAllEntries('labels');
-  clearAllEntries('milestones');
-
-  return Promise.allSettled([apiCallGet('labels'), apiCallGet('milestones')])
-    .then(() => {
-      checkIfEnableCommitButton();
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-};
+const reloadEntries = () =>
+  Promise.allSettled([
+    listAllEntries('labels'),
+    listAllEntries('milestones'),
+  ]).catch((err) => {
+    console.error(err);
+  });
 
 /**
  * Reset the content inside '#committing-modal' modal when it is closed
@@ -42,10 +27,10 @@ const resetModalWhenClosed = () => {
   $('#committing-modal').on('hidden.bs.modal', () => {
     document.getElementById('committing-spinner').classList.remove('hidden');
 
+    reloadEntries();
+
     const modalBody = document.querySelector('#committing-modal .modal-body');
     modalBody.textContent = '';
-
-    reloadEntries();
   });
 };
 

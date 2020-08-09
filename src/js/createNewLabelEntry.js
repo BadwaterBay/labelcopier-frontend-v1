@@ -18,7 +18,7 @@ import { faTrashAlt, faHistory } from '@fortawesome/free-solid-svg-icons';
 library.add(faTrashAlt, faHistory);
 dom.watch();
 
-const createNewLabelEntry = (label, mode) => {
+const createNewLabelEntry = (label, mode = 'list') => {
   if (label === undefined || label === null) {
     label = {
       name: '',
@@ -29,6 +29,7 @@ const createNewLabelEntry = (label, mode) => {
 
   label.color = `#${label.color.toUpperCase()}`;
 
+  // if (mode === 'list') by default
   let todo = ' data-todo="none" ';
   let uncommittedSignClass = '';
 
@@ -255,7 +256,12 @@ const createNewLabelEntry = (label, mode) => {
       }
     );
 
-  $('#form-labels').prepend(newElementEntry);
+  if (mode === 'list') {
+    $('#form-labels').append(newElementEntry);
+  } else {
+    // mode === 'copy' or mode === 'new'
+    $('#form-labels').prepend(newElementEntry);
+  }
 };
 
 export default createNewLabelEntry;

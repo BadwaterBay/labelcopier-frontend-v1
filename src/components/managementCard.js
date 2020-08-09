@@ -12,7 +12,8 @@ const managementCard = (() =>
             aria-controls="labels-form"
             aria-selected="true"
           >
-            Labels
+            <span id="labels-progress-indicator" class="progress-indicator spinner-border spinner-border-sm text-info hidden" role="status" aria-hidden="true"></span>
+            <span>Labels<span>
           </a>
         </li>
         <li class="nav-item">
@@ -25,7 +26,8 @@ const managementCard = (() =>
             aria-controls="milestones-form"
             aria-selected="false"
           >
-            Milestones
+            <span id="milestones-progress-indicator" class="progress-indicator spinner-border spinner-border-sm text-info hidden" role="status" aria-hidden="true"></span>
+            <span>Milestones</span>
           </a>
         </li>
         <li class="nav-item">
@@ -53,19 +55,18 @@ const managementCard = (() =>
             <div class="row">
               <div class="col-12 col-md-4">
                 <button
-                  id="delete-all-labels"
+                  id="add-new-label-entry"
                   type="button"
-                  class="btn btn-outline-danger btn-block"
-                  data-loading-text="Deleting..."
+                  class="btn btn-raised btn-success btn-block mb-3"
                 >
-                  Delete all
+                  New label
                 </button>
               </div>
               <div class="col-12 col-md-4">
                 <button
                   id="revert-labels-to-original"
                   type="button"
-                  class="btn btn-outline-warning btn-block"
+                  class="btn btn-raised btn-primary btn-block"
                   disabled
                   data-loading-text="Resetting..."
                 >
@@ -74,11 +75,12 @@ const managementCard = (() =>
               </div>
               <div class="col-12 col-md-4">
                 <button
-                  id="add-new-label-entry"
+                  id="delete-all-labels"
                   type="button"
-                  class="btn btn-outline-success btn-block mb-3"
+                  class="btn btn-raised btn-danger btn-block"
+                  data-loading-text="Deleting..."
                 >
-                  New label
+                  Delete all
                 </button>
               </div>
             </div>
@@ -94,19 +96,18 @@ const managementCard = (() =>
             <div class="row">
               <div class="col-12 col-md-4">
                 <button
-                  id="delete-all-milestones"
+                  id="add-new-milestone-entry"
                   type="button"
-                  class="btn btn-outline-danger btn-block"
-                  data-loading-text="Deleting..."
+                  class="btn btn-raised btn-success btn-block mb-3"
                 >
-                  Delete all
+                  New label
                 </button>
               </div>
               <div class="col-12 col-md-4">
                 <button
                   id="revert-milestones-to-original"
                   type="button"
-                  class="btn btn-outline-warning btn-block"
+                  class="btn btn-raised btn-primary btn-block"
                   disabled
                   data-loading-text="Resetting..."
                 >
@@ -115,11 +116,12 @@ const managementCard = (() =>
               </div>
               <div class="col-12 col-md-4">
                 <button
-                  id="add-new-milestone-entry"
+                  id="delete-all-milestones"
                   type="button"
-                  class="btn btn-outline-success btn-block mb-3"
+                  class="btn btn-raised btn-danger btn-block"
+                  data-loading-text="Deleting..."
                 >
-                  New milestone
+                  Delete all
                 </button>
               </div>
             </div>

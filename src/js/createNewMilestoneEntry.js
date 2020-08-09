@@ -41,7 +41,7 @@ const parseDate = (raw) => {
   ];
 };
 
-const createNewMilestoneEntry = (milestone, mode) => {
+const createNewMilestoneEntry = (milestone, mode = 'list') => {
   if (milestone === undefined || milestone === null) {
     milestone = {
       title: '',
@@ -260,7 +260,12 @@ const createNewMilestoneEntry = (milestone, mode) => {
     }
   );
 
-  $('#form-milestones').prepend(newElementEntry);
+  if (mode === 'list') {
+    $('#form-milestones').append(newElementEntry);
+  } else {
+    // mode === 'copy' or mode === 'new'
+    $('#form-milestones').prepend(newElementEntry);
+  }
 };
 
 export { parseDate, createNewMilestoneEntry };

@@ -6,8 +6,6 @@
 
 import base64 from './base64';
 import { getLoginInfo, validateKind } from './dataValidation';
-import createNewLabelEntry from './createNewLabelEntry';
-import { createNewMilestoneEntry } from './createNewMilestoneEntry';
 
 /**
  * Encode authentication info for HTTP requests
@@ -158,6 +156,14 @@ const throwFailedStatusError = (response) => {
         ' the username and the personal access token that you provided.'
     );
   }
+  if (response.status === 403) {
+    throw new Error(
+      `${response.status} ${response.statusText}.` +
+        ' The GitHub server refused to your request.' +
+        ' Maybe you have exceeded your rate limit.' +
+        ' Please wait for a little while.'
+    );
+  }
   throw new Error(
     `${response.status} ${response.statusText}.` +
       ` Error occurred while fetching ${kind}.`
@@ -223,19 +229,17 @@ const apiCallGetRecursively = (pageNum, loginInfo, kind, mode = 'list') =>
       }
       return response.json();
     })
-    .then((body) => {
+    .then(async (body) => {
       if (body.length === 0) {
         if (pageNum === 1) {
           alert(`No ${kind} exist in this repository.`);
         }
-        return;
+        return body;
       }
-      if (kind === 'labels') {
-        body.map((e) => createNewLabelEntry(e, mode));
-      } else {
-        body.map((e) => createNewMilestoneEntry(e, mode));
-      }
-      return apiCallGetRecursively(++pageNum, loginInfo, kind, mode);
+
+      return body.concat(
+        await apiCallGetRecursively(++pageNum, loginInfo, kind, mode)
+      );
     });
 
 /**
@@ -247,17 +251,29 @@ const apiCallGetRecursively = (pageNum, loginInfo, kind, mode = 'list') =>
  * @return {Promise}
  */
 const apiCallGet = (kind, mode = 'list') => {
-  try {
-    validateKind(kind);
-  } catch (err) {
-    writeLog(err);
-    return;
-  }
+  return new Promise((resolve, reject) => {
+    try {
+      validateKind(kind);
+    } catch (err) {
+      writeLog(err);
+      reject(err);
+    }
 
-  const loginInfo = getLoginInfo();
-  return apiCallGetRecursively(1, loginInfo, kind, mode).catch((err) => {
-    console.error(err);
-    alert(err);
+    const loginInfo = getLoginInfo();
+
+    const outputApiCallGet = apiCallGetRecursively(
+      1,
+      loginInfo,
+      kind,
+      mode
+    ).catch((err) => {
+      console.error(err);
+      alert(err);
+    });
+
+    outputApiCallGet.then((outputApiCallGetRecur) => {
+      resolve(outputApiCallGetRecur);
+    });
   });
 };
 
