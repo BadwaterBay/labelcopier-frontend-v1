@@ -5,7 +5,8 @@
 'use strict';
 
 const bugReportLink =
-  'https://github.com/BadwaterBay/github-label-manager-plus/blob/master/CONTRIBUTING.md#reporting-bugs';
+  'https://github.com/BadwaterBay/github-label-manager-plus/blob/' +
+  'master/CONTRIBUTING.md#reporting-bugs';
 
 /**
  * Returns the trimmed value from an ID selector
@@ -27,6 +28,35 @@ const getLoginInfo = () => ({
   templateRepoName: trimmedValFromId('template-repo-name'),
 });
 
+/**
+ * Validate necessary login information against null
+ * @param {Object} loginInfo
+ * @param {string} mode 'list' or 'copy'
+ * @return {boolean} True if valid
+ */
+const validateLoginAgainstNull = (loginInfo, mode = 'list') => {
+  if (mode === 'list') {
+    if (!(loginInfo.homeRepoOwner && loginInfo.homeRepoName)) {
+      throw new Error('Please enter the owner and the name of the repository.');
+    }
+  } else if (mode === 'copy') {
+    if (!(loginInfo.templateRepoOwner && loginInfo.templateRepoName)) {
+      throw new Error(
+        'Please enter the owner and the name of' +
+          " the repository you'd like to copy from."
+      );
+    }
+  } else {
+    throw new Error(
+      "Invalid 'mode' argument was given to validateLoginAgainstNull."
+    );
+  }
+  return true;
+};
+
+/**
+ * Enable commit button
+ */
 const enableCommitButton = () => {
   const el = document.getElementById('commit-to-home-repo-name');
   el.removeAttribute('disabled');
@@ -34,6 +64,9 @@ const enableCommitButton = () => {
   el.classList.add('btn-success');
 };
 
+/**
+ * Disable commit button
+ */
 const disableCommitButton = () => {
   const el = document.getElementById('commit-to-home-repo-name');
   el.setAttribute('disabled', true);
@@ -41,6 +74,9 @@ const disableCommitButton = () => {
   el.classList.add('btn-outline-success');
 };
 
+/**
+ * Check conditions to enable or disable the commit button
+ */
 const checkIfEnableCommitButton = () => {
   // returns true if any change has been made and activates or
   // disactivates commit button accordingly
@@ -57,22 +93,16 @@ const checkIfEnableCommitButton = () => {
     document.querySelectorAll('.milestone-entry.duplicate-entry').length > 0;
 
   if (labelsModified) {
-    document
-      .getElementById('revert-labels-to-original')
-      .removeAttribute('disabled');
+    document.getElementById('undo-all-labels').removeAttribute('disabled');
   } else {
-    document
-      .getElementById('revert-labels-to-original')
-      .setAttribute('disabled', true);
+    document.getElementById('undo-all-labels').setAttribute('disabled', true);
   }
 
   if (milestonesModified) {
-    document
-      .getElementById('revert-milestones-to-original')
-      .removeAttribute('disabled');
+    document.getElementById('undo-all-milestones').removeAttribute('disabled');
   } else {
     document
-      .getElementById('revert-milestones-to-original')
+      .getElementById('undo-all-milestones')
       .setAttribute('disabled', true);
   }
 
@@ -88,6 +118,7 @@ const checkIfEnableCommitButton = () => {
 };
 
 /**
+ * Return a boolean, indicating if changes of entires are present
  * @param {Object} el
  * @return {boolean}
  */
@@ -256,23 +287,31 @@ const validateEntries = () => {
   ];
 };
 
+/**
+ * Validate 'kind'
+ * Valid: 'labels', 'milestones'
+ * @param {string} kind
+ * @return {boolean}
+ */
 const validateKind = (kind) => {
   const validKinds = new Set(['labels', 'milestones']);
   if (validKinds.has(kind)) {
     return true;
   }
   throw new Error(
-    'There is probably a bug in the web app. ' +
-      'Please consider submitting a bug report at ' +
-      `<a href="${bugReportLink}" target="_blank" ref="noopener noreferrer">` +
+    'There is probably a bug in the web app.' +
+      ' Please consider submitting a bug report at' +
+      ` <a href="${bugReportLink}" target="_blank" ref="noopener noreferrer">` +
       'our GitHub page</a> with the following message:</br>' +
-      "Error at validateKind. Invalid kind argument was given. It is neither 'labels' or 'milestones'."
+      'Error at validateKind. Invalid kind argument was given.' +
+      " It is neither 'labels' or 'milestones'."
   );
 };
 
 export {
   trimmedValFromId,
   getLoginInfo,
+  validateLoginAgainstNull,
   enableCommitButton,
   disableCommitButton,
   checkIfEnableCommitButton,

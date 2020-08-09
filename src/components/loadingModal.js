@@ -5,7 +5,8 @@ const loadingModal = (() =>
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
-              Please&nbsp;wait...
+              <span>Committing changes...</span>
+              <span id="committing-spinner" class="spinner-border text-info" role="status" aria-hidden="true"></span>
             </h5>
             <button
               type="button"
@@ -16,11 +17,7 @@ const loadingModal = (() =>
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-            <p>
-              Commiting...
-            </p>
-          </div>
+          <div class="modal-body"></div>
         </div>
       </div>
     </div>

@@ -39,8 +39,8 @@ import {
   listenForCreateNewMilestone,
 } from './js/manipulateEntries';
 import {
+  resetModalWhenClosed,
   listenForCommitButton,
-  reloadAfterCommit,
   clickOutsideToCloseModal,
 } from './js/commitChanges';
 
@@ -80,12 +80,13 @@ export default () =>
     listenForCommitButton();
 
     /**
-     * Reload entries when the modal is closed after comitting changes
-     */
-    reloadAfterCommit();
-
-    /**
      * Click anywhere outside the modal to close the modal
      */
     clickOutsideToCloseModal();
+
+    /**
+     * Reset the content inside '#committing-modal' modal when it is closed
+     * and reload entries
+     */
+    resetModalWhenClosed();
   });

@@ -53,7 +53,7 @@ const copyFromCard = (() =>
             <button
               id="copy-labels-from"
               type="button"
-              class="btn btn-outline-info btn-block"
+              class="btn btn-raised btn-outline-info btn-block"
               data-loading-text="Adding..."
             >
               Copy&nbsp;labels
@@ -64,7 +64,7 @@ const copyFromCard = (() =>
             <button
               id="copy-milestones-from"
               type="button"
-              class="btn btn-outline-info btn-block"
+              class="btn btn-raised btn-outline-info btn-block"
               data-loading-text="Adding..."
             >
               Copy&nbsp;milestones

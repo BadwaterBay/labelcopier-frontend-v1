@@ -4,18 +4,35 @@
  * Things that happen when the 'Commit' button is clicked
  */
 
-import {
-  getLoginInfo,
-  validateEntries,
-  checkIfEnableCommitButton,
-} from './dataValidation';
-import { clearAllEntries } from './manipulateEntries';
-import {
-  apiCallGet,
-  apiCallCreate,
-  apiCallUpdate,
-  apiCallDelete,
-} from './apiCalls';
+import { getLoginInfo, validateEntries } from './dataValidation';
+import { listEntriesFromApi } from './manipulateEntries';
+import { apiCallCreate, apiCallUpdate, apiCallDelete } from './apiCalls';
+
+/**
+ * Reload entires
+ * @return {Promise}
+ */
+const reloadEntries = () =>
+  Promise.allSettled([
+    listEntriesFromApi('labels'),
+    listEntriesFromApi('milestones'),
+  ]).catch((err) => {
+    console.error(err);
+  });
+
+/**
+ * Reset the content inside '#committing-modal' modal when it is closed
+ */
+const resetModalWhenClosed = () => {
+  $('#committing-modal').on('hidden.bs.modal', () => {
+    document.getElementById('committing-spinner').classList.remove('hidden');
+
+    reloadEntries();
+
+    const modalBody = document.querySelector('#committing-modal .modal-body');
+    modalBody.textContent = '';
+  });
+};
 
 /**
  * Callback for making API calls
@@ -55,35 +72,31 @@ const commitChanges = () => {
     backdrop: 'static',
   });
 
-  /**
-   * Loop through the array and make API calls
-   */
+  // Loop through the array and make API calls
   const apiCalls = entriesForApiCall.map((e) => selectEntriesForApiCall(...e));
-  Promise.allSettled(apiCalls)
-    .then(() => {
-      console.log('All API calls completed!');
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  return Promise.allSettled(apiCalls).catch((err) => {
+    console.error(err);
+  });
 };
 
 const writeErrorsAlert = (errorCount, duplicateCount, kind) => {
-  let alertMsg = '';
   if (errorCount || duplicateCount) {
     if (duplicateCount) {
       if (errorCount) {
-        alertMsg =
+        return (
           `${duplicateCount} set(s) of duplicate entries ` +
-          `and ${errorCount} other error(s) found in ${kind}!\n`;
+          `and ${errorCount} other error(s) found in ${kind}!`
+        );
       } else {
-        alertMsg = `${duplicateCount} set(s) of duplicate entries found in ${kind}!\n`;
+        return (
+          `${duplicateCount} set(s) of duplicate entries found in` + `${kind} !`
+        );
       }
     } else {
-      alertMsg = `${errorCount} error(s) found in ${kind}!\n`;
+      return `${errorCount} error(s) found in ${kind} !`;
     }
   }
-  return alertMsg;
+  return '';
 };
 
 /**
@@ -98,7 +111,7 @@ const listenForCommitButton = () => {
 
       if (!loginInfo.personalAccessToken) {
         alert(
-          `You need to enter your personal access token for repo ` +
+          `You need to enter your personal access token for repo` +
             `${loginInfo.homeRepoName} in order to commit changes.`
         );
         return;
@@ -128,39 +141,22 @@ const listenForCommitButton = () => {
           'milestones'
         );
 
-        alert(`${labelsAlert}${milestonesAlert}`);
+        alert(`${labelsAlert} ${milestonesAlert} `);
         return;
       }
 
-      commitChanges();
+      commitChanges()
+        .then(() => {
+          setTimeout(() => {
+            document
+              .getElementById('committing-spinner')
+              .classList.add('hidden');
+          }, 750);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     });
-};
-
-/**
- * Reload entries when the modal is closed after comitting changes
- */
-const reloadAfterCommit = () => {
-  $('#committing-modal').on('hidden.bs.modal', () => {
-    // reset modal
-    const pNode = document.createElement('p');
-    pNode.innerHTML = 'Committing...';
-
-    const modalBody = document.querySelector('#committing-modal .modal-body');
-    modalBody.textContent = '';
-    modalBody.appendChild(pNode);
-
-    // reload labels after changes
-    clearAllEntries('labels');
-    clearAllEntries('milestones');
-
-    Promise.allSettled([apiCallGet('labels'), apiCallGet('milestones')])
-      .then(() => {
-        checkIfEnableCommitButton();
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  });
 };
 
 /**
@@ -175,10 +171,11 @@ const clickOutsideToCloseModal = () => {
 };
 
 export {
+  reloadEntries,
+  resetModalWhenClosed,
   selectEntriesForApiCall,
   commitChanges,
   writeErrorsAlert,
   listenForCommitButton,
-  reloadAfterCommit,
   clickOutsideToCloseModal,
 };
