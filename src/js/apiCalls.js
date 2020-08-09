@@ -194,13 +194,12 @@ const urlForApiCallCreate = (loginInfo, kind) =>
   `${loginInfo.homeRepoName}/${kind}`;
 
 const apiCallCreate = (entry, kind) => {
-  // try {
-  //   validateKind(kind);
-  // } catch (err) {
-  //   console.error(err);
-  //   alert(err);
-  //   return;
-  // }
+  try {
+    validateKind(kind);
+  } catch (err) {
+    writeLog(err);
+    return;
+  }
 
   const loginInfo = getLoginInfo();
   const serializedEntry = serializeEntry(entry, kind);
@@ -217,6 +216,7 @@ const apiCallCreate = (entry, kind) => {
     body: JSON.stringify(entryPackage.body),
   })
     .then((response) => {
+      console.log(response);
       if (!response.ok) {
         throw new Error(response.status);
       }
@@ -238,13 +238,12 @@ const urlForApiCallUpdate = (loginInfo, kind, apiCallSign) =>
   `${loginInfo.homeRepoName}/${kind}/${apiCallSign}`;
 
 const apiCallUpdate = (entry, kind) => {
-  // try {
-  //   validateKind(kind);
-  // } catch (err) {
-  //   console.error(err);
-  //   alert(err);
-  //   return;
-  // }
+  try {
+    validateKind(kind);
+  } catch (err) {
+    writeLog(err);
+    return;
+  }
 
   const loginInfo = getLoginInfo();
   const serializedEntry = serializeEntry(entry, kind);
@@ -290,8 +289,7 @@ const apiCallDelete = (entry, kind) => {
   try {
     validateKind(kind);
   } catch (err) {
-    console.error(err);
-    alert(err);
+    writeLog(err);
     return;
   }
 
