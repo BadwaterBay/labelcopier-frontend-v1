@@ -36,6 +36,9 @@ const listAllEntries = (kind) =>
     try {
       validateKind(kind);
     } catch (err) {
+      document
+        .getElementById('labels-progress-indicator')
+        .classList.add('hidden');
       alert(err);
       reject(err);
       return;
@@ -44,6 +47,9 @@ const listAllEntries = (kind) =>
     // Check if login information is present
     const loginInfo = getLoginInfo();
     if (!(loginInfo.homeRepoOwner && loginInfo.homeRepoName)) {
+      document
+        .getElementById('labels-progress-indicator')
+        .classList.add('hidden');
       const msg = 'Please enter the owner and the name of the repository.';
       alert(msg);
       reject(msg);
@@ -81,6 +87,9 @@ const listAllEntries = (kind) =>
         return;
       })
       .catch((err) => {
+        document
+          .getElementById('labels-progress-indicator')
+          .classList.add('hidden');
         console.error(err);
         reject(err);
         return;
