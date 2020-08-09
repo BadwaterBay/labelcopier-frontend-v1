@@ -125,17 +125,17 @@ const listenForDeleteAllMilestones = () => {
 };
 
 const listenForUndoLabels = () => {
-  document.getElementById('revert-labels-to-original').click(() => {
-    clearAllEntries('labels');
-    apiCallGet('labels');
+  document.getElementById('undo-all-labels').addEventListener('click', () => {
+    listAllEntries('labels');
   });
 };
 
 const listenForUndoMilestones = () => {
-  document.getElementById('revert-milestones-to-original').click(() => {
-    clearAllEntries('milestones');
-    apiCallGet('milestones');
-  });
+  document
+    .getElementById('undo-all-milestones')
+    .addEventListener('click', () => {
+      listAllEntries('milestones');
+    });
 };
 
 const copyEntriesFromRepo = (kind) => {

@@ -64,7 +64,7 @@ const managementCard = (() =>
               </div>
               <div class="col-12 col-md-4">
                 <button
-                  id="revert-labels-to-original"
+                  id="undo-all-labels"
                   type="button"
                   class="btn btn-raised btn-primary btn-block"
                   disabled
@@ -105,7 +105,7 @@ const managementCard = (() =>
               </div>
               <div class="col-12 col-md-4">
                 <button
-                  id="revert-milestones-to-original"
+                  id="undo-all-milestones"
                   type="button"
                   class="btn btn-raised btn-primary btn-block"
                   disabled

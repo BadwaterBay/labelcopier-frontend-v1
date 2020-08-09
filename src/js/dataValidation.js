@@ -67,22 +67,16 @@ const checkIfEnableCommitButton = () => {
     document.querySelectorAll('.milestone-entry.duplicate-entry').length > 0;
 
   if (labelsModified) {
-    document
-      .getElementById('revert-labels-to-original')
-      .removeAttribute('disabled');
+    document.getElementById('undo-all-labels').removeAttribute('disabled');
   } else {
-    document
-      .getElementById('revert-labels-to-original')
-      .setAttribute('disabled', true);
+    document.getElementById('undo-all-labels').setAttribute('disabled', true);
   }
 
   if (milestonesModified) {
-    document
-      .getElementById('revert-milestones-to-original')
-      .removeAttribute('disabled');
+    document.getElementById('undo-all-milestones').removeAttribute('disabled');
   } else {
     document
-      .getElementById('revert-milestones-to-original')
+      .getElementById('undo-all-milestones')
       .setAttribute('disabled', true);
   }
 
