@@ -8,6 +8,12 @@ const bugReportLink =
   'https://github.com/BadwaterBay/github-label-manager-plus/blob/' +
   'master/CONTRIBUTING.md#reporting-bugs';
 
+const bugReportMsg = (() =>
+  'There is possibly a bug in the web app. We apologize for that.' +
+  ' It would be greatly helpful if you submit a bug report at' +
+  ` <a href="${bugReportLink}" target="_blank" ref="noopener noreferrer">` +
+  'our GitHub page</a> with the following message:</br>')();
+
 /**
  * Returns the trimmed value from an ID selector
  * @param {string} id ID selector
@@ -16,26 +22,31 @@ const bugReportLink =
 const trimmedValFromId = (id) => document.getElementById(id).value.trim();
 
 /**
- * Returns an object of login info
- * @return {Object}
+ * Returns and validate login info or throw an Error if it's not valid
+ * @param {string} mode 'list', 'copy' or 'create'
+ * @return {Object | Error}
  */
-const getLoginInfo = () => ({
-  homeRepoOwner: trimmedValFromId('home-repo-owner'),
-  homeRepoName: trimmedValFromId('home-repo-name'),
-  gitHubUsername: trimmedValFromId('github-username'),
-  personalAccessToken: trimmedValFromId('personal-access-token'),
-  templateRepoOwner: trimmedValFromId('template-repo-owner'),
-  templateRepoName: trimmedValFromId('template-repo-name'),
-});
+const getAndValidateLoginInfo = (mode = 'list') => {
+  const loginInfo = {
+    homeRepoOwner: trimmedValFromId('home-repo-owner'),
+    homeRepoName: trimmedValFromId('home-repo-name'),
+    gitHubUsername: trimmedValFromId('github-username'),
+    personalAccessToken: trimmedValFromId('personal-access-token'),
+    templateRepoOwner: trimmedValFromId('template-repo-owner'),
+    templateRepoName: trimmedValFromId('template-repo-name'),
+  };
+
+  return validateLoginAgainstNull(loginInfo, mode);
+};
 
 /**
  * Validate necessary login information against null
  * @param {Object} loginInfo
- * @param {string} mode 'list' or 'copy'
- * @return {boolean} True if valid
+ * @param {string} mode 'list', 'copy' or 'create'
+ * @return {Object | Error}
  */
 const validateLoginAgainstNull = (loginInfo, mode = 'list') => {
-  if (mode === 'list') {
+  if (mode === 'list' || mode === 'create') {
     if (!(loginInfo.homeRepoOwner && loginInfo.homeRepoName)) {
       throw new Error('Please enter the owner and the name of the repository.');
     }
@@ -51,7 +62,7 @@ const validateLoginAgainstNull = (loginInfo, mode = 'list') => {
       "Invalid 'mode' argument was given to validateLoginAgainstNull."
     );
   }
-  return true;
+  return loginInfo;
 };
 
 /**
@@ -299,18 +310,17 @@ const validateKind = (kind) => {
     return true;
   }
   throw new Error(
-    'There is probably a bug in the web app.' +
-      ' Please consider submitting a bug report at' +
-      ` <a href="${bugReportLink}" target="_blank" ref="noopener noreferrer">` +
-      'our GitHub page</a> with the following message:</br>' +
+    bugReportMsg +
       'Error at validateKind. Invalid kind argument was given.' +
       " It is neither 'labels' or 'milestones'."
   );
 };
 
 export {
+  bugReportLink,
+  bugReportMsg,
   trimmedValFromId,
-  getLoginInfo,
+  getAndValidateLoginInfo,
   validateLoginAgainstNull,
   enableCommitButton,
   disableCommitButton,

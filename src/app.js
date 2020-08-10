@@ -27,25 +27,26 @@ import {
   autoCheckRepoOwnerCheckbox,
 } from './js/loginFormFunctions';
 import {
-  listenForListAllLabels,
-  listenForListAllMilestones,
-  listenForDeleteAllLabels,
-  listenForDeleteAllMilestones,
-  listenForUndoLabels,
-  listenForUndoMilestones,
-  listenForCopyLabelsFromRepo,
-  listenForCopyMilestonesFromRepo,
-  listenForCreateNewLabel,
-  listenForCreateNewMilestone,
+  listenForListEntriesOfKind,
+  listenForUndoEntriesOfKind,
+  listenForCopyEntriesOfKind,
+  listenForCreateKind,
+  listenForDeleteEntriesOfKind,
 } from './js/manipulateEntries';
 import {
   resetModalWhenClosed,
   listenForCommitButton,
   clickOutsideToCloseModal,
 } from './js/commitChanges';
+import { runFuncsWithArgs } from './js/helpers';
 
 export default () =>
   document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('unhandledrejection', (event) => {
+      alert(event.promise);
+      alert(event.reason);
+    });
+
     /**
      * Instantiate Bootstrap-Material-Design
      */
@@ -62,16 +63,18 @@ export default () =>
      * Listen for DOM events to manipulate labels and milestones
      * including list, delete, revert (undo), copy and create
      */
-    listenForListAllLabels();
-    listenForListAllMilestones();
-    listenForDeleteAllLabels();
-    listenForDeleteAllMilestones();
-    listenForUndoLabels();
-    listenForUndoMilestones();
-    listenForCopyLabelsFromRepo();
-    listenForCopyMilestonesFromRepo();
-    listenForCreateNewLabel();
-    listenForCreateNewMilestone();
+
+    const listenerFuncs = [
+      listenForListEntriesOfKind,
+      listenForUndoEntriesOfKind,
+      listenForCopyEntriesOfKind,
+      listenForCreateKind,
+      listenForDeleteEntriesOfKind,
+    ];
+
+    const kinds = ['labels', 'milestones'];
+
+    runFuncsWithArgs(listenerFuncs, kinds);
 
     /**
      * Listen for click events of the commit button

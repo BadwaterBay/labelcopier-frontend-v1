@@ -5,15 +5,14 @@
 'use strict';
 
 import {
-  getLoginInfo,
-  validateLoginAgainstNull,
+  getAndValidateLoginInfo,
   checkIfEnableCommitButton,
   validateKind,
 } from './dataValidation';
 import { apiCallGet } from './apiCalls';
 import createNewLabelEntry from './createNewLabelEntry';
 import { createNewMilestoneEntry } from './createNewMilestoneEntry';
-import { comparatorLexic, sortArray } from './helpers';
+import { comparatorLexic, bubbleSort } from './helpers';
 
 /**
  * Toggle the progress indicator in the tabs of labels and milestones
@@ -41,6 +40,7 @@ const toggleTabProgressIndicator = (kind, action = null) => {
   } else {
     throw new Error('Invalid action in toggleTabProgressIndication.');
   }
+
   return true;
 };
 
@@ -48,16 +48,13 @@ const toggleTabProgressIndicator = (kind, action = null) => {
  * Clear all entries of the specified kind
  * @param {string} kind
  */
-const clearAllEntries = (kind) => {
+const clearAllEntriesOfKind = (kind) => {
   document.getElementById(`form-${kind}`).textContent = '';
-
-  const commitToTargetRepo = document.getElementById(
-    'commit-to-home-repo-name'
-  );
-  commitToTargetRepo.textContent = 'Commit changes';
-  commitToTargetRepo.setAttribute('disabled', true);
-  commitToTargetRepo.classList.remove('btn-success');
-  commitToTargetRepo.classList.add('btn-outline-success');
+  const commitToHomeRepo = document.getElementById('commit-to-home-repo-name');
+  commitToHomeRepo.textContent = 'Commit changes';
+  commitToHomeRepo.setAttribute('disabled', true);
+  commitToHomeRepo.classList.remove('btn-success');
+  commitToHomeRepo.classList.add('btn-outline-success');
 };
 
 /**
@@ -68,30 +65,17 @@ const clearAllEntries = (kind) => {
  */
 const listEntriesFromApi = (kind, mode = 'list') =>
   new Promise((resolve, reject) => {
-    // Eye candy
+    // Eye candy:
     toggleTabProgressIndicator(kind, 'show');
 
-    const loginInfo = getLoginInfo();
+    // Validate 'kind' argument:
+    validateKind(kind);
 
-    try {
-      // Validate 'kind' argument:
-      validateKind(kind);
-      // Validate if necessary login information is present:
-      validateLoginAgainstNull(loginInfo, mode);
-    } catch (err) {
-      toggleTabProgressIndicator(kind, 'hide');
-      alert(err);
-      reject(err);
-      return;
-    }
-
-    apiCallGet(loginInfo, kind, 1, mode)
+    apiCallGet(getAndValidateLoginInfo(mode), kind, 1, mode)
       .then((fetchedEntries) => {
         if (mode === 'list') {
-          clearAllEntries(kind);
+          clearAllEntriesOfKind(kind);
         }
-
-        let sortedFetchedEntries = [];
 
         /**
          * The use of 'descendingOrder' is because we append existing entries
@@ -104,67 +88,85 @@ const listEntriesFromApi = (kind, mode = 'list') =>
          */
         const descendingOrder = mode === 'copy';
 
+        let sortedFetchedEntries = [];
+
         if (kind === 'labels') {
-          sortedFetchedEntries = sortArray(
+          sortedFetchedEntries = bubbleSort(
             fetchedEntries,
-            comparatorLexic('name', true, descendingOrder)
+            comparatorLexic({
+              key: 'name',
+              ignoreCase: true,
+              descending: descendingOrder,
+            })
           );
           sortedFetchedEntries.map((e) => createNewLabelEntry(e, mode));
         } else {
           // kind === 'milestones'
-          sortedFetchedEntries = sortArray(
+          sortedFetchedEntries = bubbleSort(
             fetchedEntries,
-            comparatorLexic('title', true, descendingOrder)
+            comparatorLexic({
+              key: 'title',
+              ignoreCase: true,
+              descending: descendingOrder,
+            })
           );
+
           sortedFetchedEntries.map((e) => createNewMilestoneEntry(e, mode));
         }
 
-        toggleTabProgressIndicator(kind, 'hide');
-        checkIfEnableCommitButton();
         resolve(sortedFetchedEntries);
-        return;
       })
       .catch((err) => {
-        toggleTabProgressIndicator(kind, 'hide');
-        console.error(err);
-        reject(err);
-        return;
+        reject(new Error(err));
       });
+  }).finally(() => {
+    checkIfEnableCommitButton();
+    toggleTabProgressIndicator(kind, 'hide');
   });
 
-const listenForListAllLabels = () => {
-  const kind = 'labels';
+const listenForListEntriesOfKind = (kind) => {
   document.getElementById(`list-all-${kind}`).addEventListener('click', () => {
     $(`#${kind}-tab`).tab('show');
-    listEntriesFromApi(kind).catch((err) => console.error(err));
+    listEntriesFromApi(kind).catch((err) => {
+      alert(err);
+      console.error(err);
+    });
   });
 };
 
-const listenForListAllMilestones = () => {
-  const kind = 'milestones';
-  document.getElementById(`list-all-${kind}`).addEventListener('click', () => {
-    $(`#${kind}-tab`).tab('show');
-    listEntriesFromApi(kind).catch((err) => console.error(err));
+const listenForUndoEntriesOfKind = (kind) => {
+  document.getElementById(`undo-all-${kind}`).addEventListener('click', () => {
+    listEntriesFromApi(kind).catch((err) => {
+      alert(err);
+      console.error(err);
+    });
   });
 };
 
-const listenForCopyLabelsFromRepo = () => {
-  const kind = 'labels';
+const listenForCopyEntriesOfKind = (kind) => {
   document.getElementById(`copy-${kind}-from`).addEventListener('click', () => {
     $(`#${kind}-tab`).tab('show');
-    listEntriesFromApi(kind, 'copy').catch((err) => console.error(err));
+    listEntriesFromApi(kind, 'copy').catch((err) => {
+      alert(err);
+      console.error(err);
+    });
   });
 };
 
-const listenForCopyMilestonesFromRepo = () => {
-  const kind = 'milestones';
-  document.getElementById(`copy-${kind}-from`).addEventListener('click', () => {
-    $(`#${kind}-tab`).tab('show');
-    listEntriesFromApi(kind, 'copy').catch((err) => console.error(err));
-  });
+const listenForCreateKind = (kind) => {
+  document
+    .getElementById(`add-new-${kind.slice(0, -1)}-entry`)
+    .addEventListener('click', () => {
+      if (kind === 'labels') {
+        createNewLabelEntry(null, 'new');
+      } else if (kind === 'milestones') {
+        createNewMilestoneEntry(null, 'new');
+      }
+      checkIfEnableCommitButton();
+    });
 };
 
-const deleteAllEntries = (kind) => {
+const deleteEntriesOfKind = (kind) => {
   $(`#form-${kind}`)
     .children()
     .each(
@@ -182,74 +184,25 @@ const deleteAllEntries = (kind) => {
         }
       }
     );
-  checkIfEnableCommitButton();
 };
 
-const listenForDeleteAllLabels = () => {
-  document.getElementById('delete-all-labels').addEventListener('click', () => {
-    deleteAllEntries('labels');
-  });
-};
-
-const listenForDeleteAllMilestones = () => {
+const listenForDeleteEntriesOfKind = (kind) => {
   document
-    .getElementById('delete-all-milestones')
+    .getElementById(`delete-all-${kind}`)
     .addEventListener('click', () => {
-      deleteAllEntries('milestones');
-    });
-};
-
-const listenForUndoLabels = () => {
-  document.getElementById('undo-all-labels').addEventListener('click', () => {
-    listEntriesFromApi('labels');
-  });
-};
-
-const listenForUndoMilestones = () => {
-  document
-    .getElementById('undo-all-milestones')
-    .addEventListener('click', () => {
-      listEntriesFromApi('milestones');
-    });
-};
-
-/**
- * CREATE NEW LABEL ENTRIES
- */
-const listenForCreateNewLabel = () => {
-  document
-    .getElementById('add-new-label-entry')
-    .addEventListener('click', () => {
-      createNewLabelEntry(null, 'new');
-      checkIfEnableCommitButton();
-    });
-};
-
-/**
- * CREATE NEW MILESTONE ENTRIES
- */
-const listenForCreateNewMilestone = () => {
-  document
-    .getElementById('add-new-milestone-entry')
-    .addEventListener('click', () => {
-      createNewMilestoneEntry(null, 'new');
+      deleteEntriesOfKind(kind);
       checkIfEnableCommitButton();
     });
 };
 
 export {
   toggleTabProgressIndicator,
-  clearAllEntries,
+  clearAllEntriesOfKind,
   listEntriesFromApi,
-  listenForListAllLabels,
-  listenForListAllMilestones,
-  deleteAllEntries,
-  listenForDeleteAllLabels,
-  listenForDeleteAllMilestones,
-  listenForUndoLabels,
-  listenForUndoMilestones,
-  listenForCopyLabelsFromRepo,
-  listenForCopyMilestonesFromRepo,
-  listenForCreateNewLabel,
-  listenForCreateNewMilestone,
+  listenForListEntriesOfKind,
+  listenForUndoEntriesOfKind,
+  listenForCopyEntriesOfKind,
+  listenForCreateKind,
+  deleteEntriesOfKind,
+  listenForDeleteEntriesOfKind,
 };

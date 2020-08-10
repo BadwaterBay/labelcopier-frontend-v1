@@ -5,7 +5,11 @@
 'use strict';
 
 import base64 from './base64';
-import { getLoginInfo, validateKind } from './dataValidation';
+import {
+  bugReportMsg,
+  getAndValidateLoginInfo,
+  validateKind,
+} from './dataValidation';
 
 /**
  * Encode authentication info for HTTP requests
@@ -66,14 +70,6 @@ const formatDate = (node) => {
  * @return {Object | null} Serialized object
  */
 const serializeEntry = (node, kind) => {
-  try {
-    validateKind(kind);
-  } catch (err) {
-    console.error(err);
-    alert(err);
-    return;
-  }
-
   if (kind === 'labels') {
     return {
       name: node.querySelector('[name="name"]').value,
@@ -174,6 +170,13 @@ const composeStatusMessage = (response) => {
       ' login information.'
     );
   }
+  if (response.status === 422) {
+    return (
+      `${response.status} ${response.statusText}.` +
+      ` ${bugReportMsg}` +
+      `${response.status} ${response.statusText}.`
+    );
+  }
   return `${response.status} ${response.statusText}.` + ` Error occurred.`;
 };
 
@@ -193,7 +196,7 @@ const urlForGet = (loginInfo, kind, pageNum, mode = 'list') => {
   let url =
     'https://api.github.com/repos/' +
     `${owner}/${repo}/${kind}` +
-    `?per_page=20` +
+    `?per_page=100` +
     `&page=${pageNum}`;
 
   if (kind === 'milestones') {
@@ -204,15 +207,15 @@ const urlForGet = (loginInfo, kind, pageNum, mode = 'list') => {
 
 /**
  * Returns a Fetch API promise for getting entries
- * @param {function} getUrl
+ * @param {function} urlFunc
  * @param {Object} loginInfo
  * @param {string} kind
  * @param {number} pageNum
  * @param {string} mode
  * @return {Promise}
  */
-const fetchGet = (getUrl, loginInfo, kind, pageNum, mode) =>
-  fetch(getUrl(loginInfo, kind, pageNum, mode), {
+const fetchGet = (urlFunc, loginInfo, kind, pageNum, mode) =>
+  fetch(urlFunc(loginInfo, kind, pageNum, mode), {
     method: 'GET',
     headers: {
       Authorization: makeBasicAuth(loginInfo),
@@ -229,39 +232,55 @@ const fetchGet = (getUrl, loginInfo, kind, pageNum, mode) =>
  * @return {Promise}
  */
 const apiCallGet = (loginInfo, kind, pageNum = 1, mode = 'list') =>
-  new Promise((resolve, reject) => {
-    pageNum = pageNum === 1 ? 1 : pageNum;
-
-    fetchGet(urlForGet, loginInfo, kind, pageNum, mode)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(composeStatusMessage(response));
+  fetchGet(urlForGet, loginInfo, kind, pageNum, mode)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(composeStatusMessage(response));
+      }
+      return response.json();
+    })
+    .then(async (body) => {
+      // Recursively fetch entries in mutliple pages
+      if (body.length === 0) {
+        if (pageNum === 1) {
+          throw new Error(`No ${kind} exist in this repository.`);
         }
-        return response.json();
-      })
-      .then(async (body) => {
-        if (body.length === 0) {
-          if (pageNum === 1) {
-            const msg = `No ${kind} exist in this repository.`;
-            reject(msg);
-            return;
-          }
-          resolve(body);
+        return body;
+      }
+      return body.concat(await apiCallGet(loginInfo, kind, ++pageNum, mode));
+    })
+    .then((fetchedArray) => {
+      return new Promise((resolve, reject) => {
+        if (Array.isArray(fetchedArray)) {
+          resolve(fetchedArray);
           return;
         }
-
-        resolve(
-          body.concat(await apiCallGet(loginInfo, kind, ++pageNum, mode))
-        );
-        return;
-      })
-      .catch((err) => {
-        alert(err);
-        console.error(err);
-        reject(err);
-        return;
+        reject(new Error(fetchedArray));
       });
+    })
+    .catch((err) => {
+      throw new Error(err);
+    });
+
+/**
+ * Return a Fetch API promise
+ * @param {string} method HTTP method
+ * @param {function} urlFunc
+ * @param {Object} loginInfo
+ * @param {string} kind
+ * @param {Object} entryPackage
+ * @return {Promise}
+ */
+const fetchWithBody = (method, urlFunc, loginInfo, kind, entryPackage) => {
+  return fetch(urlFunc(loginInfo, kind, entryPackage), {
+    method: method,
+    headers: {
+      Authorization: makeBasicAuth(loginInfo),
+      Accept: 'application/vnd.github.v3+json',
+    },
+    body: JSON.stringify(entryPackage.body),
   });
+};
 
 /**
  * Returns a HTTP request URL for creating entries
@@ -274,88 +293,73 @@ const urlForCreate = (loginInfo, kind) =>
   `${loginInfo.homeRepoName}/${kind}`;
 
 /**
- * Return a Fetch API promise for creating entries
- * @param {function} getUrl
- * @param {Object} loginInfo
- * @param {string} kind
- * @param {Object} entryPackage
- * @return {Promise}
- */
-const fetchCreate = (getUrl, loginInfo, kind, entryPackage) =>
-  fetch(getUrl(loginInfo, kind), {
-    method: 'POST',
-    headers: {
-      Authorization: makeBasicAuth(loginInfo),
-      Accept: 'application/vnd.github.v3+json',
-    },
-    body: JSON.stringify(entryPackage.body),
-  });
-
-/**
  * Make API calls to create entries and parse responses
  * @param {HTMLElement} entryNode
  * @param {string} kind
+ * @param {string} mode
  * @return {Promise}
  */
-const apiCallCreate = (entryNode, kind) => {
-  try {
+const apiCallCreate = (entryNode, kind, mode = 'create') =>
+  new Promise((resolve, reject) => {
     validateKind(kind);
-  } catch (err) {
+    const loginInfo = getAndValidateLoginInfo(mode);
+    const entryPackage = packEntry(serializeEntry(entryNode, kind), kind);
+    const kindSingular = kind.slice(0, -1);
+
+    fetchWithBody('POST', urlForCreate, loginInfo, kind, entryPackage)
+      .then((response) => {
+        if (!response.ok) {
+          writeLog(composeStatusMessage(response));
+          response.json().then((body) => {
+            console.error(body.message);
+            throw new Error(body.message);
+          });
+        }
+        return response.json();
+      })
+      .then((body) => {
+        let returnedName = '';
+        if (kind === 'labels') {
+          returnedName = body.name;
+        } else {
+          // kind === 'milestones'
+          returnedName = body.title;
+        }
+        if (returnedName !== entryPackage.names.newName) {
+          const msg =
+            `Error occurred while creating ${kindSingular}` +
+            ` ${entryPackage.names.originalName}.` +
+            ` ${bugReportMsg}` +
+            `The submitted ${kindSingular} for creation failed to validate` +
+            ' against the returned confirmation.';
+          reject(new Error(msg));
+          return;
+        }
+        writeLog(`Created ${kindSingular}: ${returnedName}}.`);
+        resolve(returnedName);
+        return;
+      })
+      .catch((err) => {
+        const msg =
+          `Creation of ${kindSingular} ${entryPackage.names.originalName}` +
+          ` failed due to: ${err}.`;
+        throw new Error(msg);
+      });
+  }).catch((err) => {
     writeLog(err);
-    return;
-  }
-
-  const loginInfo = getLoginInfo();
-  const serializedEntry = serializeEntry(entryNode, kind);
-  const entryPackage = packEntry(serializedEntry, kind);
-  const kindSingular = kind.slice(0, -1);
-
-  return fetchCreate(urlForCreate, loginInfo, kind, entryPackage)
-    .then((response) => {
-      if (!response.ok) {
-        composeStatusMessage(response);
-      }
-    })
-    .then(() => {
-      writeLog(`Created ${kindSingular}: ${entryPackage.names.newName}.`);
-    })
-    .catch((err) => {
-      writeLog(
-        `Creation of ${kindSingular} ${entryPackage.names.newName}` +
-          ` failed due to error: ${err}.`
-      );
-      console.error(err);
-    });
-};
+    throw new Error(err);
+  });
 
 /**
  * Return a URL for updating entries
  * @param {Object} loginInfo
  * @param {string} kind
- * @param {string} apiCallSign
+ * @param {Object} entryPackage
  * @return {string}
  */
-const urlForUpdate = (loginInfo, kind, apiCallSign) =>
+const urlForUpdate = (loginInfo, kind, entryPackage) =>
   `https://api.github.com/repos/${loginInfo.homeRepoOwner}/` +
-  `${loginInfo.homeRepoName}/${kind}/${apiCallSign}`;
-
-/**
- * Returns a Fetch API promise for updating entries
- * @param {function} getUrl
- * @param {Object} loginInfo
- * @param {string} kind
- * @param {Object} entryPackage
- * @return {Promise}
- */
-const fetchUpdate = (getUrl, loginInfo, kind, entryPackage) =>
-  fetch(getUrl(loginInfo, kind, entryPackage.names.apiCallSign), {
-    method: 'PATCH',
-    headers: {
-      Authorization: makeBasicAuth(loginInfo),
-      Accept: 'application/vnd.github.v3+json',
-    },
-    body: JSON.stringify(entryPackage.body),
-  });
+  `${loginInfo.homeRepoName}/${kind}/${entryPackage.names.apiCallSign}`;
 
 /**
  * Make API calls to update entries
@@ -363,67 +367,71 @@ const fetchUpdate = (getUrl, loginInfo, kind, entryPackage) =>
  * @param {string} kind
  * @return {Promise}
  */
-const apiCallUpdate = (entryNode, kind) => {
-  try {
+const apiCallUpdate = (entryNode, kind) =>
+  new Promise((resolve, reject) => {
     validateKind(kind);
-  } catch (err) {
+    const loginInfo = getAndValidateLoginInfo();
+    const entryPackage = packEntry(serializeEntry(entryNode, kind), kind);
+    const kindSingular = kind.slice(0, -1);
+
+    fetchWithBody('PATCH', urlForUpdate, loginInfo, kind, entryPackage)
+      .then((response) => {
+        if (!response.ok) {
+          writeLog(composeStatusMessage(response));
+          response.json().then((body) => {
+            console.error(body.message);
+            throw new Error(body.message);
+          });
+        }
+        return response.json();
+      })
+      .then((body) => {
+        let returnedName = '';
+        if (kind === 'labels') {
+          returnedName = body.name;
+        } else {
+          // kind === 'milestones'
+          returnedName = body.title;
+        }
+
+        if (returnedName !== entryPackage.names.newName) {
+          const msg =
+            `Error occurred while updating ${kindSingular}` +
+            ` ${entryPackage.names.originalName}.` +
+            ` ${bugReportMsg}` +
+            `The submitted ${kindSingular} for update failed to validate` +
+            'against the returned confirmation.';
+          reject(new Error(msg));
+          return;
+        }
+        writeLog(
+          `Updated ${kindSingular}: ${entryPackage.names.originalName}` +
+            ` &#8680; ${returnedName}.`
+        );
+        resolve(returnedName);
+        return;
+      })
+      .catch((err) => {
+        const msg =
+          `Update of ${kindSingular} ${entryPackage.names.originalName}` +
+          ` &#8680; ${entryPackage.names.newName} failed due to error: ${err}.`;
+        throw new Error(msg);
+      });
+  }).catch((err) => {
     writeLog(err);
-    return;
-  }
-
-  const loginInfo = getLoginInfo();
-  const serializedEntry = serializeEntry(entryNode, kind);
-  const entryPackage = packEntry(serializedEntry, kind);
-  const kindSingular = kind.slice(0, -1);
-
-  return fetchUpdate(urlForUpdate, loginInfo, kind, entryPackage)
-    .then((response) => {
-      if (!response.ok) {
-        composeStatusMessage(response);
-      }
-    })
-    .then(() => {
-      writeLog(
-        `Updated ${kindSingular}: ${entryPackage.names.originalName}` +
-          ` &#8680; ${entryPackage.names.newName}.`
-      );
-    })
-    .catch((err) => {
-      writeLog(
-        `Update of ${kindSingular} ${entryPackage.names.originalName}` +
-          ` &#8680; ${entryPackage.names.newName} failed due to error: ${err}.`
-      );
-      console.error(err);
-    });
-};
+    throw new Error(err);
+  });
 
 /**
  * Return a URL for deleting entries
  * @param {Object} loginInfo
  * @param {string} kind
- * @param {string} apiCallSign
+ * @param {Object} entryPackage
  * @return {string}
  */
-const urlForDelete = (loginInfo, kind, apiCallSign) =>
+const urlForDelete = (loginInfo, kind, entryPackage) =>
   `https://api.github.com/repos/${loginInfo.homeRepoOwner}/` +
-  `${loginInfo.homeRepoName}/${kind}/${apiCallSign}`;
-
-/**
- * Return a Fetch promise for deleting entries
- * @param {function} getUrl
- * @param {Object} loginInfo
- * @param {string} kind
- * @param {Object} entryPackage
- * @return {Promise}
- */
-const fetchDelete = (getUrl, loginInfo, kind, entryPackage) =>
-  fetch(getUrl(loginInfo, kind, entryPackage.names.apiCallSign), {
-    method: 'DELETE',
-    headers: {
-      Authorization: makeBasicAuth(loginInfo),
-      Accept: 'application/vnd.github.v3+json',
-    },
-  });
+  `${loginInfo.homeRepoName}/${kind}/${entryPackage.names.apiCallSign}`;
 
 /**
  * Make API calls to delete entries
@@ -431,34 +439,37 @@ const fetchDelete = (getUrl, loginInfo, kind, entryPackage) =>
  * @param {string} kind
  * @return {Promise}
  */
-const apiCallDelete = (entryNode, kind) => {
-  try {
+const apiCallDelete = (entryNode, kind) =>
+  new Promise((resolve, reject) => {
     validateKind(kind);
-  } catch (err) {
+    const loginInfo = getAndValidateLoginInfo();
+    const entryPackage = packEntry(serializeEntry(entryNode, kind), kind);
+    const kindSingular = kind.slice(0, -1);
+
+    fetchWithBody('DELETE', urlForDelete, loginInfo, kind, entryPackage)
+      .then((response) => {
+        if (!response.ok) {
+          writeLog(composeStatusMessage(response));
+          response.json().then((body) => {
+            console.error(body.message);
+            throw new Error(body.message);
+          });
+        }
+        writeLog(`Deleted ${kindSingular} ${entryPackage.names.originalName}.`);
+        resolve(response.status);
+        return;
+      })
+      .catch((err) => {
+        const msg =
+          `Deletion of ${kindSingular} ${entryPackage.names.originalName}` +
+          ` failed due to: ${err}.`;
+        reject(new Error(msg));
+        return;
+      });
+  }).catch((err) => {
     writeLog(err);
-    return;
-  }
-
-  const loginInfo = getLoginInfo();
-  const serializedEntry = serializeEntry(entryNode, kind);
-  const entryPackage = packEntry(serializedEntry, kind);
-  const kindSingular = kind.slice(0, -1);
-
-  return fetchDelete(urlForDelete, loginInfo, kind, entryPackage)
-    .then((response) => {
-      if (!response.ok) {
-        composeStatusMessage(response);
-      }
-      writeLog(`Deleted ${kindSingular}: ${entryPackage.names.originalName}.`);
-    })
-    .catch((err) => {
-      writeLog(
-        `Deletion of ${kindSingular} ${entryPackage.names.originalName} ` +
-          `failed due to error: ${err}.`
-      );
-      console.error(err);
-    });
-};
+    throw new Error(err);
+  });
 
 export {
   makeBasicAuth,
@@ -470,13 +481,11 @@ export {
   urlForGet,
   fetchGet,
   apiCallGet,
+  fetchWithBody,
   urlForCreate,
-  fetchCreate,
   apiCallCreate,
   urlForUpdate,
-  fetchUpdate,
   apiCallUpdate,
   urlForDelete,
-  fetchDelete,
   apiCallDelete,
 };

@@ -4,7 +4,7 @@
  * Things that happen when the 'Commit' button is clicked
  */
 
-import { getLoginInfo, validateEntries } from './dataValidation';
+import { getAndValidateLoginInfo, validateEntries } from './dataValidation';
 import { listEntriesFromApi } from './manipulateEntries';
 import { apiCallCreate, apiCallUpdate, apiCallDelete } from './apiCalls';
 
@@ -26,9 +26,6 @@ const reloadEntries = () =>
 const resetModalWhenClosed = () => {
   $('#committing-modal').on('hidden.bs.modal', () => {
     document.getElementById('committing-spinner').classList.remove('hidden');
-
-    reloadEntries();
-
     const modalBody = document.querySelector('#committing-modal .modal-body');
     modalBody.textContent = '';
   });
@@ -72,11 +69,15 @@ const commitChanges = () => {
     backdrop: 'static',
   });
 
-  // Loop through the array and make API calls
+  // Fire API calls asynchronously in parallel
   const apiCalls = entriesForApiCall.map((e) => selectEntriesForApiCall(...e));
-  return Promise.allSettled(apiCalls).catch((err) => {
-    console.error(err);
-  });
+  return Promise.allSettled(apiCalls)
+    .then(() => {
+      reloadEntries();
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 };
 
 const writeErrorsAlert = (errorCount, duplicateCount, kind) => {
@@ -107,7 +108,7 @@ const listenForCommitButton = () => {
   document
     .getElementById('commit-to-home-repo-name')
     .addEventListener('click', () => {
-      const loginInfo = getLoginInfo();
+      const loginInfo = getAndValidateLoginInfo();
 
       if (!loginInfo.personalAccessToken) {
         alert(
