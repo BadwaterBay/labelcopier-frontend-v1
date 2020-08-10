@@ -42,11 +42,6 @@ import { runFuncsWithArgs } from './js/helpers';
 
 export default () =>
   document.addEventListener('DOMContentLoaded', () => {
-    window.addEventListener('unhandledrejection', (event) => {
-      alert(event.promise);
-      alert(event.reason);
-    });
-
     /**
      * Instantiate Bootstrap-Material-Design
      */
