@@ -100,7 +100,7 @@ const managementCard = (() =>
                   type="button"
                   class="btn btn-raised btn-success btn-block mb-3"
                 >
-                  New label
+                  New milestone
                 </button>
               </div>
               <div class="col-12 col-md-4">

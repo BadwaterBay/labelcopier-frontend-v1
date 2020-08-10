@@ -16,22 +16,22 @@ describe('Test dataValidation', () => {
 
     enableCommitButton();
 
-    const commitToTargetRepo = document.getElementById(
+    const commitToHomeRepo = document.getElementById(
       'commit-to-home-repo-name'
     );
 
     test("Test if attribute 'disabled' is removed", () => {
-      expect(commitToTargetRepo.hasAttribute('disabled')).toBe(false);
+      expect(commitToHomeRepo.hasAttribute('disabled')).toBe(false);
     });
 
     test("Test if class 'btn-outline-success' is removed", () => {
-      expect(commitToTargetRepo.classList.contains('btn-outline-success')).toBe(
+      expect(commitToHomeRepo.classList.contains('btn-outline-success')).toBe(
         false
       );
     });
 
     test("Test if class 'btn-success' is added", () => {
-      expect(commitToTargetRepo.classList.contains('btn-success')).toBe(true);
+      expect(commitToHomeRepo.classList.contains('btn-success')).toBe(true);
     });
   });
 
@@ -46,20 +46,20 @@ describe('Test dataValidation', () => {
 
     disableCommitButton();
 
-    const commitToTargetRepo = document.getElementById(
+    const commitToHomeRepo = document.getElementById(
       'commit-to-home-repo-name'
     );
 
     test("Test if attribute 'disabled' is added", () => {
-      expect(commitToTargetRepo.hasAttribute('disabled')).toBe(true);
+      expect(commitToHomeRepo.hasAttribute('disabled')).toBe(true);
     });
 
     test("Test if class 'btn-success' is removed", () => {
-      expect(commitToTargetRepo.classList.contains('btn-success')).toBe(false);
+      expect(commitToHomeRepo.classList.contains('btn-success')).toBe(false);
     });
 
     test("Test if class 'btn-outline-success' is added", () => {
-      expect(commitToTargetRepo.classList.contains('btn-outline-success')).toBe(
+      expect(commitToHomeRepo.classList.contains('btn-outline-success')).toBe(
         true
       );
     });

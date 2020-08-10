@@ -43,6 +43,7 @@ We are proud to continue developing and maintaining this open-source project for
 - Now able to manage milestones in addition to labels.
 - Replaced jQuery Ajax with JavaScript's native Fetch API in promise style.
 - Fire API calls asynchronously in parallel to improve the efficiency by > 100%.
+- Display entries (labels and milestones) in alphabetical order.
 - Added data validation before committing changes.
 - Refined the UI to a modern and responsive design with meticulous attention to details.
 - Upgraded from Bootstrap 2 to Bootstrap 4 with Material Design.

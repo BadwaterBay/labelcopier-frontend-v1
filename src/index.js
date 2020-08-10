@@ -14,6 +14,7 @@ import loadingModal from './components/loadingModal';
 import app from './app';
 
 const mainContent = document.createElement('div');
+
 mainContent.innerHTML = (() =>
   `
     <div id="main-content" class="container">
@@ -29,6 +30,7 @@ mainContent.innerHTML = (() =>
     </div><!-- #content -->
     ${loadingModal}
   `)();
-document.body.appendChild(mainContent);
+
+document.getElementById('content-anchor').appendChild(mainContent);
 
 app();
