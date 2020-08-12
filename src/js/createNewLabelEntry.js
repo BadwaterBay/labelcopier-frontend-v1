@@ -12,11 +12,6 @@ import {
   countDuplicates,
   resolveDuplicates,
 } from './dataValidation';
-import { library, dom } from '@fortawesome/fontawesome-svg-core';
-import { faTrashAlt, faHistory } from '@fortawesome/free-solid-svg-icons';
-
-library.add(faTrashAlt, faHistory);
-dom.watch();
 
 const createNewLabelEntry = (label, mode = 'list') => {
   if (label === undefined || label === null) {

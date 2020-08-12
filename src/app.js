@@ -21,6 +21,7 @@
 
 'use strict';
 
+import { runFuncsWithArgs } from '@dongskyler/helpers.js';
 import {
   listenForRepoOwnerCheckbox,
   listenForRepoOwnerInput,
@@ -30,7 +31,7 @@ import {
   listenForListEntriesOfKind,
   listenForUndoEntriesOfKind,
   listenForCopyEntriesOfKind,
-  listenForCreateKind,
+  listenForCreateEntriesOfKind,
   listenForDeleteEntriesOfKind,
 } from './js/manipulateEntries';
 import {
@@ -38,53 +39,58 @@ import {
   listenForCommitButton,
   clickOutsideToCloseModal,
 } from './js/commitChanges';
-import { runFuncsWithArgs } from './js/helpers';
 
 export default () =>
   document.addEventListener('DOMContentLoaded', () => {
-    /**
-     * Instantiate Bootstrap-Material-Design
-     */
-    $('body').bootstrapMaterialDesign();
+    try {
+      /**
+       * Instantiate Bootstrap-Material-Design
+       */
+      $('body').bootstrapMaterialDesign();
 
-    /**
-     * Login form functionalities
-     */
-    listenForRepoOwnerCheckbox();
-    listenForRepoOwnerInput();
-    autoCheckRepoOwnerCheckbox();
+      /**
+       * Login form functionalities
+       */
+      listenForRepoOwnerCheckbox();
+      listenForRepoOwnerInput();
+      autoCheckRepoOwnerCheckbox();
 
-    /**
-     * Listen for DOM events to manipulate labels and milestones
-     * including list, delete, revert (undo), copy and create
-     */
+      /**
+       * Listen for DOM events to manipulate labels and milestones
+       * including list, undo, copy, create and delete.
+       *
+       */
+      const listenerFuncs = [
+        listenForListEntriesOfKind,
+        listenForUndoEntriesOfKind,
+        listenForCopyEntriesOfKind,
+        listenForCreateEntriesOfKind,
+        listenForDeleteEntriesOfKind,
+      ];
+      const kinds = ['labels', 'milestones'];
+      /**
+       * Run each function with each element in the `kinds` array
+       */
+      runFuncsWithArgs(listenerFuncs, kinds);
 
-    const listenerFuncs = [
-      listenForListEntriesOfKind,
-      listenForUndoEntriesOfKind,
-      listenForCopyEntriesOfKind,
-      listenForCreateKind,
-      listenForDeleteEntriesOfKind,
-    ];
+      /**
+       * Listen for click events of the commit button
+       * When clicked, commit changes by communicating with GitHub API
+       */
+      listenForCommitButton();
 
-    const kinds = ['labels', 'milestones'];
+      /**
+       * Click anywhere outside the modal to close the modal
+       */
+      clickOutsideToCloseModal();
 
-    runFuncsWithArgs(listenerFuncs, kinds);
-
-    /**
-     * Listen for click events of the commit button
-     * When clicked, commit changes by communicating with GitHub API
-     */
-    listenForCommitButton();
-
-    /**
-     * Click anywhere outside the modal to close the modal
-     */
-    clickOutsideToCloseModal();
-
-    /**
-     * Reset the content inside '#committing-modal' modal when it is closed
-     * and reload entries
-     */
-    resetModalWhenClosed();
+      /**
+       * Reset the content inside '#committing-modal' modal when it is closed
+       * and reload entries
+       */
+      resetModalWhenClosed();
+    } catch (err) {
+      console.error('Unexpected error occurred.');
+      console.error(err);
+    }
   });
