@@ -21,7 +21,7 @@ describe('Test base64', () => {
     // Answer key:
     const answerKey = [
       'YWJjZGVm',
-      'QmFkd2F0ZXJCYXk6Z2l0aHViLWxhYmVsLW1hbmFnZXItcGx1cw==',
+      'QmFkd2F0ZXJCYXk6bGFiZWxjb3BpZXI=',
       'QmFkd2F0ZXJCYXk6dGVtcGxhdGUtZm9yLWxhYmVsLWFuZC1taWxlc3RvbmUtMQ==',
     ];
 
