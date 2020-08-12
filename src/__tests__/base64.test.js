@@ -11,7 +11,7 @@ describe('Test base64', () => {
     // Input:
     const input = [
       'abcdef',
-      'BadwaterBay:github-label-manager-plus',
+      'BadwaterBay:labelcopier',
       'BadwaterBay:template-for-label-and-milestone-1',
     ];
 

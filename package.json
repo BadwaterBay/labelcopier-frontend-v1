@@ -1,16 +1,16 @@
 {
-  "name": "github-label-manager-plus",
+  "name": "labelcopier",
   "version": "1.0.0",
-  "description": "Web app that helps you manage and migrate GitHub labels and milestones",
+  "description": "Web app that copies the labels and milestones from one repository to another.",
   "author": "Badwater Bay",
   "license": "GPL-3.0-or-later",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BadwaterBay/github-label-manager-plus.git"
+    "url": "git+https://github.com/BadwaterBay/labelcopier.git"
   },
-  "homepage": "https://github.com/BadwaterBay/github-label-manager-plus",
+  "homepage": "https://github.com/BadwaterBay/labelcopier",
   "bugs": {
-    "url": "https://github.com/BadwaterBay/github-label-manager-plus/issues"
+    "url": "https://github.com/BadwaterBay/labelcopier/issues"
   },
   "scripts": {
     "ci": "yarn --frozen-lockfile",
@@ -44,7 +44,6 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "bootstrap-material-design": "^4.1.3",
     "jquery": "^3.5.1",
-    "list.js": "^1.5.0",
     "popper.js": "^1.16.1"
   },
   "devDependencies": {
