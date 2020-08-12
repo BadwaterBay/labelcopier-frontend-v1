@@ -4,6 +4,7 @@
 
 'use strict';
 
+import { comparatorLexic, bubbleSort } from '@dongskyler/helpers.js';
 import {
   getAndValidateLoginInfo,
   checkIfEnableCommitButton,
@@ -12,7 +13,6 @@ import {
 import { apiCallGet } from './apiCalls';
 import createNewLabelEntry from './createNewLabelEntry';
 import { createNewMilestoneEntry } from './createNewMilestoneEntry';
-import { comparatorLexic, bubbleSort } from './helpers';
 
 /**
  * Toggle the progress indicator in the tabs of labels and milestones
@@ -20,7 +20,7 @@ import { comparatorLexic, bubbleSort } from './helpers';
  *
  * @param {string} kind 'labels' or 'milestones'
  * @param {string | null} action 'show' or 'hide'
- * @return {bool}
+ * @return {bool} True if the progress indicator is shown, false if it's hidden
  *
  * If 'action' is not specified, toggle the 'hidden' class of the indicator.
  * If 'action' is specified, do the action.
@@ -35,13 +35,13 @@ const toggleTabProgressIndicator = (kind, action = null) => {
 
   if (action === 'show') {
     nodeClassList.remove('hidden');
+    return true;
   } else if (action === 'hide') {
     nodeClassList.add('hidden');
+    return false;
   } else {
     throw new Error('Invalid action in toggleTabProgressIndication.');
   }
-
-  return true;
 };
 
 /**
@@ -110,7 +110,6 @@ const listEntriesFromApi = (kind, mode = 'list') =>
               descending: descendingOrder,
             })
           );
-
           sortedFetchedEntries.map((e) => createNewMilestoneEntry(e, mode));
         }
 
@@ -124,23 +123,37 @@ const listEntriesFromApi = (kind, mode = 'list') =>
     toggleTabProgressIndicator(kind, 'hide');
   });
 
+/**
+ * Listen for click events of 'List' buttons
+ * @param {string} kind Kind of entries (labels/milestones)
+ * @return {Array}
+ */
 const listenForListEntriesOfKind = (kind) => {
-  document.getElementById(`list-all-${kind}`).addEventListener('click', () => {
-    $(`#${kind}-tab`).tab('show');
-    listEntriesFromApi(kind).catch((err) => {
-      alert(err);
-      console.error(err);
+  return document
+    .getElementById(`list-all-${kind}`)
+    .addEventListener('click', async () => {
+      $(`#${kind}-tab`).tab('show');
+      return await listEntriesFromApi(kind).catch((err) => {
+        alert(err);
+        console.error(err);
+      });
     });
-  });
 };
 
+/**
+ * Listen for click events of 'Undo' buttons
+ * @param {string} kind Kind of entries (labels/milestones)
+ * @return {Array}
+ */
 const listenForUndoEntriesOfKind = (kind) => {
-  document.getElementById(`undo-all-${kind}`).addEventListener('click', () => {
-    listEntriesFromApi(kind).catch((err) => {
-      alert(err);
-      console.error(err);
+  return document
+    .getElementById(`undo-all-${kind}`)
+    .addEventListener('click', async () => {
+      return await listEntriesFromApi(kind).catch((err) => {
+        alert(err);
+        console.error(err);
+      });
     });
-  });
 };
 
 const listenForCopyEntriesOfKind = (kind) => {
@@ -153,13 +166,14 @@ const listenForCopyEntriesOfKind = (kind) => {
   });
 };
 
-const listenForCreateKind = (kind) => {
+const listenForCreateEntriesOfKind = (kind) => {
   document
     .getElementById(`add-new-${kind.slice(0, -1)}-entry`)
     .addEventListener('click', () => {
       if (kind === 'labels') {
         createNewLabelEntry(null, 'new');
-      } else if (kind === 'milestones') {
+      } else {
+        // kind === 'milestones'
         createNewMilestoneEntry(null, 'new');
       }
       checkIfEnableCommitButton();
@@ -202,7 +216,7 @@ export {
   listenForListEntriesOfKind,
   listenForUndoEntriesOfKind,
   listenForCopyEntriesOfKind,
-  listenForCreateKind,
+  listenForCreateEntriesOfKind,
   deleteEntriesOfKind,
   listenForDeleteEntriesOfKind,
 };

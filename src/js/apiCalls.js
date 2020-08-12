@@ -243,6 +243,7 @@ const apiCallGet = (loginInfo, kind, pageNum = 1, mode = 'list') =>
       // Recursively fetch entries in mutliple pages
       if (body.length === 0) {
         if (pageNum === 1) {
+          // This needs to return an empty array instead instead of an Error
           throw new Error(`No ${kind} exist in this repository.`);
         }
         return body;
