@@ -11,7 +11,7 @@ describe('Test base64', () => {
     // Input:
     const input = [
       'abcdef',
-      'BadwaterBay:github-label-manager-plus',
+      'BadwaterBay:labelcopier',
       'BadwaterBay:template-for-label-and-milestone-1',
     ];
 
@@ -21,7 +21,7 @@ describe('Test base64', () => {
     // Answer key:
     const answerKey = [
       'YWJjZGVm',
-      'QmFkd2F0ZXJCYXk6Z2l0aHViLWxhYmVsLW1hbmFnZXItcGx1cw==',
+      'QmFkd2F0ZXJCYXk6bGFiZWxjb3BpZXI=',
       'QmFkd2F0ZXJCYXk6dGVtcGxhdGUtZm9yLWxhYmVsLWFuZC1taWxlc3RvbmUtMQ==',
     ];
 

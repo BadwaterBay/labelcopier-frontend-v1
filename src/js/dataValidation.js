@@ -5,7 +5,7 @@
 'use strict';
 
 const bugReportLink =
-  'https://github.com/BadwaterBay/github-label-manager-plus/blob/' +
+  'https://github.com/BadwaterBay/labelcopier/blob/' +
   'master/CONTRIBUTING.md#reporting-bugs';
 
 const bugReportMsg = (() =>

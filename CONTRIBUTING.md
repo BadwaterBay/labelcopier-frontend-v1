@@ -1,4 +1,4 @@
-# Contributing to GitHub Label Manager Plus
+# Contributing to Labelcopier
 
 :+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
@@ -25,7 +25,7 @@
 
 ## Thank you, contributors
 
-We'd like to thank [all of our contributors](https://github.com/BadwaterBay/github-label-manager-plus/graphs/contributors).
+We'd like to thank [all of our contributors](https://github.com/BadwaterBay/labelcopier/graphs/contributors).
 
 ---
 
@@ -72,7 +72,7 @@ Please follow these steps:
 - Add the original repository as a remote called `upstream`:
   - To add the original repository as `upstream`, run command:
     ```
-    git remote add upstream https://github.com/BadwaterBay/github-label-manager-plus.git
+    git remote add upstream https://github.com/BadwaterBay/labelcopier.git
     ```
   - To verify you have added the original repository, run command:
     ```
@@ -80,10 +80,10 @@ Please follow these steps:
     ```
   - You should see the following output (assuming you are using HTTPS):\
     ```
-    origin  https://github.com:<yourGitHubUsername>/github-label-manager-plus.git (fetch)
-    origin  https://github.com:<yourGitHubUsername>/github-label-manager-plus.git (push)
-    upstream  https://github.com/BadwaterBay/github-label-manager-plus.git (fetch)
-    upstream  https://github.com/BadwaterBay/github-label-manager-plus.git (push)
+    origin  https://github.com:<yourGitHubUsername>/labelcopier.git (fetch)
+    origin  https://github.com:<yourGitHubUsername>/labelcopier.git (push)
+    upstream  https://github.com/BadwaterBay/labelcopier.git (fetch)
+    upstream  https://github.com/BadwaterBay/labelcopier.git (push)
     ```
 - Install all dependencies with the following command. This could take a while.
   ```
@@ -115,7 +115,7 @@ If you are new to this workflow, you can a practice run here: [https://github.co
 
 Here's the step-by-step instruction:
 
-- Find an [issue](https://github.com/BadwaterBay/github-label-manager-plus/issues) you'd like to solve and claim it by leaving a comment.
+- Find an [issue](https://github.com/BadwaterBay/labelcopier/issues) you'd like to solve and claim it by leaving a comment.
 - Complete the [initial setup](#Initial-setup), if you haven't.
 - [Bring your fork up to date with the original repository](#Bring-your-fork-up-to-date-with-the-original-repository).
 - Modify the code to resolve the issue and commit changes.
