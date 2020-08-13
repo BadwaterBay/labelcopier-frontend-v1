@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/wrapper.js',
   output: {
     filename: 'main.bundle.js',
     chunkFilename: '[name].bundle.js',
@@ -46,7 +46,7 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, 'build'),
     compress: true,
-    port: 5000,
+    port: 5100,
   },
   devtool: 'source-map',
 };
