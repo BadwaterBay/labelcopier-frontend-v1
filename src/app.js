@@ -1,7 +1,5 @@
 /**
- * Main script for all JavaScript functionalities
- *
- * It will run when document is ready
+ * Main script for all JavaScript functionalities of Labelcopier
  */
 
 /**
@@ -40,57 +38,58 @@ import {
   clickOutsideToCloseModal,
 } from './js/commitChanges';
 
-export default () =>
-  document.addEventListener('DOMContentLoaded', () => {
-    try {
-      /**
-       * Instantiate Bootstrap-Material-Design
-       */
-      $('body').bootstrapMaterialDesign();
+export default () => {
+  try {
+    /**
+     * Instantiate Bootstrap-Material-Design
+     */
+    $('body').bootstrapMaterialDesign();
 
-      /**
-       * Login form functionalities
-       */
-      listenForRepoOwnerCheckbox();
-      listenForRepoOwnerInput();
-      autoCheckRepoOwnerCheckbox();
+    /**
+     * Login form functionalities
+     */
+    listenForRepoOwnerCheckbox();
+    listenForRepoOwnerInput();
+    autoCheckRepoOwnerCheckbox();
 
-      /**
-       * Listen for DOM events to manipulate labels and milestones
-       * including list, undo, copy, create and delete.
-       *
-       */
-      const listenerFuncs = [
-        listenForListEntriesOfKind,
-        listenForUndoEntriesOfKind,
-        listenForCopyEntriesOfKind,
-        listenForCreateEntriesOfKind,
-        listenForDeleteEntriesOfKind,
-      ];
-      const kinds = ['labels', 'milestones'];
-      /**
-       * Run each function with each element in the `kinds` array
-       */
-      runFuncsWithArgs(listenerFuncs, kinds);
+    /**
+     * Listen for DOM events to manipulate labels and milestones
+     * including list, undo, copy, create and delete.
+     *
+     */
+    const listenerFuncs = [
+      listenForListEntriesOfKind,
+      listenForUndoEntriesOfKind,
+      listenForCopyEntriesOfKind,
+      listenForCreateEntriesOfKind,
+      listenForDeleteEntriesOfKind,
+    ];
+    const kinds = ['labels', 'milestones'];
+    /**
+     * Run each function with each element in the `kinds` array
+     */
+    runFuncsWithArgs(listenerFuncs, kinds);
 
-      /**
-       * Listen for click events of the commit button
-       * When clicked, commit changes by communicating with GitHub API
-       */
-      listenForCommitButton();
+    /**
+     * Listen for click events of the commit button
+     * When clicked, commit changes by communicating with GitHub API
+     */
+    listenForCommitButton();
 
-      /**
-       * Click anywhere outside the modal to close the modal
-       */
-      clickOutsideToCloseModal();
+    /**
+     * Click anywhere outside the modal to close the modal
+     */
+    clickOutsideToCloseModal();
 
-      /**
-       * Reset the content inside '#committing-modal' modal when it is closed
-       * and reload entries
-       */
-      resetModalWhenClosed();
-    } catch (err) {
-      console.error('Unexpected error occurred.');
-      console.error(err);
-    }
-  });
+    /**
+     * Reset the content inside '#committing-modal' modal when it is closed
+     * and reload entries
+     */
+    resetModalWhenClosed();
+
+    console.log('labelcopierApp activated.');
+  } catch (err) {
+    console.error('Unexpected error occurred in Labelcopier.');
+    console.error(err);
+  }
+};

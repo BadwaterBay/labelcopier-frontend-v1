@@ -169,8 +169,8 @@ If you are stuck, you are welcome to reach out and leave a comment.
 - Lint your code using Eslint:
   - `yarn lint` will run Eslint to check the code quality.
   - Tip: when you git-commit, `yarn lint` will be automatically triggered.
-- `yarn start`: Start the development server at `http://localhost:5000/` by default.
-- `yarn production`: Create a production build inside `build/` and serve it at `http://localhost:5000/` by default.
+- `yarn start`: Start the development server at `http://localhost:5100/` by default.
+- `yarn production`: Create a production build inside `build/` and serve it at `http://localhost:5100/` by default.
 - `yarn test`: Run tests with Jest.
 - If you run into problems with Node dependencies:
   - Try `yarn --frozen-lockfile` to see if it solves your problems.
