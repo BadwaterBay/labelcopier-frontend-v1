@@ -24,6 +24,7 @@ import {
   listenForRepoOwnerCheckbox,
   listenForRepoOwnerInput,
   autoCheckRepoOwnerCheckbox,
+  listenForLoginWithGithub,
 } from './js/loginFormFunctions';
 import {
   listenForListEntriesOfKind,
@@ -38,7 +39,7 @@ import {
   clickOutsideToCloseModal,
 } from './js/commitChanges';
 
-export default () => {
+const app = () => {
   try {
     /**
      * Instantiate Bootstrap-Material-Design
@@ -51,6 +52,7 @@ export default () => {
     listenForRepoOwnerCheckbox();
     listenForRepoOwnerInput();
     autoCheckRepoOwnerCheckbox();
+    listenForLoginWithGithub();
 
     /**
      * Listen for DOM events to manipulate labels and milestones
@@ -86,10 +88,10 @@ export default () => {
      * and reload entries
      */
     resetModalWhenClosed();
-
-    console.log('labelcopierApp activated.');
   } catch (err) {
     console.error('Unexpected error occurred in Labelcopier.');
     console.error(err);
   }
 };
+
+export default app;

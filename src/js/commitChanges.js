@@ -110,10 +110,10 @@ const listenForCommitButton = () => {
     .addEventListener('click', () => {
       const loginInfo = getAndValidateLoginInfo();
 
-      if (!loginInfo.personalAccessToken) {
+      if (window.accessToken === null && !loginInfo.personalAccessToken) {
+        // The global accessToken variable is problematic. It should be addressed in the future.
         alert(
-          `You need to enter your personal access token for repo` +
-            `${loginInfo.homeRepoName} in order to commit changes.`
+          `You need to login with GitHub or manually enter a personal access token to commit changes.`
         );
         return;
       }

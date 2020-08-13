@@ -27,11 +27,13 @@ const trimmedValFromId = (id) => document.getElementById(id).value.trim();
  * @return {Object | Error}
  */
 const getAndValidateLoginInfo = (mode = 'list') => {
+  // The global accessToken variable is problematic. It should be addressed in the future.
+
   const loginInfo = {
     homeRepoOwner: trimmedValFromId('home-repo-owner'),
     homeRepoName: trimmedValFromId('home-repo-name'),
     gitHubUsername: trimmedValFromId('github-username'),
-    personalAccessToken: trimmedValFromId('personal-access-token'),
+    personalAccessToken: window.accessToken,
     templateRepoOwner: trimmedValFromId('template-repo-owner'),
     templateRepoName: trimmedValFromId('template-repo-name'),
   };
@@ -46,9 +48,21 @@ const getAndValidateLoginInfo = (mode = 'list') => {
  * @return {Object | Error}
  */
 const validateLoginAgainstNull = (loginInfo, mode = 'list') => {
-  if (mode === 'list' || mode === 'create') {
+  if (mode === 'list') {
     if (!(loginInfo.homeRepoOwner && loginInfo.homeRepoName)) {
       throw new Error('Please enter the owner and the name of the repository.');
+    }
+  } else if (mode === 'create') {
+    if (
+      !(
+        loginInfo.homeRepoOwner &&
+        loginInfo.homeRepoName &&
+        loginInfo.personalAccessToken
+      )
+    ) {
+      throw new Error(
+        'Please enter the owner, the name of the repository and login with GitHub.'
+      );
     }
   } else if (mode === 'copy') {
     if (!(loginInfo.templateRepoOwner && loginInfo.templateRepoName)) {

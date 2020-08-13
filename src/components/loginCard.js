@@ -5,6 +5,13 @@ const loginCard = `
       Manage your repository
     </h3>
   </div>
+  <div class="row">
+    <div class="col-12 col-md-4 col-lg-12">
+      <button id="login-with-github" type="button" class="btn btn-block btn-raised btn-outline-secondary">
+        <svg class="fab fa-github"></svg> Login with GitHub
+      </button>
+    </div>
+  </div>
   <form>
     <div class="row">
       <div class="col-12 col-md-6 col-lg-12">
@@ -43,22 +50,11 @@ const loginCard = `
       <div class="col-12 col-md-6 col-lg-12">
         <div class="form-group">
           <label class="bmd-label-floating" for="github-username">
-            Username&nbsp;for&nbsp;authentication
+            Username
           </label>
           <input type="text" class="form-control" id="github-username" name="github-username" />
           <span class="bmd-help">
             You can manage repositories you own or have access to
-          </span>
-        </div>
-      </div>
-      <div class="col-12 col-md-6 col-lg-12">
-        <div class="form-group">
-          <label for="personal-access-token" class="bmd-label-floating">
-            Personal&nbsp;access&nbsp;token
-          </label>
-          <input type="password" class="form-control" id="personal-access-token" />
-          <span class="bmd-help">
-            See FAQ for how to generate one
           </span>
         </div>
       </div>

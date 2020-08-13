@@ -336,7 +336,7 @@ const apiCallCreate = (entryNode, kind, mode = 'create') =>
           reject(new Error(msg));
           return;
         }
-        writeLog(`Created ${kindSingular}: ${returnedName}}.`);
+        writeLog(`Created ${kindSingular}: ${returnedName}.`);
         resolve(returnedName);
         return;
       })
