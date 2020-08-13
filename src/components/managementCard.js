@@ -85,6 +85,11 @@ const managementCard = (() =>
               </div>
             </div>
             <!-- row -->
+            <div class="login-first-notice">
+              <p>
+                Please login with GitHub before managaning labels and milestones. Otherwise the changes will not be saved.
+              </p>
+            </div>
             <form id="form-labels" class="form-inline"></form>
           </div>
           <div
@@ -126,6 +131,11 @@ const managementCard = (() =>
               </div>
             </div>
             <!-- row -->
+            <div class="login-first-notice">
+              <p>
+                Please login with GitHub before managaning labels and milestones. Otherwise the changes will not be saved.
+              </p>
+            </div>
             <form id="form-milestones" class="form-inline"></form>
           </div>
           <div
