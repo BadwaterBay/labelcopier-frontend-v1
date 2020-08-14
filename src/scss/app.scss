@@ -40,6 +40,16 @@ body {
     }
   }
 
+  #avatar {
+    display: block;
+    max-width: 50px;
+    max-height: 50px;
+    width: auto;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .label-entry,
   .milestone-entry {
     width: 100%;

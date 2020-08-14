@@ -25,6 +25,7 @@ const reloadEntries = () =>
  */
 const resetModalWhenClosed = () => {
   $('#committing-modal').on('hidden.bs.modal', () => {
+    reloadEntries();
     document.getElementById('committing-spinner').classList.remove('hidden');
     const modalBody = document.querySelector('#committing-modal .modal-body');
     modalBody.textContent = '';
@@ -71,13 +72,9 @@ const commitChanges = () => {
 
   // Fire API calls asynchronously in parallel
   const apiCalls = entriesForApiCall.map((e) => selectEntriesForApiCall(...e));
-  return Promise.allSettled(apiCalls)
-    .then(() => {
-      reloadEntries();
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  return Promise.allSettled(apiCalls).catch((err) => {
+    console.error(err);
+  });
 };
 
 const writeErrorsAlert = (errorCount, duplicateCount, kind) => {
