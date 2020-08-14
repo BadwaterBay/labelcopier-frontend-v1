@@ -21,9 +21,9 @@
 
 import { runFuncsWithArgs } from '@dongskyler/helpers.js';
 import {
-  listenForRepoOwnerCheckbox,
-  listenForRepoOwnerInput,
-  autoCheckRepoOwnerCheckbox,
+  // listenForRepoOwnerCheckbox,
+  // listenForRepoOwnerInput,
+  // autoCheckRepoOwnerCheckbox,
   listenForLoginWithGithub,
 } from './js/loginFormFunctions';
 import {
@@ -49,9 +49,9 @@ const app = () => {
     /**
      * Login form functionalities
      */
-    listenForRepoOwnerCheckbox();
-    listenForRepoOwnerInput();
-    autoCheckRepoOwnerCheckbox();
+    // listenForRepoOwnerCheckbox();
+    // listenForRepoOwnerInput();
+    // autoCheckRepoOwnerCheckbox();
     listenForLoginWithGithub();
 
     /**

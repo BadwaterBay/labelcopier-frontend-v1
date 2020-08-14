@@ -32,7 +32,7 @@ const getAndValidateLoginInfo = (mode = 'list') => {
   const loginInfo = {
     homeRepoOwner: trimmedValFromId('home-repo-owner'),
     homeRepoName: trimmedValFromId('home-repo-name'),
-    gitHubUsername: trimmedValFromId('github-username'),
+    // gitHubUsername: trimmedValFromId('github-username'),
     personalAccessToken: window.accessToken,
     templateRepoOwner: trimmedValFromId('template-repo-owner'),
     templateRepoName: trimmedValFromId('template-repo-name'),

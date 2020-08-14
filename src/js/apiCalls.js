@@ -11,6 +11,8 @@ import {
   validateKind,
 } from './dataValidation';
 
+const itemsPerPage = 100;
+
 /**
  * Encode authentication info for HTTP requests
  * @param {Object} loginInfo
@@ -181,6 +183,84 @@ const composeStatusMessage = (response) => {
 };
 
 /**
+ * Returns a URL for getting user info
+ * @return {string}
+ */
+const urlForGetUser = () => 'https://api.github.com/user';
+
+/**
+ * Return a promise of getting user info
+ * @param {Function} urlFunc
+ * @return {Promise}
+ */
+const apiCallGetUser = (urlFunc) =>
+  new Promise((resolve, reject) => {
+    fetch(urlFunc(), {
+      method: 'GET',
+      headers: {
+        Accept: 'application/vnd.github.v3+json',
+        Authorization: `token ${window.accessToken}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          writeLog(composeStatusMessage(response));
+          response.json().then((body) => {
+            console.error(body.message);
+            reject(new Error(body.message));
+            return;
+          });
+        }
+        return response.json();
+      })
+      .then((body) => {
+        resolve(body);
+        return;
+        // body.avatar_url // Avatar url
+      });
+  }).catch((err) => {
+    writeLog(err);
+    throw new Error(err);
+  });
+
+/**
+ * Returns a URL for checking if the app is installed
+ * @return {string}
+ */
+const urlForCheckAppInstalled = () =>
+  'https://api.github.com/user/installations' +
+  `?per_page=${itemsPerPage}` +
+  '&page=1';
+
+/**
+ * Check if Labelcopier app is installed
+ * This needs to be recursive
+ * @param {Function} urlFunc
+ * @return {Promise}
+ */
+const apiCallCheckAppInstalled = (urlFunc) => {
+  return new Promise((resolve) => {
+    fetch(urlFunc(), {
+      method: 'GET',
+      headers: {
+        Accept: 'application/vnd.github.v3+json',
+        Authorization: `token ${window.accessToken}`,
+      },
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((body) => {
+        const thisAppAccessible = body.installations.some(
+          (e) => e.app_id === 76912
+        );
+        resolve(thisAppAccessible);
+        return;
+      });
+  });
+};
+
+/**
  * Returns a HTTP request URL for getting entries from a repository
  * @param {Object} loginInfo
  * @param {string} kind
@@ -196,7 +276,7 @@ const urlForGet = (loginInfo, kind, pageNum, mode = 'list') => {
   let url =
     'https://api.github.com/repos/' +
     `${owner}/${repo}/${kind}` +
-    `?per_page=100` +
+    `?per_page=${itemsPerPage}` +
     `&page=${pageNum}`;
 
   if (kind === 'milestones') {
@@ -479,6 +559,10 @@ export {
   serializeEntry,
   packEntry,
   composeStatusMessage,
+  urlForGetUser,
+  apiCallGetUser,
+  urlForCheckAppInstalled,
+  apiCallCheckAppInstalled,
   urlForGet,
   fetchGet,
   apiCallGet,
