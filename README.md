@@ -1,6 +1,6 @@
 # Labelcopier
 
-Website: [https://badwaterbay.com/app/labelcopier/](https://badwaterbay.com/app/labelcopier/)
+Website: [https://badwaterbay.com/labelcopier/](https://badwaterbay.com/labelcopier/)
 
 Repository: [https://github.com/BadwaterBay/labelcopier/](https://github.com/BadwaterBay/labelcopier/)
 
@@ -40,10 +40,11 @@ This project was originally forked from [here](https://github.com/destan/github-
 
 We are proud to continue developing and maintaining this open-source project for the community. We have made significant improvements:
 
-- Now able to manage milestones in addition to labels.
+- Add functionalities to manage milestones in addition to labels.
+- Authenticate as a GitHub OAuth App, instead of manually input the password or a personal access token.
+- Display labels and milestones in sorted alphabetical order.
 - Replaced jQuery Ajax with JavaScript's native Fetch API in promise style.
 - Fire API calls asynchronously in parallel to improve the efficiency by over 100%.
-- Display entries (labels and milestones) in sorted alphabetical order.
 - Added data validation before committing changes.
 - Refined the UI to a modern and responsive design with meticulous attention to details.
 - Upgraded from Bootstrap 2 to Bootstrap 4 with Material Design.
