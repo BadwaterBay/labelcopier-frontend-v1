@@ -855,10 +855,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dongskyler/helpers.js@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@dongskyler/helpers.js/-/helpers.js-0.1.0.tgz#c0c4ac048bd337cbe75d4d2f069f97362504eac1"
-  integrity sha512-AXY6YHqpUm/PC9BXTmTNa2eqTvoEv9yZ0EOOs9pk5LJcLuaeRe4FMthaLqZreBl9AOZcRWsac/Zc6/+7NsSNsw==
+"@dongskyler/helpers.js@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@dongskyler/helpers.js/-/helpers.js-0.3.1.tgz#927f23de6ad50e2e8189139ca6c4af0c6cdb7e91"
+  integrity sha512-7AiuFx53cdSnXaRGXw4y6Pd6zATgkhbnm7IltuBuPgb5i13V7S2Uj47yS3DxN+s7nrfOr5ZIDrz2bhJdDYFrdg==
 
 "@fortawesome/fontawesome-common-types@^0.2.30":
   version "0.2.30"
