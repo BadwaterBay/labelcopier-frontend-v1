@@ -15,8 +15,8 @@
   "scripts": {
     "ci": "yarn --frozen-lockfile",
     "clean": "rm -rf build",
-    "format": "prettier './**/*.{js,ts,html,md,json,css,scss}' --write",
-    "lint": "eslint './**/*.{js,ts}' --fix",
+    "format": "prettier './**/*.{js,jsx,ts,tsx,html,md,json,css,scss}' --write",
+    "lint": "eslint './**/*.{js,jsx,ts,tsx}' --fix",
     "build:dev": "webpack-dev-server --mode=development",
     "build": "yarn clean && webpack --mode=production",
     "serve-build": "serve build",
@@ -31,10 +31,10 @@
     }
   },
   "lint-staged": {
-    "./**/*.{js,ts,html,md,json,css,scss}": [
+    "./**/*.{js,jsx,ts,tsx,html,md,json,css,scss}": [
       "prettier --write"
     ],
-    "./**/*.{js,ts}": [
+    "./**/*.{js,jsx,ts,tsx}": [
       "eslint --cache --fix"
     ]
   },
