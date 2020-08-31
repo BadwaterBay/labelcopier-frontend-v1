@@ -39,7 +39,7 @@
     ]
   },
   "dependencies": {
-    "@dongskyler/helpers.js": "^0.1.0",
+    "@dongskyler/helpers.js": "^0.3.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "bootstrap-material-design": "^4.1.3",
