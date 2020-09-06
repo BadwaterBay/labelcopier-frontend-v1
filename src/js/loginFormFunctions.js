@@ -57,7 +57,7 @@ const listenForLoginWithGithub = () => {
     ) {
       window.location =
         window.location.hostname === 'badwaterbay.com'
-          ? 'https://api.badwaterbay.com/apps/labelcopier/oauth/authorize'
+          ? 'http://api.badwaterbay.com/apps/labelcopier/oauth/authorize'
           : 'http://localhost:5036/apps/labelcopier/oauth/authorize';
       return;
     }
