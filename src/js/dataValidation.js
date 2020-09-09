@@ -20,10 +20,7 @@ const getTrimmedValueFromGivenId = (id) =>
 const validateLoginAgainstNull = (loginInfo, mode = 'list') => {
   if (mode === 'list') {
     if (!(loginInfo.homeRepoOwner && loginInfo.homeRepoName)) {
-      const errorMessage =
-        'Please enter the owner and the name of the repository.';
-
-      throw new Error(errorMessage);
+      return false;
     }
 
     return true;
@@ -81,10 +78,18 @@ const getAndValidateLoginInfo = (mode = 'list') => {
     templateRepoName: getTrimmedValueFromGivenId('template-repo-name'),
   };
 
-  return (
-    validateLoginAgainstNull(loginInfo, mode) &&
-    validateAccessTokenAgainstNull(loginInfo)
-  );
+  const loginIsNull = validateLoginAgainstNull(loginInfo, mode);
+  const accessTokenIsNull = validateAccessTokenAgainstNull(loginInfo);
+
+  if (loginIsNull) {
+    throw new Error('Please enter the owner and the name of the repository.');
+  }
+
+  if (accessTokenIsNull) {
+    throw new Error('Please login with GitHub.');
+  }
+
+  return !loginIsNull && !accessTokenIsNull;
 };
 
 const getCommitButtonElement = () =>
