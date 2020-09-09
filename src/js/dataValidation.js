@@ -89,7 +89,7 @@ const getAndValidateLoginInfo = (mode = 'list') => {
     throw new Error('Please login with GitHub.');
   }
 
-  return !loginIsNull && !accessTokenIsNull;
+  return true;
 };
 
 const getCommitButtonElement = () =>
