@@ -1,10 +1,10 @@
 /**
- * base64 encoder for API calls
+ * base64Tool encoder for API calls
  */
 
 'use strict';
 
-const base64 = {
+const base64Tool = {
   // http://stackoverflow.com/a/246813
   // private property
   _keyStr: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=',
@@ -21,7 +21,7 @@ const base64 = {
     let enc4;
     let i = 0;
 
-    input = base64._utf8_encode(input);
+    input = base64Tool._utf8_encode(input);
 
     while (i < input.length) {
       chr1 = input.charCodeAt(i++);
@@ -39,7 +39,7 @@ const base64 = {
         enc4 = 64;
       }
 
-      /** @this base64 */
+      /** @this base64Tool */
       output =
         output +
         this._keyStr.charAt(enc1) +
@@ -65,7 +65,7 @@ const base64 = {
 
     input = input.replace(/[^A-Za-z0-9+/=]/g, '');
 
-    /** @this base64 */
+    /** @this base64Tool */
     while (i < input.length) {
       enc1 = this._keyStr.indexOf(input.charAt(i++));
       enc2 = this._keyStr.indexOf(input.charAt(i++));
@@ -86,7 +86,7 @@ const base64 = {
       }
     }
 
-    output = base64._utf8_decode(output);
+    output = base64Tool._utf8_decode(output);
 
     return output;
   },
@@ -144,4 +144,4 @@ const base64 = {
   },
 };
 
-export default base64;
+export default base64Tool;

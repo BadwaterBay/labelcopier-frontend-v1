@@ -4,36 +4,35 @@
 
 'use strict';
 
-import base64 from './base64';
+import base64Tool from './base64Tool';
 import {
   bugReportMsg,
   getAndValidateLoginInfo,
   validateKind,
 } from './dataValidation';
 
-const itemsPerPage = 100;
+const apiPaginationLimit = 100;
 
 /**
  * Encode authentication info for HTTP requests
  * @param {Object} loginInfo
  * @return {string}
  */
-const makeBasicAuth = (loginInfo) =>
+const encodeForBasicAuthentication = (loginInfo) =>
   'Basic ' +
-  base64.encode(
-    `${loginInfo.gitHubUsername}:` + `${loginInfo.personalAccessToken}`
+  base64Tool.encode(
+    `${loginInfo.gitHubUsername}:${loginInfo.personalAccessToken}`
   );
 
 /**
  * Write logs inside modal #committing-modal when committing changes
  * @param {string} string
  */
-const writeLog = (string) => {
+const writeLogInCommitModal = (string) => {
   const logNode = document.createElement('p');
   logNode.innerHTML = string;
   const modalNode = document.querySelector('#committing-modal .modal-body');
   modalNode.appendChild(logNode);
-  return;
 };
 
 /**
@@ -45,9 +44,7 @@ const formatDate = (node) => {
   const date = node.value;
   const time = node.getAttribute('data-orig-time');
 
-  if (!date) {
-    return null;
-  }
+  if (!date) return null;
 
   const dt = {};
   [dt.year, dt.month, dt.dayOfMonth] = date.split('-').map((e) => +e);
@@ -65,13 +62,9 @@ const formatDate = (node) => {
   return dateObject.toISOString().replace('.000Z', 'Z');
 };
 
-/**
- * Serialize entries for HTTP requests
- * @param {HTMLElement} node
- * @param {string} kind
- * @return {Object | null} Serialized object
- */
-const serializeEntry = (node, kind) => {
+const serializeEntryForApiCalls = (node, kind) => {
+  validateKind(kind);
+
   if (kind === 'labels') {
     return {
       name: node.querySelector('[name="name"]').value,
@@ -81,8 +74,9 @@ const serializeEntry = (node, kind) => {
       color: node.querySelector('[name="color"]').value.slice(1),
       description: node.querySelector('[name="description"]').value,
     };
-  } else {
-    // milestones
+  }
+
+  if (kind === 'milestones') {
     if (node.getAttribute('data-number') !== 'null') {
       return {
         title: node.querySelector('[name="title"]').value,
@@ -94,32 +88,30 @@ const serializeEntry = (node, kind) => {
         due_on: formatDate(node.querySelector('[name="due-date"]')),
         number: +node.getAttribute('data-number'),
       };
-    } else {
-      if (node.querySelector('[name="due-date"]').value !== '') {
-        return {
-          title: node.querySelector('[name="title"]').value,
-          state: node.querySelector('[name="state"]').value,
-          description: node.querySelector('[name="description"]').value,
-          due_on: formatDate(node.querySelector('[name="due-date"]')),
-        };
-      } else {
-        return {
-          title: node.querySelector('[name="title"]').value,
-          state: node.querySelector('[name="state"]').valie,
-          description: node.querySelector('[name="description"]').value,
-        };
-      }
     }
+
+    if (node.querySelector('[name="due-date"]').value !== '') {
+      return {
+        title: node.querySelector('[name="title"]').value,
+        state: node.querySelector('[name="state"]').value,
+        description: node.querySelector('[name="description"]').value,
+        due_on: formatDate(node.querySelector('[name="due-date"]')),
+      };
+    }
+
+    return {
+      title: node.querySelector('[name="title"]').value,
+      state: node.querySelector('[name="state"]').valie,
+      description: node.querySelector('[name="description"]').value,
+    };
   }
+
+  return null;
 };
 
-/**
- * Pack an entry with serialized data and various information for convenience
- * @param {Object} serializedEntry
- * @param {string} kind
- * @return {Object}
- */
-const packEntry = (serializedEntry, kind) => {
+const packageEntryForApiCalls = (serializedEntry, kind) => {
+  validateKind(kind);
+
   const entryObjectCopy = serializedEntry; // Avoid side effects
   const entryPackage = {};
 
@@ -128,8 +120,9 @@ const packEntry = (serializedEntry, kind) => {
     entryPackage.newName = entryObjectCopy.name;
     entryPackage.apiCallSign = entryObjectCopy.originalName;
     delete entryObjectCopy.originalName;
-  } else {
-    // Milestone
+  }
+
+  if (kind === 'milestones') {
     entryPackage.originalName = entryObjectCopy.originalTitle;
     entryPackage.newName = entryObjectCopy.title;
     entryPackage.apiCallSign = entryObjectCopy.number;
@@ -142,58 +135,44 @@ const packEntry = (serializedEntry, kind) => {
   };
 };
 
-/**
- * Throw error message when HTTP request fails
- * @param {Object} response
- * @return {string}
- */
-const composeStatusMessage = (response) => {
-  if (response.ok) {
-    return `${response.status} status OK.`;
-  }
-  if (response.status === 401) {
+const composeErrorMessageWhenApiCallFails = (response) => {
+  if (response.ok) return `${response.status} status OK.`;
+
+  if (response.status === 401)
     return (
       `${response.status} ${response.statusText}.` +
       ' Please check the input values of your login information.'
     );
-  }
-  if (response.status === 403) {
+
+  if (response.status === 403)
     return (
       `${response.status} ${response.statusText}.` +
       ' The GitHub server refused to your request.' +
       ' Maybe you have exceeded your rate limit.' +
       ' Please wait for a little while.'
     );
-  }
-  if (response.status === 404) {
+
+  if (response.status === 404)
     return (
       `${response.status} ${response.statusText}.` +
       ' Repository not found. Please check the input values of your' +
       ' login information.'
     );
-  }
-  if (response.status === 422) {
+
+  if (response.status === 422)
     return (
       `${response.status} ${response.statusText}.` +
       ` ${bugReportMsg}` +
       `${response.status} ${response.statusText}.`
     );
-  }
+
   return `${response.status} ${response.statusText}.` + ` Error occurred.`;
 };
 
-/**
- * Returns a URL for getting user info
- * @return {string}
- */
-const urlForGetUser = () => 'https://api.github.com/user';
+const composeUrlForMakeApiCallToGetUserInfo = () =>
+  'https://api.github.com/user';
 
-/**
- * Return a promise of getting user info
- * @param {Function} urlFunc
- * @return {Promise}
- */
-const apiCallGetUser = (urlFunc) =>
+const makeApiCallToGetUserInfo = (urlFunc) =>
   new Promise((resolve, reject) => {
     fetch(urlFunc(), {
       method: 'GET',
@@ -204,7 +183,7 @@ const apiCallGetUser = (urlFunc) =>
     })
       .then((response) => {
         if (!response.ok) {
-          writeLog(composeStatusMessage(response));
+          writeLogInCommitModal(composeErrorMessageWhenApiCallFails(response));
           response.json().then((body) => {
             console.error(body.message);
             reject(new Error(body.message));
@@ -216,29 +195,18 @@ const apiCallGetUser = (urlFunc) =>
       .then((body) => {
         resolve(body);
         return;
-        // body.avatar_url // Avatar url
       });
   }).catch((err) => {
-    writeLog(err);
+    writeLogInCommitModal(err);
     throw new Error(err);
   });
 
-/**
- * Returns a URL for checking if the app is installed
- * @return {string}
- */
-const urlForCheckAppInstalled = () =>
+const composeUrlForCheckIfGitHubAppInstalled = () =>
   'https://api.github.com/user/installations' +
-  `?per_page=${itemsPerPage}` +
+  `?per_page=${apiPaginationLimit}` +
   '&page=1';
 
-/**
- * Check if Labelcopier app is installed
- * This needs to be recursive
- * @param {Function} urlFunc
- * @return {Promise}
- */
-const apiCallCheckAppInstalled = (urlFunc) => {
+const makeApiCallToCheckIfGitHubAppInstalled = (urlFunc) => {
   return new Promise((resolve) => {
     fetch(urlFunc(), {
       method: 'GET',
@@ -247,9 +215,7 @@ const apiCallCheckAppInstalled = (urlFunc) => {
         Authorization: `token ${window.accessToken}`,
       },
     })
-      .then((response) => {
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((body) => {
         const thisAppAccessible = body.installations.some(
           (e) => e.app_id === 76912
@@ -260,62 +226,51 @@ const apiCallCheckAppInstalled = (urlFunc) => {
   });
 };
 
-/**
- * Returns a HTTP request URL for getting entries from a repository
- * @param {Object} loginInfo
- * @param {string} kind
- * @param {number} pageNum
- * @param {string} mode
- * @return {string}
- */
-const urlForGet = (loginInfo, kind, pageNum, mode = 'list') => {
+const composeUrlForMakeApiCallGetEntries = (
+  loginInfo,
+  kind,
+  pageNum,
+  mode = 'list'
+) => {
   const owner =
     mode === 'list' ? loginInfo.homeRepoOwner : loginInfo.templateRepoOwner;
+
   const repo =
     mode === 'list' ? loginInfo.homeRepoName : loginInfo.templateRepoName;
+
   let url =
     'https://api.github.com/repos/' +
     `${owner}/${repo}/${kind}` +
-    `?per_page=${itemsPerPage}` +
+    `?per_page=${apiPaginationLimit}` +
     `&page=${pageNum}`;
 
   if (kind === 'milestones') {
     url += '&state=all';
   }
+
   return url;
 };
 
-/**
- * Returns a Fetch API promise for getting entries
- * @param {function} urlFunc
- * @param {Object} loginInfo
- * @param {string} kind
- * @param {number} pageNum
- * @param {string} mode
- * @return {Promise}
- */
-const fetchGet = (urlFunc, loginInfo, kind, pageNum, mode) =>
+const makeGetHttpRequest = (urlFunc, loginInfo, kind, pageNum, mode) =>
   fetch(urlFunc(loginInfo, kind, pageNum, mode), {
     method: 'GET',
     headers: {
-      Authorization: makeBasicAuth(loginInfo),
+      Authorization: encodeForBasicAuthentication(loginInfo),
       Accept: 'application/vnd.github.v3+json',
     },
   });
 
-/**
- * Get entries recursively because there might be multiple pages
- * @param {Object} loginInfo
- * @param {string} kind
- * @param {number} pageNum
- * @param {string} mode
- * @return {Promise}
- */
-const apiCallGet = (loginInfo, kind, pageNum = 1, mode = 'list') =>
-  fetchGet(urlForGet, loginInfo, kind, pageNum, mode)
+const makeApiCallToGetEntries = (loginInfo, kind, pageNum = 1, mode = 'list') =>
+  makeGetHttpRequest(
+    composeUrlForMakeApiCallGetEntries,
+    loginInfo,
+    kind,
+    pageNum,
+    mode
+  )
     .then((response) => {
       if (!response.ok) {
-        throw new Error(composeStatusMessage(response));
+        throw new Error(composeErrorMessageWhenApiCallFails(response));
       }
       return response.json();
     })
@@ -328,7 +283,9 @@ const apiCallGet = (loginInfo, kind, pageNum = 1, mode = 'list') =>
         }
         return body;
       }
-      return body.concat(await apiCallGet(loginInfo, kind, ++pageNum, mode));
+      return body.concat(
+        await makeApiCallToGetEntries(loginInfo, kind, ++pageNum, mode)
+      );
     })
     .then((fetchedArray) => {
       return new Promise((resolve, reject) => {
@@ -352,45 +309,47 @@ const apiCallGet = (loginInfo, kind, pageNum = 1, mode = 'list') =>
  * @param {Object} entryPackage
  * @return {Promise}
  */
-const fetchWithBody = (method, urlFunc, loginInfo, kind, entryPackage) => {
+const makeHttpRequestOfMethod = (
+  method,
+  urlFunc,
+  loginInfo,
+  kind,
+  entryPackage
+) => {
   return fetch(urlFunc(loginInfo, kind, entryPackage), {
     method: method,
     headers: {
-      Authorization: makeBasicAuth(loginInfo),
+      Authorization: encodeForBasicAuthentication(loginInfo),
       Accept: 'application/vnd.github.v3+json',
     },
     body: JSON.stringify(entryPackage.body),
   });
 };
 
-/**
- * Returns a HTTP request URL for creating entries
- * @param {Object} loginInfo
- * @param {string} kind
- * @return {string}
- */
-const urlForCreate = (loginInfo, kind) =>
+const composeUrlForCreateEntries = (loginInfo, kind) =>
   `https://api.github.com/repos/${loginInfo.homeRepoOwner}/` +
   `${loginInfo.homeRepoName}/${kind}`;
 
-/**
- * Make API calls to create entries and parse responses
- * @param {HTMLElement} entryNode
- * @param {string} kind
- * @param {string} mode
- * @return {Promise}
- */
-const apiCallCreate = (entryNode, kind, mode = 'create') =>
+const makeApiCallToCreateEntries = (entryNode, kind, mode = 'create') =>
   new Promise((resolve, reject) => {
     validateKind(kind);
     const loginInfo = getAndValidateLoginInfo(mode);
-    const entryPackage = packEntry(serializeEntry(entryNode, kind), kind);
+    const entryPackage = packageEntryForApiCalls(
+      serializeEntryForApiCalls(entryNode, kind),
+      kind
+    );
     const kindSingular = kind.slice(0, -1);
 
-    fetchWithBody('POST', urlForCreate, loginInfo, kind, entryPackage)
+    makeHttpRequestOfMethod(
+      'POST',
+      composeUrlForCreateEntries,
+      loginInfo,
+      kind,
+      entryPackage
+    )
       .then((response) => {
         if (!response.ok) {
-          writeLog(composeStatusMessage(response));
+          writeLogInCommitModal(composeErrorMessageWhenApiCallFails(response));
           response.json().then((body) => {
             console.error(body.message);
             throw new Error(body.message);
@@ -400,12 +359,11 @@ const apiCallCreate = (entryNode, kind, mode = 'create') =>
       })
       .then((body) => {
         let returnedName = '';
-        if (kind === 'labels') {
-          returnedName = body.name;
-        } else {
-          // kind === 'milestones'
-          returnedName = body.title;
-        }
+
+        if (kind === 'labels') returnedName = body.name;
+
+        if (kind === 'milestones') returnedName = body.title;
+
         if (returnedName !== entryPackage.names.newName) {
           const msg =
             `Error occurred while creating ${kindSingular}` +
@@ -416,7 +374,8 @@ const apiCallCreate = (entryNode, kind, mode = 'create') =>
           reject(new Error(msg));
           return;
         }
-        writeLog(`Created ${kindSingular}: ${returnedName}.`);
+
+        writeLogInCommitModal(`Created ${kindSingular}: ${returnedName}.`);
         resolve(returnedName);
         return;
       })
@@ -427,38 +386,34 @@ const apiCallCreate = (entryNode, kind, mode = 'create') =>
         throw new Error(msg);
       });
   }).catch((err) => {
-    writeLog(err);
+    writeLogInCommitModal(err);
     throw new Error(err);
   });
 
-/**
- * Return a URL for updating entries
- * @param {Object} loginInfo
- * @param {string} kind
- * @param {Object} entryPackage
- * @return {string}
- */
-const urlForUpdate = (loginInfo, kind, entryPackage) =>
+const composeUrlForUpdateEntries = (loginInfo, kind, entryPackage) =>
   `https://api.github.com/repos/${loginInfo.homeRepoOwner}/` +
   `${loginInfo.homeRepoName}/${kind}/${entryPackage.names.apiCallSign}`;
 
-/**
- * Make API calls to update entries
- * @param {HTMLElement} entryNode
- * @param {string} kind
- * @return {Promise}
- */
-const apiCallUpdate = (entryNode, kind) =>
+const makeApiCallToUpdateEntries = (entryNode, kind) =>
   new Promise((resolve, reject) => {
     validateKind(kind);
     const loginInfo = getAndValidateLoginInfo();
-    const entryPackage = packEntry(serializeEntry(entryNode, kind), kind);
+    const entryPackage = packageEntryForApiCalls(
+      serializeEntryForApiCalls(entryNode, kind),
+      kind
+    );
     const kindSingular = kind.slice(0, -1);
 
-    fetchWithBody('PATCH', urlForUpdate, loginInfo, kind, entryPackage)
+    makeHttpRequestOfMethod(
+      'PATCH',
+      composeUrlForUpdateEntries,
+      loginInfo,
+      kind,
+      entryPackage
+    )
       .then((response) => {
         if (!response.ok) {
-          writeLog(composeStatusMessage(response));
+          writeLogInCommitModal(composeErrorMessageWhenApiCallFails(response));
           response.json().then((body) => {
             console.error(body.message);
             throw new Error(body.message);
@@ -470,10 +425,9 @@ const apiCallUpdate = (entryNode, kind) =>
         let returnedName = '';
         if (kind === 'labels') {
           returnedName = body.name;
-        } else {
-          // kind === 'milestones'
-          returnedName = body.title;
         }
+
+        if (kind === 'milestones') returnedName = body.title;
 
         if (returnedName !== entryPackage.names.newName) {
           const msg =
@@ -485,7 +439,7 @@ const apiCallUpdate = (entryNode, kind) =>
           reject(new Error(msg));
           return;
         }
-        writeLog(
+        writeLogInCommitModal(
           `Updated ${kindSingular}: ${entryPackage.names.originalName}` +
             ` &#8680; ${returnedName}.`
         );
@@ -499,44 +453,43 @@ const apiCallUpdate = (entryNode, kind) =>
         throw new Error(msg);
       });
   }).catch((err) => {
-    writeLog(err);
+    writeLogInCommitModal(err);
     throw new Error(err);
   });
 
-/**
- * Return a URL for deleting entries
- * @param {Object} loginInfo
- * @param {string} kind
- * @param {Object} entryPackage
- * @return {string}
- */
-const urlForDelete = (loginInfo, kind, entryPackage) =>
+const composeUrlForDeleteEntries = (loginInfo, kind, entryPackage) =>
   `https://api.github.com/repos/${loginInfo.homeRepoOwner}/` +
   `${loginInfo.homeRepoName}/${kind}/${entryPackage.names.apiCallSign}`;
 
-/**
- * Make API calls to delete entries
- * @param {HTMLElement} entryNode
- * @param {string} kind
- * @return {Promise}
- */
-const apiCallDelete = (entryNode, kind) =>
+const makeApiCallToDeleteEntries = (entryNode, kind) =>
   new Promise((resolve, reject) => {
     validateKind(kind);
     const loginInfo = getAndValidateLoginInfo();
-    const entryPackage = packEntry(serializeEntry(entryNode, kind), kind);
+    const entryPackage = packageEntryForApiCalls(
+      serializeEntryForApiCalls(entryNode, kind),
+      kind
+    );
     const kindSingular = kind.slice(0, -1);
 
-    fetchWithBody('DELETE', urlForDelete, loginInfo, kind, entryPackage)
+    makeHttpRequestOfMethod(
+      'DELETE',
+      composeUrlForDeleteEntries,
+      loginInfo,
+      kind,
+      entryPackage
+    )
       .then((response) => {
         if (!response.ok) {
-          writeLog(composeStatusMessage(response));
+          writeLogInCommitModal(composeErrorMessageWhenApiCallFails(response));
           response.json().then((body) => {
             console.error(body.message);
             throw new Error(body.message);
           });
         }
-        writeLog(`Deleted ${kindSingular} ${entryPackage.names.originalName}.`);
+
+        writeLogInCommitModal(
+          `Deleted ${kindSingular} ${entryPackage.names.originalName}.`
+        );
         resolve(response.status);
         return;
       })
@@ -548,29 +501,29 @@ const apiCallDelete = (entryNode, kind) =>
         return;
       });
   }).catch((err) => {
-    writeLog(err);
+    writeLogInCommitModal(err);
     throw new Error(err);
   });
 
 export {
-  makeBasicAuth,
-  writeLog,
+  encodeForBasicAuthentication,
+  writeLogInCommitModal,
   formatDate,
-  serializeEntry,
-  packEntry,
-  composeStatusMessage,
-  urlForGetUser,
-  apiCallGetUser,
-  urlForCheckAppInstalled,
-  apiCallCheckAppInstalled,
-  urlForGet,
-  fetchGet,
-  apiCallGet,
-  fetchWithBody,
-  urlForCreate,
-  apiCallCreate,
-  urlForUpdate,
-  apiCallUpdate,
-  urlForDelete,
-  apiCallDelete,
+  serializeEntryForApiCalls,
+  packageEntryForApiCalls,
+  composeErrorMessageWhenApiCallFails,
+  composeUrlForMakeApiCallToGetUserInfo,
+  makeApiCallToGetUserInfo,
+  composeUrlForCheckIfGitHubAppInstalled,
+  makeApiCallToCheckIfGitHubAppInstalled,
+  composeUrlForMakeApiCallGetEntries,
+  makeGetHttpRequest,
+  makeApiCallToGetEntries,
+  makeHttpRequestOfMethod,
+  composeUrlForCreateEntries,
+  makeApiCallToCreateEntries,
+  composeUrlForUpdateEntries,
+  makeApiCallToUpdateEntries,
+  composeUrlForDeleteEntries,
+  makeApiCallToDeleteEntries,
 };

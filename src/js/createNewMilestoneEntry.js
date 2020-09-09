@@ -5,10 +5,10 @@
 'use strict';
 
 import {
-  checkIfEnableCommitButton,
-  checkInputChanges,
-  countDuplicates,
-  resolveDuplicates,
+  enableOrDisableCommitButton,
+  checkIfEntryHasBeenModifiedFromOriginal,
+  countNumberOfDuplicateEntries,
+  checkIfDuplicateEntriesAreResolved,
 } from './dataValidation';
 
 const parseDate = (raw) => {
@@ -135,7 +135,10 @@ const createNewMilestoneEntry = (milestone, mode = 'list') => {
     function () {
       const $entry = $(this).closest('.milestone-entry');
 
-      if (checkInputChanges($entry) && $entry.attr('new') !== 'true') {
+      if (
+        checkIfEntryHasBeenModifiedFromOriginal($entry) &&
+        $entry.attr('new') !== 'true'
+      ) {
         // unchanged
         $entry.attr('data-todo', 'none');
         $entry.removeClass('uncommitted');
@@ -149,7 +152,7 @@ const createNewMilestoneEntry = (milestone, mode = 'list') => {
         $entry.addClass('uncommitted');
       }
 
-      checkIfEnableCommitButton();
+      enableOrDisableCommitButton();
       return;
     }
   );
@@ -162,7 +165,7 @@ const createNewMilestoneEntry = (milestone, mode = 'list') => {
       function () {
         const $entry = $(this).closest('.milestone-entry');
 
-        if (checkInputChanges($entry)) {
+        if (checkIfEntryHasBeenModifiedFromOriginal($entry)) {
           // unchanged
           $entry.attr('data-todo', 'none');
           $entry.removeClass('uncommitted');
@@ -176,7 +179,7 @@ const createNewMilestoneEntry = (milestone, mode = 'list') => {
           $entry.addClass('uncommitted');
         }
 
-        checkIfEnableCommitButton();
+        enableOrDisableCommitButton();
         return;
       }
     );
@@ -189,29 +192,19 @@ const createNewMilestoneEntry = (milestone, mode = 'list') => {
       const $duplicateWarning = $(this).siblings('.duplicate-name-input');
       if (!$duplicateWarning.hasClass('hidden')) {
         const blockedVal = $(this).attr('blocked-val');
-        const duplicateCount = countDuplicates('milestones', blockedVal);
+        const duplicateCount = countNumberOfDuplicateEntries(
+          'milestones',
+          blockedVal
+        );
         if (duplicateCount === 2) {
-          resolveDuplicates('milestones', blockedVal);
+          checkIfDuplicateEntriesAreResolved('milestones', blockedVal);
         } else {
           $duplicateWarning.addClass('hidden');
           $(this).attr('dup-resolved', true);
         }
       }
-      // const $entry = $(this).closest('.milestone-entry');
-      // const currentVal = $(this).val();
-      // const originalVal = $(this).attr('data-orig-val');
 
-      // if (MILESTONE_SET.has(currentVal) && currentVal !== originalVal) {
-      //   $entry.addClass('duplicate-entry');
-      //   $(this).addClass('red-alert-background');
-      //   alert('This milestone title has already been taken!');
-      //   // In the future, we might use a popup instead of an alert
-      // } else {
-      //   $entry.removeClass('duplicate-entry');
-      //   $(this).removeClass('red-alert-background');
-      // }
-
-      checkIfEnableCommitButton();
+      enableOrDisableCommitButton();
       return;
     }
   );
@@ -231,7 +224,7 @@ const createNewMilestoneEntry = (milestone, mode = 'list') => {
 
       $(this).siblings('.recover-button').removeClass('hidden');
 
-      checkIfEnableCommitButton();
+      enableOrDisableCommitButton();
       return;
     }
   );
@@ -245,13 +238,13 @@ const createNewMilestoneEntry = (milestone, mode = 'list') => {
 
       const $entry = $(this).closest('.milestone-entry');
 
-      if (checkInputChanges($entry)) {
+      if (checkIfEntryHasBeenModifiedFromOriginal($entry)) {
         $entry.attr('data-todo', 'none');
       } else {
         $entry.attr('data-todo', 'update');
       }
 
-      checkIfEnableCommitButton();
+      enableOrDisableCommitButton();
     }
   );
 

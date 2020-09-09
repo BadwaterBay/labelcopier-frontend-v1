@@ -14,140 +14,178 @@ const bugReportMsg = (() =>
   ` <a href="${bugReportLink}" target="_blank" ref="noopener noreferrer">` +
   'our GitHub page</a> with the following message:</br>')();
 
-/**
- * Returns the trimmed value from an ID selector
- * @param {string} id ID selector
- * @return {string}
- */
-const trimmedValFromId = (id) => document.getElementById(id).value.trim();
+const getTrimmedValueFromGivenId = (id) =>
+  document.getElementById(id).value.trim();
 
-/**
- * Returns and validate login info or throw an Error if it's not valid
- * @param {string} mode 'list', 'copy' or 'create'
- * @return {Object | Error}
- */
+const validateLoginAgainstNull = (loginInfo, mode = 'list') => {
+  if (mode === 'list') {
+    if (!(loginInfo.homeRepoOwner && loginInfo.homeRepoName)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  if (mode === 'create') {
+    if (
+      !loginInfo.homeRepoOwner &&
+      !loginInfo.homeRepoName &&
+      !loginInfo.personalAccessToken
+    ) {
+      const errorMessage =
+        'Please enter the owner, the name of the repository and login with GitHub.';
+
+      throw new Error(errorMessage);
+    }
+
+    return true;
+  }
+
+  if (mode === 'copy') {
+    if (!loginInfo.templateRepoOwner && !loginInfo.templateRepoName) {
+      const errorMessage =
+        "Please enter the owner and the name of the repository you'd like to copy from.";
+
+      throw new Error(errorMessage);
+    }
+
+    return true;
+  }
+
+  throw new Error(
+    "Invalid 'mode' argument was given to validateLoginAgainstNull."
+  );
+};
+
+const validateAccessTokenAgainstNull = (loginInfo) => {
+  const errorMessage = 'Please login with GitHub.';
+
+  if (!loginInfo.personalAccessToken) {
+    throw new Error(errorMessage);
+  }
+
+  return true;
+};
+
 const getAndValidateLoginInfo = (mode = 'list') => {
   // The global accessToken variable is problematic. It should be addressed in the future.
 
   const loginInfo = {
-    homeRepoOwner: trimmedValFromId('home-repo-owner'),
-    homeRepoName: trimmedValFromId('home-repo-name'),
-    // gitHubUsername: trimmedValFromId('github-username'),
+    homeRepoOwner: getTrimmedValueFromGivenId('home-repo-owner'),
+    homeRepoName: getTrimmedValueFromGivenId('home-repo-name'),
     personalAccessToken: window.accessToken,
-    templateRepoOwner: trimmedValFromId('template-repo-owner'),
-    templateRepoName: trimmedValFromId('template-repo-name'),
+    templateRepoOwner: getTrimmedValueFromGivenId('template-repo-owner'),
+    templateRepoName: getTrimmedValueFromGivenId('template-repo-name'),
   };
 
-  return validateLoginAgainstNull(loginInfo, mode);
-};
+  const loginIsNull = validateLoginAgainstNull(loginInfo, mode);
+  const accessTokenIsNull = validateAccessTokenAgainstNull(loginInfo);
 
-/**
- * Validate necessary login information against null
- * @param {Object} loginInfo
- * @param {string} mode 'list', 'copy' or 'create'
- * @return {Object | Error}
- */
-const validateLoginAgainstNull = (loginInfo, mode = 'list') => {
-  if (mode === 'list') {
-    if (!(loginInfo.homeRepoOwner && loginInfo.homeRepoName)) {
-      throw new Error('Please enter the owner and the name of the repository.');
-    }
-  } else if (mode === 'create') {
-    if (
-      !(
-        loginInfo.homeRepoOwner &&
-        loginInfo.homeRepoName &&
-        loginInfo.personalAccessToken
-      )
-    ) {
-      throw new Error(
-        'Please enter the owner, the name of the repository and login with GitHub.'
-      );
-    }
-  } else if (mode === 'copy') {
-    if (!(loginInfo.templateRepoOwner && loginInfo.templateRepoName)) {
-      throw new Error(
-        'Please enter the owner and the name of' +
-          " the repository you'd like to copy from."
-      );
-    }
-  } else {
-    throw new Error(
-      "Invalid 'mode' argument was given to validateLoginAgainstNull."
-    );
+  if (loginIsNull) {
+    throw new Error('Please enter the owner and the name of the repository.');
   }
-  return loginInfo;
+
+  if (accessTokenIsNull) {
+    throw new Error('Please login with GitHub.');
+  }
+
+  return true;
 };
 
-/**
- * Enable commit button
- */
+const getCommitButtonElement = () =>
+  document.getElementById('commit-to-home-repo-name');
+
 const enableCommitButton = () => {
-  const el = document.getElementById('commit-to-home-repo-name');
+  const el = getCommitButtonElement();
   el.removeAttribute('disabled');
   el.classList.remove('btn-outline-success');
   el.classList.add('btn-success');
+  return true;
 };
 
-/**
- * Disable commit button
- */
 const disableCommitButton = () => {
-  const el = document.getElementById('commit-to-home-repo-name');
+  const el = getCommitButtonElement();
   el.setAttribute('disabled', true);
   el.classList.remove('btn-success');
   el.classList.add('btn-outline-success');
+  return false;
 };
 
-/**
- * Check conditions to enable or disable the commit button
- */
-const checkIfEnableCommitButton = () => {
-  // returns true if any change has been made and activates or
-  // disactivates commit button accordingly
+const enableHtmlElement = (e) => {
+  e.removeAttribute('disabled');
+  return true;
+};
 
-  const labelsModified =
-    document.querySelectorAll('.label-entry:not([data-todo="none"])').length >
-    0;
-  const milestonesModified =
-    document.querySelectorAll('.milestone-entry:not([data-todo="none"])')
-      .length > 0;
-  const labelsDuplicated =
+const disableHtmlElement = (e) => {
+  e.setAttribute('disabled', true);
+  return false;
+};
+
+const checkIfEntriesOfKindHaveBeenModified = (kind) => {
+  const kindSingular = kind.slice(0, -1);
+  const querySelectorOfModifiedEntries = `.${kindSingular}-entry:not([data-todo="none"])`;
+  const numberOfModifiedEntries = document.querySelectorAll(
+    querySelectorOfModifiedEntries
+  ).length;
+  return numberOfModifiedEntries > 0;
+};
+
+const checkIfLabelsHaveBeenModified = () =>
+  checkIfEntriesOfKindHaveBeenModified('labels');
+
+const checkIfMilestonesHaveBeenModified = () =>
+  checkIfEntriesOfKindHaveBeenModified('milestones');
+
+const enableOrDisableUndoAllLabelsButton = () => {
+  const labelsHaveBeenModified = checkIfLabelsHaveBeenModified();
+  const undoAllLabelsButtonElement = document.getElementById('undo-all-labels');
+
+  if (labelsHaveBeenModified) {
+    enableHtmlElement(undoAllLabelsButtonElement);
+  } else {
+    disableHtmlElement(undoAllLabelsButtonElement);
+  }
+
+  return labelsHaveBeenModified;
+};
+
+const enableOrDisableUndoAllMilestonesButton = () => {
+  const milestonesHaveBeenModified = checkIfMilestonesHaveBeenModified();
+  const undoAllMilestonesButtonElement = document.getElementById(
+    'undo-all-milestones'
+  );
+
+  if (milestonesHaveBeenModified) {
+    enableHtmlElement(undoAllMilestonesButtonElement);
+  } else {
+    disableHtmlElement(undoAllMilestonesButtonElement);
+  }
+
+  return milestonesHaveBeenModified;
+};
+
+const enableOrDisableCommitButton = () => {
+  const duplicateLabelsExist =
     document.querySelectorAll('.label-entry.duplicate-entry').length > 0;
-  const milestonesDuplicated =
+
+  const duplicateMilestonesExist =
     document.querySelectorAll('.milestone-entry.duplicate-entry').length > 0;
 
-  if (labelsModified) {
-    document.getElementById('undo-all-labels').removeAttribute('disabled');
-  } else {
-    document.getElementById('undo-all-labels').setAttribute('disabled', true);
+  if (duplicateLabelsExist || duplicateMilestonesExist) {
+    return disableCommitButton();
   }
 
-  if (milestonesModified) {
-    document.getElementById('undo-all-milestones').removeAttribute('disabled');
-  } else {
-    document
-      .getElementById('undo-all-milestones')
-      .setAttribute('disabled', true);
+  const labelsHaveBeenModified = enableOrDisableUndoAllLabelsButton();
+  const milestonesHaveBeenModified = enableOrDisableUndoAllMilestonesButton();
+
+  if (!labelsHaveBeenModified && !milestonesHaveBeenModified) {
+    return disableCommitButton();
   }
 
-  if (labelsDuplicated || milestonesDuplicated) {
-    disableCommitButton();
-  } else {
-    if (labelsModified || milestonesModified) {
-      enableCommitButton();
-    } else {
-      disableCommitButton();
-    }
-  }
+  return enableCommitButton();
 };
 
-/**
- * Return a boolean, indicating if changes of entires are present
- * @param {Object} el
- * @return {boolean}
- */
-const checkInputChanges = (el) => {
+const checkIfEntryHasBeenModifiedFromOriginal = (el) => {
   let noChanges = true;
 
   el.find(':input[data-orig-val]').each(
@@ -158,16 +196,13 @@ const checkInputChanges = (el) => {
       }
     }
   );
+
   return noChanges;
 };
 
-/**
- * @param {string} kind
- * @param {string} blockedVal
- * @return {number}
- */
-const countDuplicates = (kind, blockedVal) => {
+const countNumberOfDuplicateEntries = (kind, blockedVal) => {
   let duplicateCount = 0;
+
   $(`#form-${kind}`)
     .children()
     .each(
@@ -182,14 +217,11 @@ const countDuplicates = (kind, blockedVal) => {
         }
       }
     );
+
   return duplicateCount;
 };
 
-/**
- * @param {string} kind
- * @param {string} blockedVal
- */
-const resolveDuplicates = (kind, blockedVal) => {
+const checkIfDuplicateEntriesAreResolved = (kind, blockedVal) => {
   $(`#form-${kind}`)
     .children()
     .each(
@@ -207,15 +239,9 @@ const resolveDuplicates = (kind, blockedVal) => {
     );
 };
 
-const displayDuplicateErrors = (kind, tally) => {
-  if (
-    Object.values(tally).some((e) => {
-      return e > 1;
-    })
-  ) {
-    const duplicates = Object.keys(tally).filter((k) => {
-      return tally[k] > 1;
-    });
+const displayWarningMessageOfDuplicateEntries = (kind, tally) => {
+  if (Object.values(tally).some((e) => e > 1)) {
+    const duplicates = Object.keys(tally).filter((k) => tally[k] > 1);
 
     $(`#form-${kind}`)
       .children()
@@ -227,8 +253,11 @@ const displayDuplicateErrors = (kind, tally) => {
           }
         }
       );
+
     return duplicates.length;
   }
+
+  return null;
 };
 
 const validateEntries = () => {
@@ -298,8 +327,12 @@ const validateEntries = () => {
       }
     );
 
-  const labelsDuplicateCount = displayDuplicateErrors('labels', labelsTally);
-  const milestonesDuplicateCount = displayDuplicateErrors(
+  const labelsDuplicateCount = displayWarningMessageOfDuplicateEntries(
+    'labels',
+    labelsTally
+  );
+
+  const milestonesDuplicateCount = displayWarningMessageOfDuplicateEntries(
     'milestones',
     milestonesTally
   );
@@ -312,17 +345,13 @@ const validateEntries = () => {
   ];
 };
 
-/**
- * Validate 'kind'
- * Valid: 'labels', 'milestones'
- * @param {string} kind
- * @return {boolean}
- */
 const validateKind = (kind) => {
   const validKinds = new Set(['labels', 'milestones']);
+
   if (validKinds.has(kind)) {
     return true;
   }
+
   throw new Error(
     bugReportMsg +
       'Error at validateKind. Invalid kind argument was given.' +
@@ -333,16 +362,25 @@ const validateKind = (kind) => {
 export {
   bugReportLink,
   bugReportMsg,
-  trimmedValFromId,
-  getAndValidateLoginInfo,
+  getTrimmedValueFromGivenId,
   validateLoginAgainstNull,
+  validateAccessTokenAgainstNull,
+  getAndValidateLoginInfo,
+  getCommitButtonElement,
   enableCommitButton,
   disableCommitButton,
-  checkIfEnableCommitButton,
-  checkInputChanges,
-  countDuplicates,
-  resolveDuplicates,
-  displayDuplicateErrors,
+  enableHtmlElement,
+  disableHtmlElement,
+  checkIfEntriesOfKindHaveBeenModified,
+  checkIfLabelsHaveBeenModified,
+  checkIfMilestonesHaveBeenModified,
+  enableOrDisableUndoAllLabelsButton,
+  enableOrDisableUndoAllMilestonesButton,
+  enableOrDisableCommitButton,
+  checkIfEntryHasBeenModifiedFromOriginal,
+  countNumberOfDuplicateEntries,
+  checkIfDuplicateEntriesAreResolved,
+  displayWarningMessageOfDuplicateEntries,
   validateEntries,
   validateKind,
 };

@@ -4,10 +4,10 @@
 
 'use strict';
 
-import { makeBasicAuth } from '../js/apiCalls';
+import { encodeForBasicAuthentication } from '../js/apiCalls';
 
 describe('Test apiCalls', () => {
-  test('Test makeBasicAuth', () => {
+  test('Test encodeForBasicAuthentication', () => {
     const input = [
       {
         gitHubUsername: 'BadwaterBay',
@@ -19,7 +19,7 @@ describe('Test apiCalls', () => {
       },
     ];
 
-    const output = input.map(makeBasicAuth);
+    const output = input.map(encodeForBasicAuthentication);
 
     const answerKey = [
       'Basic QmFkd2F0ZXJCYXk6YWJjZGVmZw==',

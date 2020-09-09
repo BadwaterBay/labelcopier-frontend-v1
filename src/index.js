@@ -5,14 +5,15 @@
 'use strict';
 
 import './scss/app.scss';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faTrashAlt, faHistory } from '@fortawesome/free-solid-svg-icons';
 import loginCard from './components/loginCard';
 import copyFromCard from './components/copyFromCard';
 import managementCard from './components/managementCard';
 import loadingModal from './components/loadingModal';
 
-library.add(faTrashAlt, faHistory);
+import { library as fontawesomeLibrary } from '@fortawesome/fontawesome-svg-core';
+import { faTrashAlt, faHistory } from '@fortawesome/free-solid-svg-icons';
+
+fontawesomeLibrary.add(faTrashAlt, faHistory);
 
 const labelcopierContent = document.createElement('div');
 
