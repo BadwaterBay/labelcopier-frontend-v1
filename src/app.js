@@ -32,7 +32,7 @@ import {
   resetModalWhenClosed,
   listenForClickOfCommitButton,
   listenForClickOutsideModalToCloseModal,
-} from './js/apiCalls';
+} from './js/commitChanges';
 
 const app = () => {
   try {
