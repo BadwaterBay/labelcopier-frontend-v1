@@ -4,25 +4,22 @@
  * Things that happen when the 'Commit' button is clicked
  */
 
-import { getAndValidateLoginInfo, validateEntries } from './dataValidation';
-import { listEntriesFromApi } from './manipulateEntries';
-import { apiCallCreate, apiCallUpdate, apiCallDelete } from './apiCalls';
+import { validateEntries } from './dataValidation';
+import { listEntriesOfKind } from './manipulateEntries';
+import {
+  makeApiCallToCreateEntries,
+  makeApiCallToUpdateEntries,
+  makeApiCallToDeleteEntries,
+} from './apiCalls';
 
-/**
- * Reload entires
- * @return {Promise}
- */
 const reloadEntries = () =>
   Promise.allSettled([
-    listEntriesFromApi('labels'),
-    listEntriesFromApi('milestones'),
+    listEntriesOfKind('labels'),
+    listEntriesOfKind('milestones'),
   ]).catch((err) => {
     console.error(err);
   });
 
-/**
- * Reset the content inside '#committing-modal' modal when it is closed
- */
 const resetModalWhenClosed = () => {
   $('#committing-modal').on('hidden.bs.modal', () => {
     reloadEntries();
@@ -32,89 +29,71 @@ const resetModalWhenClosed = () => {
   });
 };
 
-/**
- * Callback for making API calls
- * @callback apiCallFunc
- * @param {HTMLElement} e HTML element node
- * @param {string} kind Kind of entry, e.g. 'labels' or 'milestones'
- */
-/**
- * Select entries and make API calls
- * @param {string} kind Kind of entry, e.g. 'labels' or 'milestones'
- * @param {string} todo Action to do, e.g. create, update or delete
- * @param {apiCallFunc} apiCallFunc API call function as callback
- */
-const selectEntriesForApiCall = (kind, todo, apiCallFunc) => {
+const selectEntriesForApiCall = (
+  kind,
+  apiCallActionToDo,
+  apiCallFunctionCallback
+) => {
   const kindSingular = kind.slice(0, -1);
-  const selector = `.${kindSingular}-entry[data-todo="${todo}"]`;
-  document.querySelectorAll(selector).forEach((e) => apiCallFunc(e, kind));
+  const selector = `.${kindSingular}-entry[data-apiCallActionToDo="${apiCallActionToDo}"]`;
+
+  document
+    .querySelectorAll(selector)
+    .forEach((e) => apiCallFunctionCallback(e, kind));
 };
 
 /**
  * 2D array for selecting entries for API call
  * [[kind, to-do, API call function to be made],]
  */
-const entriesForApiCall = [
-  ['labels', 'create', apiCallCreate],
-  ['labels', 'update', apiCallUpdate],
-  ['labels', 'delete', apiCallDelete],
-  ['milestones', 'create', apiCallCreate],
-  ['milestones', 'update', apiCallUpdate],
-  ['milestones', 'delete', apiCallDelete],
+const apiCallsToMake = [
+  ['labels', 'create', makeApiCallToCreateEntries],
+  ['labels', 'update', makeApiCallToUpdateEntries],
+  ['labels', 'delete', makeApiCallToDeleteEntries],
+  ['milestones', 'create', makeApiCallToCreateEntries],
+  ['milestones', 'update', makeApiCallToUpdateEntries],
+  ['milestones', 'delete', makeApiCallToDeleteEntries],
 ];
 
-const commitChanges = () => {
-  // freeze the world
+const commitChangesByMakingApiCalls = () => {
   $('#committing-modal').modal({
     keyboard: false,
     backdrop: 'static',
   });
 
   // Fire API calls asynchronously in parallel
-  const apiCalls = entriesForApiCall.map((e) => selectEntriesForApiCall(...e));
-  return Promise.allSettled(apiCalls).catch((err) => {
+  const resolvedApiCallPromises = apiCallsToMake.map((e) =>
+    selectEntriesForApiCall(...e)
+  );
+
+  return Promise.allSettled(resolvedApiCallPromises).catch((err) => {
     console.error(err);
   });
 };
 
 const writeErrorsAlert = (errorCount, duplicateCount, kind) => {
-  if (errorCount || duplicateCount) {
-    if (duplicateCount) {
-      if (errorCount) {
-        return (
-          `${duplicateCount} set(s) of duplicate entries ` +
-          `and ${errorCount} other error(s) found in ${kind}!`
-        );
-      } else {
-        return (
-          `${duplicateCount} set(s) of duplicate entries found in` + `${kind} !`
-        );
-      }
-    } else {
-      return `${errorCount} error(s) found in ${kind} !`;
-    }
-  }
+  if (duplicateCount && errorCount)
+    return (
+      `${duplicateCount} set(s) of duplicate entries ` +
+      `and ${errorCount} other error(s) found in ${kind}!`
+    );
+
+  if (duplicateCount && !errorCount)
+    return (
+      `${duplicateCount} set(s) of duplicate entries found in` + `${kind} !`
+    );
+
+  if (!duplicateCount && errorCount)
+    return `${errorCount} error(s) found in ${kind} !`;
+
+  // when !duplicateCount && !errorCount
   return '';
 };
 
-/**
- * Listen for clicking the commit button to commit changes by making
- * API calls
- */
-const listenForCommitButton = () => {
+const listenForClickOfCommitButton = () => {
   document
     .getElementById('commit-to-home-repo-name')
     .addEventListener('click', () => {
-      const loginInfo = getAndValidateLoginInfo();
-
-      if (window.accessToken === null && !loginInfo.personalAccessToken) {
-        // The global accessToken variable is problematic. It should be addressed in the future.
-        alert(
-          `You need to login with GitHub or manually enter a personal access token to commit changes.`
-        );
-        return;
-      }
-
       const [
         labelsErrorCount,
         labelsDuplicateCount,
@@ -143,7 +122,7 @@ const listenForCommitButton = () => {
         return;
       }
 
-      commitChanges()
+      commitChangesByMakingApiCalls()
         .then(() => {
           setTimeout(() => {
             document
@@ -157,14 +136,10 @@ const listenForCommitButton = () => {
     });
 };
 
-/**
- * Clicking outside the modal closes it
- */
-const clickOutsideToCloseModal = () => {
+const listenForClickOutsideModalToCloseModal = () => {
   $(document).click((event) => {
-    if ($(event.target).is('#committing-modal')) {
+    if ($(event.target).is('#committing-modal'))
       $('#committing-modal').modal('hide');
-    }
   });
 };
 
@@ -172,8 +147,8 @@ export {
   reloadEntries,
   resetModalWhenClosed,
   selectEntriesForApiCall,
-  commitChanges,
+  commitChangesByMakingApiCalls,
   writeErrorsAlert,
-  listenForCommitButton,
-  clickOutsideToCloseModal,
+  listenForClickOfCommitButton,
+  listenForClickOutsideModalToCloseModal,
 };

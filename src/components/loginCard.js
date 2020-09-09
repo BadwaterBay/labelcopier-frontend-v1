@@ -38,7 +38,6 @@ const loginCard = `
         </div>
       </div>
     </div>
-    <!-- row -->
   </form>
   <div class="row">
     <div class="col-12 col-md-4 col-lg-12">
@@ -60,7 +59,6 @@ const loginCard = `
       </button>
     </div>
   </div>
-  <!-- row -->
 </div>`;
 
 export default loginCard;
