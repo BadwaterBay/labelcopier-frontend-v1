@@ -14,8 +14,8 @@
   },
   "scripts": {
     "clean": "rimraf build",
-    "format": "prettier './**/*.{js,jsx,ts,tsx,html,md,json,css,scss}' --write",
-    "lint": "eslint './**/*.{js,jsx,ts,tsx}' --fix",
+    "format": "prettier './**/*.{js,html,md,json,css,scss}' --write",
+    "lint": "eslint './**/*.{js}' --fix",
     "build:dev": "webpack-dev-server --mode=development",
     "build": "yarn clean && webpack --mode=production",
     "serve-build": "serve build",
@@ -30,10 +30,10 @@
     }
   },
   "lint-staged": {
-    "./**/*.{js,jsx,ts,tsx,html,md,json,css,scss}": [
+    "./**/*.{js,html,md,json,css,scss}": [
       "prettier --write"
     ],
-    "./**/*.{js,jsx,ts,tsx}": [
+    "./**/*.{js}": [
       "eslint --cache --fix"
     ]
   },
@@ -57,9 +57,9 @@
     "eslint-plugin-html": "^6.1.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jquery": "1.5.1",
-    "eslint-plugin-prettier": "^3.3.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^4.5.0",
+    "html-webpack-plugin": "^4.5.1",
     "husky": "^4.3.6",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^26.6.3",
