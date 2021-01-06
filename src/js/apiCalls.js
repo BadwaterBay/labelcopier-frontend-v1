@@ -169,7 +169,7 @@ const composeErrorMessageWhenApiCallFails = (response) => {
   return `${response.status} ${response.statusText}.` + ` Error occurred.`;
 };
 
-const composeUrlForMakeApiCallToGetUserInfo = () =>
+const composeUrlForMakingApiCallToGetUserInfo = () =>
   'https://api.github.com/user';
 
 const makeApiCallToGetUserInfo = (urlFunc) =>
@@ -201,12 +201,12 @@ const makeApiCallToGetUserInfo = (urlFunc) =>
     throw new Error(err);
   });
 
-const composeUrlForCheckIfGitHubAppInstalled = () =>
+const composeUrlForCheckingIfGithubAppIsInstalled = () =>
   'https://api.github.com/user/installations' +
   `?per_page=${apiPaginationLimit}` +
   '&page=1';
 
-const makeApiCallToCheckIfGitHubAppInstalled = (urlFunc) => {
+const makeApiCallToCheckIfGithubAppIsInstalled = (urlFunc) => {
   return new Promise((resolve) => {
     fetch(urlFunc(), {
       method: 'GET',
@@ -226,7 +226,7 @@ const makeApiCallToCheckIfGitHubAppInstalled = (urlFunc) => {
   });
 };
 
-const composeUrlForMakeApiCallGetEntries = (
+const composeUrlForMakingApiCallGetEntries = (
   loginInfo,
   kind,
   pageNum,
@@ -262,7 +262,7 @@ const makeGetHttpRequest = (urlFunc, loginInfo, kind, pageNum, mode) =>
 
 const makeApiCallToGetEntries = (loginInfo, kind, pageNum = 1, mode = 'list') =>
   makeGetHttpRequest(
-    composeUrlForMakeApiCallGetEntries,
+    composeUrlForMakingApiCallGetEntries,
     loginInfo,
     kind,
     pageNum,
@@ -326,7 +326,7 @@ const makeHttpRequestOfMethod = (
   });
 };
 
-const composeUrlForCreateEntries = (loginInfo, kind) =>
+const composeUrlForCreatingEntries = (loginInfo, kind) =>
   `https://api.github.com/repos/${loginInfo.homeRepoOwner}/` +
   `${loginInfo.homeRepoName}/${kind}`;
 
@@ -342,7 +342,7 @@ const makeApiCallToCreateEntries = (entryNode, kind, mode = 'create') =>
 
     makeHttpRequestOfMethod(
       'POST',
-      composeUrlForCreateEntries,
+      composeUrlForCreatingEntries,
       loginInfo,
       kind,
       entryPackage
@@ -390,7 +390,7 @@ const makeApiCallToCreateEntries = (entryNode, kind, mode = 'create') =>
     throw new Error(err);
   });
 
-const composeUrlForUpdateEntries = (loginInfo, kind, entryPackage) =>
+const composeUrlForUpdatingEntries = (loginInfo, kind, entryPackage) =>
   `https://api.github.com/repos/${loginInfo.homeRepoOwner}/` +
   `${loginInfo.homeRepoName}/${kind}/${entryPackage.names.apiCallSign}`;
 
@@ -406,7 +406,7 @@ const makeApiCallToUpdateEntries = (entryNode, kind) =>
 
     makeHttpRequestOfMethod(
       'PATCH',
-      composeUrlForUpdateEntries,
+      composeUrlForUpdatingEntries,
       loginInfo,
       kind,
       entryPackage
@@ -457,7 +457,7 @@ const makeApiCallToUpdateEntries = (entryNode, kind) =>
     throw new Error(err);
   });
 
-const composeUrlForDeleteEntries = (loginInfo, kind, entryPackage) =>
+const composeUrlForDeletingEntries = (loginInfo, kind, entryPackage) =>
   `https://api.github.com/repos/${loginInfo.homeRepoOwner}/` +
   `${loginInfo.homeRepoName}/${kind}/${entryPackage.names.apiCallSign}`;
 
@@ -473,7 +473,7 @@ const makeApiCallToDeleteEntries = (entryNode, kind) =>
 
     makeHttpRequestOfMethod(
       'DELETE',
-      composeUrlForDeleteEntries,
+      composeUrlForDeletingEntries,
       loginInfo,
       kind,
       entryPackage
@@ -512,18 +512,18 @@ export {
   serializeEntryForApiCalls,
   packageEntryForApiCalls,
   composeErrorMessageWhenApiCallFails,
-  composeUrlForMakeApiCallToGetUserInfo,
+  composeUrlForMakingApiCallToGetUserInfo,
   makeApiCallToGetUserInfo,
-  composeUrlForCheckIfGitHubAppInstalled,
-  makeApiCallToCheckIfGitHubAppInstalled,
-  composeUrlForMakeApiCallGetEntries,
+  composeUrlForCheckingIfGithubAppIsInstalled,
+  makeApiCallToCheckIfGithubAppIsInstalled,
+  composeUrlForMakingApiCallGetEntries,
   makeGetHttpRequest,
   makeApiCallToGetEntries,
   makeHttpRequestOfMethod,
-  composeUrlForCreateEntries,
+  composeUrlForCreatingEntries,
   makeApiCallToCreateEntries,
-  composeUrlForUpdateEntries,
+  composeUrlForUpdatingEntries,
   makeApiCallToUpdateEntries,
-  composeUrlForDeleteEntries,
+  composeUrlForDeletingEntries,
   makeApiCallToDeleteEntries,
 };
