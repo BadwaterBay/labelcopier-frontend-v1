@@ -13,21 +13,12 @@ import {
 
 const apiPaginationLimit = 100;
 
-/**
- * Encode authentication info for HTTP requests
- * @param {Object} loginInfo
- * @return {string}
- */
 const encodeForBasicAuthentication = (loginInfo) =>
   'Basic ' +
   base64Tool.encode(
     `${loginInfo.gitHubUsername}:${loginInfo.personalAccessToken}`
   );
 
-/**
- * Write logs inside modal #committing-modal when committing changes
- * @param {string} string
- */
 const writeLogInCommitModal = (string) => {
   const logNode = document.createElement('p');
   logNode.innerHTML = string;
@@ -35,11 +26,6 @@ const writeLogInCommitModal = (string) => {
   modalNode.appendChild(logNode);
 };
 
-/**
- * Format data from an HTML node element
- * @param {HTMLElement} node
- * @return {string | null}
- */
 const formatDate = (node) => {
   const date = node.value;
   const time = node.getAttribute('data-orig-time');
@@ -172,9 +158,9 @@ const composeErrorMessageWhenApiCallFails = (response) => {
 const composeUrlForMakingApiCallToGetUserInfo = () =>
   'https://api.github.com/user';
 
-const makeApiCallToGetUserInfo = (urlFunc) =>
+const makeApiCallToGetUserInfo = () =>
   new Promise((resolve, reject) => {
-    fetch(urlFunc(), {
+    fetch(composeUrlForMakingApiCallToGetUserInfo(), {
       method: 'GET',
       headers: {
         Accept: 'application/vnd.github.v3+json',
@@ -206,9 +192,9 @@ const composeUrlForCheckingIfGithubAppIsInstalled = () =>
   `?per_page=${apiPaginationLimit}` +
   '&page=1';
 
-const makeApiCallToCheckIfGithubAppIsInstalled = (urlFunc) => {
+const makeApiCallToCheckIfGithubAppIsInstalled = () => {
   return new Promise((resolve) => {
-    fetch(urlFunc(), {
+    fetch(composeUrlForCheckingIfGithubAppIsInstalled(), {
       method: 'GET',
       headers: {
         Accept: 'application/vnd.github.v3+json',
